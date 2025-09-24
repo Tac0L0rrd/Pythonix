@@ -1,0 +1,546 @@
+// ...existing code from pythonix.html...
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pythonix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg, linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%));
+      overflow: hidden;
+      transition: background 0.4s;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
+    }
+    h1 {
+      margin-bottom: 10px;
+      color: var(--menu, #222);
+      letter-spacing: 2px;
+      text-shadow: 0 2px 8px #acb6e5;
+    }
+    #gameCanvas {
+      background: #f7fffe;
+      box-shadow: 0 8px 32px 0 rgba(44,62,80,0.2);
+      border-radius: 32px;
+      display: block;
+      margin: 0 auto;
+      touch-action: none;
+      transition: background 0.4s;
+    }
+    .score-board {
+      margin: 18px 0;
+      font-size: 1.5em;
+      color: var(--menu, #222);
+      font-weight: bold;
+      letter-spacing: 1px;
+      padding: 8px 24px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 18px;
+      box-shadow: 0 2px 8px #acb6e5;
+      transition: color 0.4s;
+    }
+    .game-over {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(44,62,80,0.78);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      color: #fff;
+      font-size: 2em;
+      border-radius: 32px;
+      animation: fadeIn 0.5s;
+    }
+    .game-over button {
+      margin-top: 24px;
+      padding: 12px 32px;
+      font-size: 1em;
+      border: none;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+      color: #222;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #acb6e5;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .game-over button:hover {
+      background: linear-gradient(135deg, #ACB6E5 0%, #74ebd5 100%);
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    .options-panel {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+    .options-panel label {
+      font-size: 1em;
+      margin-right: 4px;
+      color: var(--menu, #222);
+      font-weight: 500;
+    }
+    .options-panel select, .options-panel input[type=color] {
+      padding: 3px 8px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #acd;
+      background: #f7fffe;
+      color: #222;
+    }
+    .options-panel .emoji-picker {
+      font-size: 1.3em;
+      background: #f7fffe;
+      border: 1px solid #acd;
+      border-radius: 8px;
+      padding: 2px 7px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .options-panel .emoji-picker:hover {
+      background: #e1e8ed;
+    }
+    .options-panel button {
+      padding: 7px 16px;
+      font-size: 1em;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+      color: #222;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #acb6e5;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-left: 8px;
+    }
+    .options-panel button:hover {
+      background: linear-gradient(135deg, #ACB6E5 0%, #74ebd5 100%);
+    }
+    @media (max-width: 700px) {
+      #gameCanvas {
+        width: 96vw !important;
+        height: 64vw !important;
+        max-width: 96vw;
+        max-height: 64vw;
+      }
+      .container {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Customizable Snake Game</h1>
+    <div class="options-panel" id="optionsPanel">
+      <label>Snake Shape:
+        <select id="snakeShape">
+          <option value="circle">Circle</option>
+          <option value="square">Square</option>
+          <option value="emoji">Emoji</option>
+        </select>
+      </label>
+      <span id="emojiPickerContainer" style="display:none;">
+        <label>Choose Emoji:
+          <span class="emoji-picker" id="emojiPicker">🐍</span>
+        </label>
+      </span>
+      <label>Snake Color:
+        <input type="color" id="snakeColor" value="#57cc99">
+      </label>
+      <label>Background:
+        <input type="color" id="bgColor" value="#ACB6E5">
+      </label>
+      <label>Menu Color:
+        <input type="color" id="menuColor" value="#222222">
+      </label>
+      <button onclick="applyOneSetting()">Apply One</button>
+      <button onclick="applyAllSettings()">Apply All</button>
+    </div>
+    <div class="score-board" id="scoreBoard">Score: 0</div>
+    <div style="position:relative;">
+      <canvas id="gameCanvas" width="600" height="400"></canvas>
+      <div id="gameOverScreen" class="game-over" style="display:none;">
+        <span id="gameOverText"></span>
+        <button onclick="restartGame()">Restart</button>
+      </div>
+    </div>
+    <div style="margin-top:18px;">
+      <span style="color:#666;font-size:1em;">
+        Use <b>WASD</b> or <b>arrow keys</b> to play
+      </span>
+    </div>
+  </div>
+  <script>
+    
+    // Game settings
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreBoard = document.getElementById('scoreBoard');
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    const gameOverText = document.getElementById('gameOverText');
+    let boxSize = 20; // size of one block
+    let boardWidth = canvas.width / boxSize;
+    let boardHeight = canvas.height / boxSize;
+
+    // Customization State
+    let snakeShape = "circle";
+    let snakeEmoji = "🐍";
+    let snakeColor = "#57cc99";
+    let bgColor = "#ACB6E5";
+    let menuColor = "#222222";
+
+    // Snake data
+    let snake;
+    let direction;
+    let food;
+    let score;
+    let gameInterval;
+    let speed;
+    let isGameOver = false;
+    let pendingDirection;
+
+    // Food emoji (taco)
+    const foodEmoji = "🌮";
+
+    // Handle emoji picker popup
+    function chooseEmoji() {
+      const picker = document.createElement('input');
+      picker.setAttribute('type', 'text');
+      picker.setAttribute('maxlength', '2');
+      picker.setAttribute('style', 'font-size:2em;width:2em;text-align:center;border:none;background:#fff;border-radius:8px;');
+      picker.value = snakeEmoji;
+      const container = document.getElementById('emojiPickerContainer');
+      container.innerHTML = '';
+      container.appendChild(document.createTextNode('Choose Emoji: '));
+      container.appendChild(picker);
+      picker.focus();
+
+      picker.addEventListener('blur', () => {
+        snakeEmoji = picker.value || "🐍";
+        picker.replaceWith(makeEmojiSpan());
+      });
+
+      picker.addEventListener('keydown', (e) => {
+        if (e.key === "Enter") {
+          picker.blur();
+        }
+      });
+    }
+
+    function makeEmojiSpan() {
+      const span = document.createElement('span');
+      span.className = "emoji-picker";
+      span.id = "emojiPicker";
+      span.textContent = snakeEmoji;
+      span.addEventListener('click', chooseEmoji);
+      return span;
+    }
+
+    // Customization UI logic
+    document.getElementById('snakeShape').addEventListener('change', function() {
+      snakeShape = this.value;
+      document.getElementById('emojiPickerContainer').style.display = (snakeShape === "emoji") ? "inline-block" : "none";
+    });
+    document.getElementById('emojiPicker').addEventListener('click', chooseEmoji);
+
+    document.getElementById('snakeColor').addEventListener('input', function() {
+      snakeColor = this.value;
+    });
+    document.getElementById('bgColor').addEventListener('input', function() {
+      bgColor = this.value;
+    });
+    document.getElementById('menuColor').addEventListener('input', function() {
+      menuColor = this.value;
+    });
+
+    function applyOneSetting() {
+      // Only change the currently selected setting
+      // Shape
+      if (snakeShape === "emoji") {
+        document.getElementById('emojiPickerContainer').style.display = "inline-block";
+      } else {
+        document.getElementById('emojiPickerContainer').style.display = "none";
+      }
+      // Color
+      document.body.style.setProperty('--bg', `linear-gradient(135deg, ${bgColor} 0%, #fafafa 100%)`);
+      // Remove canvasbg change so grid is not affected
+      // document.body.style.setProperty('--canvasbg', `linear-gradient(135deg, #f7fffe 0%, ${bgColor} 100%)`);
+      document.body.style.setProperty('--menu', menuColor);
+      drawBoard();
+    }
+
+    function applyAllSettings() {
+      // Apply everything at once
+      applyOneSetting();
+      drawBoard();
+    }
+
+    // Responsive canvas
+    function resizeCanvas() {
+      let w = window.innerWidth > 700 ? 600 : Math.min(window.innerWidth*0.96, 600);
+      let h = window.innerWidth > 700 ? 400 : Math.min(window.innerWidth*0.64, 400);
+      canvas.width = Math.floor(w/boxSize)*boxSize;
+      canvas.height = Math.floor(h/boxSize)*boxSize;
+      boardWidth = canvas.width / boxSize;
+      boardHeight = canvas.height / boxSize;
+    }
+
+    // Init game
+    function initGame() {
+      resizeCanvas();
+      snake = [ { x: Math.floor(boardWidth/2), y: Math.floor(boardHeight/2) } ];
+      direction = 'RIGHT';
+      pendingDirection = null;
+      score = 0;
+      speed = 125; // slower speed
+      food = randomFood();
+      isGameOver = false;
+      scoreBoard.textContent = 'Score: 0';
+      gameOverScreen.style.display = 'none';
+
+      clearInterval(gameInterval);
+      gameInterval = setInterval(gameLoop, speed);
+    }
+
+    function randomFood() {
+      let newFood;
+      do {
+        newFood = {
+          x: Math.floor(Math.random() * boardWidth),
+          y: Math.floor(Math.random() * boardHeight)
+        };
+      } while (snake.some(s => s.x === newFood.x && s.y === newFood.y));
+      return newFood;
+    }
+
+    function drawBoard() {
+      // Fill canvas background with solid color
+      ctx.fillStyle = "#f7fffe";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // --- Draw stylish grid background ---
+      const gridColorA = "rgba(172,182,229,0.18)";
+      const gridColorB = "rgba(87,204,153,0.08)";
+      for (let x = 0; x <= canvas.width; x += boxSize) {
+        let grad = ctx.createLinearGradient(x, 0, x, canvas.height);
+        grad.addColorStop(0, gridColorA);
+        grad.addColorStop(1, gridColorB);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = (x % (boxSize*5) === 0) ? 2 : 1;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= canvas.height; y += boxSize) {
+        let grad = ctx.createLinearGradient(0, y, canvas.width, y);
+        grad.addColorStop(0, gridColorA);
+        grad.addColorStop(1, gridColorB);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = (y % (boxSize*5) === 0) ? 2 : 1;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+      // --- End grid background ---
+
+      // Draw snake
+      for (let i = 0; i < snake.length; i++) {
+        // Emoji shape
+        if (snakeShape === "emoji") {
+          ctx.font = `${Math.floor(boxSize*0.95)}px serif`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(snakeEmoji, (snake[i].x+0.5)*boxSize, (snake[i].y+0.5)*boxSize);
+        } else if (snakeShape === "square") {
+          ctx.fillStyle = snakeColor;
+          ctx.shadowColor = snakeColor;
+          ctx.shadowBlur = (i === snake.length-1) ? 18 : 8;
+          ctx.fillRect(
+            snake[i].x*boxSize+2,
+            snake[i].y*boxSize+2,
+            boxSize-4,
+            boxSize-4
+          );
+          ctx.shadowBlur = 0;
+        } else {
+          // circle
+          if (i === snake.length-1) {
+            let grad = ctx.createRadialGradient(
+              (snake[i].x+0.5)*boxSize, (snake[i].y+0.5)*boxSize, boxSize/4,
+              (snake[i].x+0.5)*boxSize, (snake[i].y+0.5)*boxSize, boxSize/2
+            );
+            grad.addColorStop(0, snakeColor);
+            grad.addColorStop(1, "#fff");
+            ctx.fillStyle = grad;
+            ctx.shadowColor = snakeColor;
+            ctx.shadowBlur = 18;
+          } else {
+            ctx.fillStyle = snakeColor;
+            ctx.shadowColor = snakeColor;
+            ctx.shadowBlur = 8;
+          }
+          ctx.beginPath();
+          ctx.arc(
+            (snake[i].x + 0.5) * boxSize,
+            (snake[i].y + 0.5) * boxSize,
+            boxSize/2.1,
+            0,
+            2 * Math.PI
+          );
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      // Draw taco food
+      ctx.font = `${Math.floor(boxSize*0.95)}px serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(foodEmoji, (food.x + 0.5) * boxSize, (food.y + 0.5) * boxSize);
+    }
+
+    function gameLoop() {
+      if (isGameOver) return;
+
+      // Direction change handling
+      if (pendingDirection) {
+        if (isValidDirection(pendingDirection, direction)) {
+          direction = pendingDirection;
+        }
+        pendingDirection = null;
+      }
+
+      // Move snake
+      let head = { ...snake[snake.length-1] };
+      switch (direction) {
+        case 'LEFT': head.x -= 1; break;
+        case 'RIGHT': head.x += 1; break;
+        case 'UP': head.y -= 1; break;
+        case 'DOWN': head.y += 1; break;
+
+        
+      }
+      // Wall collision
+      if (head.x < 0 || head.x >= boardWidth || head.y < 0 || head.y >= boardHeight) {
+        endGame();
+        return;
+      }
+      // Self collision
+      if (snake.some(s => s.x === head.x && s.y === head.y)) {
+        endGame();
+        return;
+      }
+      snake.push(head);
+
+      // Food collision
+      if (head.x === food.x && head.y === food.y) {
+        score++;
+        scoreBoard.textContent = 'Score: ' + score;
+        food = randomFood();
+      } else {
+        snake.shift(); // Remove tail
+      }
+
+      drawBoard();
+    }
+
+    function endGame() {
+      isGameOver = true;
+      clearInterval(gameInterval);
+      gameOverText.innerHTML = `Game Over<br>Final Score: <span style="color:#f9ca24">${score}</span>`;
+      gameOverScreen.style.display = 'flex';
+    }
+
+    function restartGame() {
+      initGame();
+    }
+
+    function isValidDirection(newDir, currDir) {
+      return !(
+        (newDir === 'LEFT' && currDir === 'RIGHT') ||
+        (newDir === 'RIGHT' && currDir === 'LEFT') ||
+        (newDir === 'UP' && currDir === 'DOWN') ||
+        (newDir === 'DOWN' && currDir === 'UP')
+      );
+    }
+
+    // Keyboard controls
+    document.addEventListener('keydown', e => {
+      if (isGameOver) return;
+      switch (e.key) {
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+          pendingDirection = 'LEFT';
+          break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+          pendingDirection = 'RIGHT';
+          break;
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+          pendingDirection = 'UP';
+          break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+          pendingDirection = 'DOWN';
+          break;
+      }
+    });
+
+    // Touch controls (swipe)
+    let touchStartX, touchStartY;
+    canvas.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }
+    });
+    canvas.addEventListener('touchend', e => {
+      if (!touchStartX || !touchStartY) return;
+      let dx = e.changedTouches[0].clientX - touchStartX;
+      let dy = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        if (dx > 20) pendingDirection = 'RIGHT';
+        else if (dx < -20) pendingDirection = 'LEFT';
+      } else {
+        if (dy > 20) pendingDirection = 'DOWN';
+        else if (dy < -20) pendingDirection = 'UP';
+      }
+      touchStartX = touchStartY = null;
+    });
+
+    // Responsive resize
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      drawBoard();
+    });
+
+    // Start game
+    initGame();
+  </script>
+</body>
+</html>
