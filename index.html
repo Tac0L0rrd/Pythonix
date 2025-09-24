@@ -422,11 +422,24 @@
         }
       }
 
-  // Draw taco food
-  ctx.font = `${Math.max(Math.floor(boxSize*0.95), 24)}px serif`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(foodEmoji, (food.x + 0.5) * boxSize, (food.y + 0.5) * boxSize);
+  // Draw taco food as image
+  const tacoImg = window.tacoImg || (() => {
+    const img = new window.Image();
+    img.src = "taco.png";
+    window.tacoImg = img;
+    return img;
+  })();
+  if (tacoImg.complete) {
+    ctx.drawImage(
+      tacoImg,
+      (food.x * boxSize) + boxSize * 0.1,
+      (food.y * boxSize) + boxSize * 0.1,
+      boxSize * 0.8,
+      boxSize * 0.8
+    );
+  } else {
+    tacoImg.onload = () => drawBoard();
+  }
     }
 
     function gameLoop() {
