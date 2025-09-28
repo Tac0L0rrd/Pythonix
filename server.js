@@ -24,14 +24,19 @@ const db = new sqlite.Database('pythonix.db', err => {
 });
 
 // GET top 10 scores
+// GET top 5 unique user high scores
 app.get('/scores', (req, res) => {
-  db.all(
-  'SELECT name, score FROM scores ORDER BY score DESC LIMIT 5',
-    (err, rows) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json(rows);
-    }
-  );
+  const query = `
+    SELECT name, MAX(score) as score
+    FROM scores
+    GROUP BY name
+    ORDER BY score DESC
+    LIMIT 5
+  `;
+  db.all(query, (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
 });
 
 // POST a new score
