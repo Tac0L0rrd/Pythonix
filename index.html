@@ -395,8 +395,7 @@
     </div>
   </div>
   <script>
-    // API base URL: use localhost in development, same origin in production
-    const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+  // Leaderboard API served from the same origin by server.js
 
     // Game settings
     const canvas = document.getElementById('gameCanvas');
@@ -525,29 +524,65 @@ multiplierIndicator.style.display = 'none';
 scoreBoard.parentNode.insertBefore(multiplierIndicator, highScoreBoard.nextSibling);
 
 // --- Leaderboard logic ---
-// Fetch and render global leaderboard
+// --- Leaderboard logic ---
+// Local leaderboard backup (fallback when API not available)
+function getLocalLeaderboard() {
+  let lb = JSON.parse(localStorage.getItem('pythonixLeaderboard') || '[]');
+  lb = lb.map(entry => {
+    if (typeof entry === 'number') return { name: 'Anonymous', score: entry };
+    return entry;
+  });
+  return lb.sort((a, b) => b.score - a.score).slice(0, 5);
+}
+function saveLocalLeaderboard(lb) {
+  localStorage.setItem('pythonixLeaderboard', JSON.stringify(lb));
+}
+function updateLocalLeaderboard(newScore, name) {
+  const lb = getLocalLeaderboard();
+  const nameKey = name || 'Anonymous';
+  const existing = lb.find(e => e.name === nameKey);
+  if (existing) existing.score = Math.max(existing.score, newScore);
+  else lb.push({ name: nameKey, score: newScore });
+  const uniq = Array.from(new Map(lb.map(e => [e.name, e])).values());
+  const sorted = uniq.sort((a, b) => b.score - a.score).slice(0, 5);
+  saveLocalLeaderboard(sorted);
+}
 async function loadLeaderboard() {
+  // Attempt to load global leaderboard, fallback to localStorage
   try {
-    const resp = await fetch(`${API_BASE}/scores`);
+    const resp = await fetch('/scores');
+    if (!resp.ok) throw new Error('Network response was not ok');
     const lb = await resp.json();
-    renderLeaderboard(lb);
+    if (Array.isArray(lb) && lb.length > 0) {
+      renderLeaderboard(lb);
+      // Also cache to localStorage
+      saveLocalLeaderboard(lb);
+      return;
+    }
+    throw new Error('Empty global leaderboard');
   } catch (err) {
-    console.error('Leaderboard load error:', err);
-    renderLeaderboard([]); // fallback to empty list
+    console.warn('Global leaderboard load failed, using local:', err);
+    renderLeaderboard(getLocalLeaderboard());
   }
 }
 
 async function updateLeaderboard(newScore, name) {
+  // Try posting to global API, fallback to localStorage
+  let posted = false;
   try {
-    await fetch(`${API_BASE}/scores`, {
+    const resp = await fetch('/scores', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, score: newScore })
     });
-    await loadLeaderboard();
+    if (resp.ok) posted = true;
   } catch (err) {
-    console.error('Score update error:', err);
+    console.warn('Global score post failed, saving locally:', err);
   }
+  // Always update local leaderboard
+  updateLocalLeaderboard(newScore, name);
+  // Reload leaderboard (global or local)
+  await loadLeaderboard();
 }
 function renderLeaderboard(data) {
   const lb = data || [];
@@ -823,16 +858,9 @@ function updateMultiplierDisplay() {
   drawGameOver();
   // Send score to backend and fetch updated leaderboard
   try {
-    await fetch(`${API_BASE}/scores`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: playerName, score })
-    });
-    const resp = await fetch(`${API_BASE}/scores`);
-    const lb = await resp.json();
-    renderLeaderboard(lb);
+    await updateLeaderboard(score, playerName);
   } catch (err) {
-    console.error('Score API error:', err);
+    console.error('Error updating leaderboard:', err);
   }
 }
 
