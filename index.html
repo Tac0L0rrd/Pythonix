@@ -396,11 +396,8 @@
   </div>
   <script>
     // API base URL: use localhost in development, same origin in production
-    // API base URL: always use the global production backend so the leaderboard is shared universally
-    // TODO: replace the URL below with your actual deployed API endpoint
-    // API base URL: always use the production global backend
-    const API_BASE = 'https://pythonix.vercel.app'; // production API endpoint
-    
+    const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3000' : '';
+
     // Game settings
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
@@ -531,7 +528,7 @@ scoreBoard.parentNode.insertBefore(multiplierIndicator, highScoreBoard.nextSibli
 // Fetch and render global leaderboard
 async function loadLeaderboard() {
   try {
-  const resp = await fetch(`${API_BASE}/scores`);
+    const resp = await fetch(`${API_BASE}/scores`);
     const lb = await resp.json();
     renderLeaderboard(lb);
   } catch (err) {
@@ -542,7 +539,7 @@ async function loadLeaderboard() {
 
 async function updateLeaderboard(newScore, name) {
   try {
-  await fetch(`${API_BASE}/scores`, {
+    await fetch(`${API_BASE}/scores`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, score: newScore })
@@ -826,12 +823,12 @@ function updateMultiplierDisplay() {
   drawGameOver();
   // Send score to backend and fetch updated leaderboard
   try {
-  await fetch(`${API_BASE}/scores`, {
+    await fetch(`${API_BASE}/scores`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: playerName, score })
     });
-  const resp = await fetch(`${API_BASE}/scores`);
+    const resp = await fetch(`${API_BASE}/scores`);
     const lb = await resp.json();
     renderLeaderboard(lb);
   } catch (err) {
