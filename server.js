@@ -22,7 +22,7 @@ const db = new sqlite.Database('pythonix.db', err => {
 // GET top 10 scores
 app.get('/scores', (req, res) => {
   db.all(
-    'SELECT name, score FROM scores ORDER BY score DESC LIMIT 10',
+  'SELECT name, score FROM scores ORDER BY score DESC LIMIT 5',
     (err, rows) => {
       if (err) return res.status(500).json({ error: err.message });
       res.json(rows);
