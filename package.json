@@ -1,0 +1,18 @@
+{
+  "name": "pythonix",
+  "version": "1.0.0",
+  "description": "Pythonix is a modern, customizable Snake game playable directly in your browser. Enjoy classic gameplay with a stylish UI, emoji support, and color customization.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "sqlite3": "^5.1.7"
+  }
+}

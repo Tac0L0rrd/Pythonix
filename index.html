@@ -3,43 +3,212 @@
 <head>
   <meta charset="UTF-8">
   <title>Pythonix</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <style>
     html, body {
-  min-height: 100vh;
-  margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: var(--bg, linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%));
-  transition: background 0.4s;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Press Start 2P', 'Segoe UI', Arial, sans-serif;
+      background: var(--bg, linear-gradient(135deg, #66b5ff 0%, #3863ff 100%));
+      transition: background 0.4s;
+      overflow-x: hidden;
     }
-    .container {
+
+    .navbar {
+  background: #ffffff;
+  /* Centered, shrink-to-fit header */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  min-height: 100vh;
-  width: 100vw;
-  box-sizing: border-box;
-  padding-bottom: 80px;
+  padding: 10px 20px 20px;
+  font-size: 0.85rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: fit-content;  /* shrink to fit content */
+  margin: 0 auto;
+  border-bottom: 1px solid #eaeaea;
     }
+
+    .navbar-brand h2 {
+      margin: 0;
+      font-size: 1rem;
+      color: #222;
+      font-weight: 600;
+      /* mimic current.com logo style */
+      cursor: default;
+    }
+
+    /* Hide controls until hover */
+    .navbar-controls {
+      opacity: 0;
+      max-height: 0;
+      max-width: 0;
+      margin: 0;
+      pointer-events: none;
+      overflow: hidden;
+      transition: opacity 0.3s ease, max-height 0.3s ease, max-width 0.3s ease, margin-top 0.3s ease;
+    }
+
+/* On navbar hover, reveal controls below the title */
+.navbar:hover .navbar-controls {
+  opacity: 1;
+  max-height: 200px;    /* reveal controls */
+  max-width: 500px;
+  margin-top: 10px;
+  pointer-events: auto;
+}
+
+    .navbar-controls {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .navbar-controls label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #444;
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+
+    .navbar input, .navbar select {
+      padding: 5px 8px;
+      font-size: 0.85rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      color: #333;
+  min-width: 0;         /* allow shrink */
+  max-width: 120px;     /* cap width for other inputs */
+    }
+
+    .navbar input[type="text"] {
+      max-width: 120px;
+    }
+
+    .navbar input[type="color"] {
+      /* Revert to default sizing to avoid clipping */
+  /* fixed size color picker */
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background: none !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
+    }
+
+    .navbar .emoji-picker {
+      font-size: 1.2em;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 4px 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .navbar .emoji-picker:hover {
+      background: #f5f5f5;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.85);
+      padding: 30px 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      max-width: 95vw; 
+      box-sizing: border-box;
+    }
+
     h1 {
       margin-bottom: 10px;
       color: var(--menu, #222);
       letter-spacing: 2px;
       text-shadow: 0 2px 8px #acb6e5;
+      font-family: 'Press Start 2P', 'Segoe UI', Arial, sans-serif;
+      font-size: 2em;
     }
+
+    .leaderboard {
+      margin: 30px auto 0 auto;
+      background: rgba(255,255,255,0.8);
+      border-radius: 16px;
+      box-shadow: 0 2px 8px #acb6e5;
+      padding: 18px 24px;
+      max-width: 340px;
+      text-align: center;
+      font-family: 'Press Start 2P', 'Segoe UI', Arial, sans-serif;
+      font-size: 0.8em;
+    }
+    .leaderboard-title {
+      font-size: 1.1em;
+      margin-bottom: 10px;
+      color: #3863ff;
+      letter-spacing: 1px;
+      text-align: center;
+      display: inline-block;
+      margin: 0 auto 10px;
+    }
+    .touch-btn {
+      width: 48px;
+      .navbar-controls {
+        /* absolutely place beneath title, hidden by default */
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        max-height: 0;
+        margin-top: 0;
+        pointer-events: none;
+        overflow: hidden;
+        transition: opacity 0.3s ease, max-height 0.3s ease, margin-top 0.3s ease;
+      }
+      box-shadow: 0 2px 8px #acb6e5;
+      cursor: pointer;
+      .navbar:hover .navbar-controls {
+        opacity: 1;
+        max-height: 200px;
+        margin-top: 10px;
+        pointer-events: auto;
+      }
+      transform: scale(0.95);
+    }
+
     #gameCanvas {
       background: #f7fffe;
       box-shadow: 0 8px 32px 0 rgba(44,62,80,0.2);
-      border-radius: 32px;
+      border: 4px solid #6c7a89;
       display: block;
       margin: 0 auto;
       touch-action: none;
       transition: background 0.4s;
+      max-width: 100%;
+      height: auto;
     }
+
     .score-board {
-      margin: 18px 0;
       font-size: 1.5em;
       color: var(--menu, #222);
       font-weight: bold;
@@ -50,101 +219,84 @@
       box-shadow: 0 2px 8px #acb6e5;
       transition: color 0.4s;
     }
+
     .game-over {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(44,62,80,0.78);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-  color: #fff;
-  font-size: 2em;
-  border-radius: 0;
-  animation: fadeIn 0.5s;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(44,62,80,0.78);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      color: #fff;
+      font-size: 2em;
+      border-radius: 0;
+      animation: fadeIn 0.5s;
     }
+
     .game-over button {
       margin-top: 24px;
       padding: 12px 32px;
       font-size: 1em;
       border: none;
       border-radius: 18px;
-      background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+  background: linear-gradient(135deg, #4f8edc 0%, #27c5ff 100%);
       color: #222;
       font-weight: bold;
       box-shadow: 0 2px 8px #acb6e5;
       cursor: pointer;
       transition: background 0.2s;
     }
+
     .game-over button:hover {
-      background: linear-gradient(135deg, #ACB6E5 0%, #74ebd5 100%);
+      border-radius: 18px;
+  background: linear-gradient(135deg, #4f8edc 0%, #27c5ff 100%);
+      color: #222;
+      font-weight: bold;
+      box-shadow: 0 2px 8px #acb6e5;
+      cursor: pointer;
+      transition: background 0.2s;
     }
+
+    .game-over button:hover {
+  background: linear-gradient(135deg, #4f8edc 0%,#27c5ff  100%);
+    }
+
     @keyframes fadeIn {
       0% { opacity: 0; }
       100% { opacity: 1; }
     }
-    .options-panel {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-      align-items: center;
-      justify-content: center;
-    }
-    .options-panel label {
-      font-size: 1em;
-      margin-right: 4px;
-      color: var(--menu, #222);
-      font-weight: 500;
-    }
-    .options-panel select, .options-panel input[type=color] {
-      padding: 3px 8px;
-      font-size: 1em;
-      border-radius: 8px;
-      border: 1px solid #acd;
-      background: #f7fffe;
-      color: #222;
-    }
-    .options-panel .emoji-picker {
-      font-size: 1.3em;
-      background: #f7fffe;
-      border: 1px solid #acd;
-      border-radius: 8px;
-      padding: 2px 7px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .options-panel .emoji-picker:hover {
-      background: #e1e8ed;
-    }
-    .options-panel button {
-      padding: 7px 16px;
-      font-size: 1em;
-      border: none;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
-      color: #222;
-      font-weight: bold;
-      box-shadow: 0 2px 8px #acb6e5;
-      cursor: pointer;
-      transition: background 0.2s;
-      margin-left: 8px;
-    }
-    .options-panel button:hover {
-      background: linear-gradient(135deg, #ACB6E5 0%, #74ebd5 100%);
-    }
+
     @media (max-width: 700px) {
-      #gameCanvas {
-        width: 98vw !important;
-        height: 60vw !important;
-        max-width: 98vw;
-        max-height: 60vw;
-        min-width: 220px;
+      .navbar {
+        padding: 6px 12px;
+        font-size: 0.6em;
+      }
+      .navbar-brand h2 {
+        font-size: 1em;
+      }
+      .navbar-controls {
+        gap: 10px;
+      }
+      .navbar-controls label {
+        font-size: 0.8em;
+          background: #ffffff;
+          border-radius: 12px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          padding: 8px 16px;
+          min-width: 240px;  /* wider than title */
+          opacity: 0;
+          max-height: 0;
+          margin: 0;
+          pointer-events: none;
+          overflow: hidden;
+          transition: opacity 0.3s ease, max-height 0.3s ease, margin-top 0.3s ease;
         min-height: 180px;
       }
-      .container {
-        padding: 0;
+      .card {
+        padding: 20px;
+        border-radius: 15px;
       }
       .game-over {
         font-size: 1.2em;
@@ -152,13 +304,58 @@
         padding: 0;
       }
     }
+
+    /* Intro screen overlay */
+    .intro-screen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      z-index: 1000;
+    }
+    .intro-screen h1 {
+      font-size: 2em;
+      margin-bottom: 1em;
+    }
+    .intro-screen button {
+      padding: 12px 24px;
+      font-size: 1em;
+      border: none;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #4f8edc 0%, #27c5ff 100%);
+      color: #222;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #acb6e5;
+      transition: background 0.2s;
+    }
+    .intro-screen button:hover {
+      background: linear-gradient(135deg, #4f8edc 0%, #27c5ff 100%);
+    }
+        @media (max-width: 480px) {
+          .card { padding: 15px; }
+          .score-board, .score-board ~ .score-board { font-size: 1em; padding: 6px 12px; }
+        }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Pythonix</h1>
-    <div class="options-panel" id="optionsPanel">
-      <label>Snake Shape:
+  <!-- Intro Screen -->
+  <div id="introScreen" class="intro-screen">
+    <h1>🐍 Pythonix</h1>
+    <button id="startBtn">Start Game</button>
+  </div>
+  <div class="navbar">
+    <div class="navbar-brand">
+      <h2>🐍 Pythonix</h2>
+    </div>
+    <div class="navbar-controls">
+      <label>Name:
+        <input type="text" id="playerName" placeholder="Enter name" maxlength="20">
+      </label>
+      <label>Shape:
         <select id="snakeShape">
           <option value="circle">Circle</option>
           <option value="square">Square</option>
@@ -166,34 +363,35 @@
         </select>
       </label>
       <span id="emojiPickerContainer" style="display:none;">
-        <label>Choose Emoji:
+        <label>Emoji:
           <span class="emoji-picker" id="emojiPicker">🐍</span>
         </label>
       </span>
-      <label>Snake Color:
+      <label>Color:
         <input type="color" id="snakeColor" value="#57cc99">
       </label>
-      <label>Background:
-        <input type="color" id="bgColor" value="#ACB6E5">
-      </label>
-      <label>Menu Color:
-        <input type="color" id="menuColor" value="#222222">
-      </label>
-      <button onclick="applyOneSetting()">Apply One</button>
-      <button onclick="applyAllSettings()">Apply All</button>
     </div>
-    <div class="score-board" id="scoreBoard">Score: 0</div>
-    <div style="position:relative;">
-      <canvas id="gameCanvas" width="600" height="400"></canvas>
-      <div id="gameOverScreen" class="game-over" style="display:none;">
-        <span id="gameOverText"></span>
-        <button onclick="restartGame()">Restart</button>
+  </div>
+  <div class="container">
+    <div class="card">
+      <h1>Pythonix</h1>
+      <div class="score-board" id="scoreBoard">Score: 0</div>
+      <div style="position:relative;">
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+        <div id="gameOverScreen" class="game-over" style="display:none;">
+          <span id="gameOverText"></span>
+          <button onclick="restartGame()">Restart</button>
+        </div>
       </div>
-    </div>
-    <div style="margin-top:18px;">
-      <span style="color:#666;font-size:1em;">
-        Use <b>WASD</b>, <b>arrow keys</b> or <b>swipe</b> to play
-      </span>
+      <div class="leaderboard" id="leaderboard">
+        <div class="leaderboard-title">Leaderboard</div>
+        <ol id="leaderboardList" style="padding-left:1.5em;text-align:left;"></ol>
+      </div>
+      <div style="margin-top:18px;">
+        <span style="color:#444;font-size:1em;">
+          Use <b>WASD</b>, <b>arrow keys</b>, <b>swipe</b>, or <b>touch controls</b> to play
+        </span>
+      </div>
     </div>
   </div>
   <script>
@@ -207,16 +405,22 @@
     let boxSize = 20; // size of one block
     let boardWidth = canvas.width / boxSize;
     let boardHeight = canvas.height / boxSize;
+    // Animation state
+    let prevSnake = [];
+    let lastStepTime = 0;
 
     // Customization State
-    let snakeShape = "circle";
-    let snakeEmoji = "🐍";
-    let snakeColor = "#57cc99";
-    let bgColor = "#ACB6E5";
-    let menuColor = "#222222";
+  let snakeShape = "circle";
+  let snakeEmoji = "🐍";
+  let snakeColor = "#57cc99";
 
-    // Snake data
-    let snake;
+  // Snake data
+  let snake;
+  // Multiplier state (double points)
+  let multiplierActive = false;
+  let multiplierTimer = null;
+  let multiplierExpireTime = 0;
+  let multiplierInterval = null;
     let direction;
     let food;
     let score;
@@ -225,8 +429,21 @@
     let isGameOver = false;
     let pendingDirection;
 
+    // High score tracking
+    let highScore = localStorage.getItem('pythonixHighScore') ? parseInt(localStorage.getItem('pythonixHighScore')) : 0;
+
     // Food emoji (taco)
-    const foodEmoji = "🌮";
+  const foodEmoji = "🍔";
+  // Power-up emoji
+  const powerEmoji = "⭐";
+  // Sound effects
+  const eatSound = new Audio('eat.mp3');
+  eatSound.volume = 0.5;
+  const gameOverSound = new Audio('gameover.mp3');
+  gameOverSound.volume = 0.5;
+  // Power-up sound effect
+  const powerSound = new Audio('powerup.mp3');
+  powerSound.volume = 0.5;
 
     // Handle emoji picker popup
     function chooseEmoji() {
@@ -265,41 +482,93 @@
     // Customization UI logic
     document.getElementById('snakeShape').addEventListener('change', function() {
       snakeShape = this.value;
-      document.getElementById('emojiPickerContainer').style.display = (snakeShape === "emoji") ? "inline-block" : "none";
-    });
-    document.getElementById('emojiPicker').addEventListener('click', chooseEmoji);
-
-    document.getElementById('snakeColor').addEventListener('input', function() {
-      snakeColor = this.value;
-    });
-    document.getElementById('bgColor').addEventListener('input', function() {
-      bgColor = this.value;
-    });
-    document.getElementById('menuColor').addEventListener('input', function() {
-      menuColor = this.value;
-    });
-
-    function applyOneSetting() {
-      // Only change the currently selected setting
-      // Shape
       if (snakeShape === "emoji") {
         document.getElementById('emojiPickerContainer').style.display = "inline-block";
       } else {
         document.getElementById('emojiPickerContainer').style.display = "none";
       }
-      // Color
-      document.body.style.setProperty('--bg', `linear-gradient(135deg, ${bgColor} 0%, #fafafa 100%)`);
-      // Remove canvasbg change so grid is not affected
-      // document.body.style.setProperty('--canvasbg', `linear-gradient(135deg, #f7fffe 0%, ${bgColor} 100%)`);
-      document.body.style.setProperty('--menu', menuColor);
       drawBoard();
-    }
+    });
+    document.getElementById('emojiPicker').addEventListener('click', chooseEmoji);
 
-    function applyAllSettings() {
-      // Apply everything at once
-      applyOneSetting();
+    document.getElementById('snakeColor').addEventListener('input', function() {
+      snakeColor = this.value;
       drawBoard();
+    });
+
+    // Load saved name
+    document.getElementById('playerName').value = localStorage.getItem('pythonixPlayerName') || '';
+
+    // Save name on input
+    document.getElementById('playerName').addEventListener('input', function() {
+      localStorage.setItem('pythonixPlayerName', this.value);
+    });
+
+    // Add high score display
+const highScoreBoard = document.createElement('div');
+highScoreBoard.className = 'score-board';
+highScoreBoard.style.background = 'rgba(255,255,255,0.5)';
+highScoreBoard.style.fontSize = '1.1em';
+highScoreBoard.style.marginTop = '0';
+highScoreBoard.id = 'highScoreBoard';
+highScoreBoard.textContent = 'High Score: ' + highScore;
+scoreBoard.parentNode.insertBefore(highScoreBoard, scoreBoard.nextSibling);
+
+// Insert multiplier indicator UI
+const multiplierIndicator = document.createElement('div');
+multiplierIndicator.id = 'multiplierIndicator';
+multiplierIndicator.className = 'score-board';
+multiplierIndicator.style.background = 'rgba(255,255,255,0.7)';
+multiplierIndicator.style.display = 'none';
+scoreBoard.parentNode.insertBefore(multiplierIndicator, highScoreBoard.nextSibling);
+
+// --- Leaderboard logic ---
+function getLeaderboard() {
+  let lb = JSON.parse(localStorage.getItem('pythonixLeaderboard') || '[]');
+  // Migrate old format (numbers) to new (objects)
+  lb = lb.map(entry => {
+    if (typeof entry === 'number') {
+      return { name: 'Anonymous', score: entry };
     }
+    return entry;
+  });
+  return lb;
+}
+function saveLeaderboard(lb) {
+  localStorage.setItem('pythonixLeaderboard', JSON.stringify(lb));
+}
+function updateLeaderboard(newScore, name) {
+  let lb = getLeaderboard();
+  let nameScoreMap = {};
+  lb.forEach(entry => {
+    if (!nameScoreMap[entry.name] || entry.score > nameScoreMap[entry.name]) {
+      nameScoreMap[entry.name] = entry.score;
+    }
+  });
+  // Update or add the new score
+  nameScoreMap[name || 'Anonymous'] = Math.max(nameScoreMap[name || 'Anonymous'] || 0, newScore);
+  // Convert back to array
+  lb = Object.keys(nameScoreMap).map(name => ({ name, score: nameScoreMap[name] }));
+  lb = lb.sort((a, b) => b.score - a.score).slice(0, 5); // Top 5 unique best scores
+  saveLeaderboard(lb);
+  renderLeaderboard();
+}
+function renderLeaderboard(data) {
+  const lb = data || getLeaderboard();
+  const list = document.getElementById('leaderboardList');
+  list.innerHTML = '';
+  if (lb.length === 0) {
+    list.innerHTML = '<li style="color:#888">No scores yet</li>';
+    return;
+  }
+  lb.forEach((entry) => {
+    const li = document.createElement('li');
+    li.textContent = `${entry.name}: ${entry.score}`;
+    list.appendChild(li);
+  });
+}
+// Call on load
+renderLeaderboard();
 
     // Responsive canvas
     function resizeCanvas() {
@@ -314,6 +583,10 @@
 
     // Init game
     function initGame() {
+      // Stop any game over sound if still playing
+      gameOverSound.pause();
+      gameOverSound.currentTime = 0;
+
       resizeCanvas();
       snake = [ { x: Math.floor(boardWidth/2), y: Math.floor(boardHeight/2) } ];
       direction = 'RIGHT';
@@ -322,11 +595,20 @@
       speed = 125; // slower speed
       food = randomFood();
       isGameOver = false;
-      scoreBoard.textContent = 'Score: 0';
+      const playerName = document.getElementById('playerName').value.trim();
+      scoreBoard.textContent = 'Score: 0' + (playerName ? ' (' + playerName + ')' : '');
       gameOverScreen.style.display = 'none';
 
-      clearInterval(gameInterval);
-      gameInterval = setInterval(gameLoop, speed);
+  // Start game logic and animation
+  clearInterval(gameInterval);
+  gameInterval = setInterval(gameLoop, speed);
+  // Initialize interpolation
+  lastStepTime = performance.now();
+  prevSnake = snake.map(s => ({...s}));
+  requestAnimationFrame(animate);
+
+      document.getElementById('highScoreBoard').textContent = 'High Score: ' + highScore;
+      drawBoard(); // Draw initial state
     }
 
     function randomFood() {
@@ -334,7 +616,9 @@
       do {
         newFood = {
           x: Math.floor(Math.random() * boardWidth),
-          y: Math.floor(Math.random() * boardHeight)
+          y: Math.floor(Math.random() * boardHeight),
+          // 10% chance for power-up
+            type: (Math.random() < 0.1) ? 'power' : 'normal'
         };
       } while (snake.some(s => s.x === newFood.x && s.y === newFood.y));
       return newFood;
@@ -409,25 +693,50 @@
         }
       }
 
-  // Draw taco food as image
-  const tacoImg = window.tacoImg || (() => {
-    const img = new window.Image();
-    img.src = "taco.png";
-    window.tacoImg = img;
-    return img;
-  })();
-  if (tacoImg.complete) {
-    ctx.drawImage(
-      tacoImg,
-      (food.x * boxSize) + boxSize * 0.1,
-      (food.y * boxSize) + boxSize * 0.1,
-      boxSize * 0.8,
-      boxSize * 0.8
-    );
+  // Draw food: normal taco or power-up
+  if (food.type === 'power') {
+    ctx.font = `${Math.floor(boxSize*0.95)}px serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(powerEmoji, (food.x+0.5)*boxSize, (food.y+0.5)*boxSize);
   } else {
-    tacoImg.onload = () => drawBoard();
+    const tacoImg = window.tacoImg || (() => {
+      const img = new window.Image();
+      img.src = "taco.png";
+      window.tacoImg = img;
+      return img;
+    })();
+    if (tacoImg.complete && tacoImg.naturalHeight > 0) {
+      ctx.drawImage(
+        tacoImg,
+        (food.x * boxSize) + boxSize * 0.1,
+        (food.y * boxSize) + boxSize * 0.1,
+        boxSize * 0.8,
+        boxSize * 0.8
+      );
+    } else {
+      ctx.font = `${Math.floor(boxSize*0.95)}px serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(foodEmoji, (food.x+0.5)*boxSize, (food.y+0.5)*boxSize);
+      if (!tacoImg.complete) {
+        tacoImg.onload = () => drawBoard();
+      }
+    }
   }
     }
+
+    // Define multiplier display updater before gameLoop
+function updateMultiplierDisplay() {
+  if (multiplierActive) {
+    const sec = Math.ceil((multiplierExpireTime - Date.now())/1000);
+    multiplierIndicator.textContent = `x2 (${sec}s)`;
+    multiplierIndicator.style.display = 'block';
+  } else {
+    multiplierIndicator.style.display = 'none';
+    clearInterval(multiplierInterval);
+  }
+}
 
     function gameLoop() {
       if (isGameOver) return;
@@ -464,8 +773,33 @@
 
       // Food collision
       if (head.x === food.x && head.y === food.y) {
-        score++;
-        scoreBoard.textContent = 'Score: ' + score;
+        const wasPower = (food.type === 'power');
+        if (wasPower) {
+          multiplierActive = true;
+          clearTimeout(multiplierTimer);
+          clearInterval(multiplierInterval);
+          multiplierExpireTime = Date.now() + 10000;
+          multiplierTimer = setTimeout(() => {
+            multiplierActive = false;
+            updateMultiplierDisplay();
+          }, 10000);
+          multiplierInterval = setInterval(updateMultiplierDisplay, 200);
+          updateMultiplierDisplay();
+        }
+        const pts = multiplierActive ? 2 : 1;
+        score += pts;
+        // Update score display
+        const playerName = document.getElementById('playerName').value.trim();
+        scoreBoard.textContent = 'Score: ' + score + (playerName ? ' (' + playerName + ')' : '');
+        // Play sound for the event
+        if (wasPower) {
+          powerSound.currentTime = 0;
+          powerSound.play();
+        } else {
+          eatSound.currentTime = 0;
+          eatSound.play();
+        }
+        // Spawn next food
         food = randomFood();
       } else {
         snake.shift(); // Remove tail
@@ -477,25 +811,60 @@
     function endGame() {
       isGameOver = true;
       clearInterval(gameInterval);
-      gameOverText.innerHTML = `Game Over<br>Final Score: <span style="color:#f9ca24">${score}</span>`;
+  gameOverText.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%"><span style="font-size:1.2em;">Game Over</span><span style="margin-top:10px;">Final Score: <span style=\"color:#f9ca24\">${score}</span></span></div>`;
       gameOverScreen.style.display = 'flex';
+      // Play game over sound
+      gameOverSound.currentTime = 0;
+      gameOverSound.play();
+      updateHighScore();
+      const playerName = document.getElementById('playerName').value.trim() || 'Anonymous';
+      localStorage.setItem('pythonixPlayerName', playerName);
+      updateLeaderboard(score, playerName);
     }
+
+    async function handleGameOver() {
+  isGameOver = true;
+  drawGameOver();
+  // Send score to backend and fetch updated leaderboard
+  try {
+    await fetch('http://localhost:3000/scores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: playerName, score })
+    });
+    const resp = await fetch('http://localhost:3000/scores');
+    const lb = await resp.json();
+    renderLeaderboard(lb);
+  } catch (err) {
+    console.error('Score API error:', err);
+  }
+}
 
     function restartGame() {
       initGame();
     }
 
-    function isValidDirection(newDir, currDir) {
-      return !(
-        (newDir === 'LEFT' && currDir === 'RIGHT') ||
-        (newDir === 'RIGHT' && currDir === 'LEFT') ||
-        (newDir === 'UP' && currDir === 'DOWN') ||
-        (newDir === 'DOWN' && currDir === 'UP')
-      );
-    }
+    function updateHighScore() {
+
+  if (score > highScore) {
+    highScore = score;
+    localStorage.setItem('pythonixHighScore', highScore);
+    document.getElementById('highScoreBoard').textContent = 'High Score: ' + highScore;
+  }
+}
+
+// Allow direction change only if not reversing
+function isValidDirection(newDir, currentDir) {
+  return !(
+    (newDir === 'LEFT' && currentDir === 'RIGHT') ||
+    (newDir === 'RIGHT' && currentDir === 'LEFT') ||
+    (newDir === 'UP' && currentDir === 'DOWN') ||
+    (newDir === 'DOWN' && currentDir === 'UP')
+  );
+}
 
     // Keyboard controls
-    document.addEventListener('keydown', e => {
+    window.onkeydown = function(e) {
       if (isGameOver) return;
       switch (e.key) {
         case 'ArrowLeft':
@@ -519,7 +888,7 @@
           pendingDirection = 'DOWN';
           break;
       }
-    });
+    };
 
     // Touch controls (swipe)
     let touchStartX, touchStartY;
@@ -549,8 +918,27 @@
       drawBoard();
     });
 
-    // Start game
-    initGame();
+
+    // Background variations
+const backgrounds = [
+    'linear-gradient(135deg, #57cc99 0%, #57cc99 50%, #2f855a 100%)', // green
+    'linear-gradient(135deg, #ed8936 0%, #ed8936 50%, #dd6b20 100%)', // orange
+    'linear-gradient(135deg, #f6e05e 0%, #f6e05e 50%, #d69e2e 100%)', // yellow/gold
+    'linear-gradient(135deg, #e53e3e 0%, #e53e3e 50%, #c53030 100%)', // red
+    'linear-gradient(135deg, #4299e1 0%, #4299e1 50%, #2b6cb0 100%)'  // blue
+];
+function pickBackground() {
+  const bg = backgrounds[Math.floor(Math.random()*backgrounds.length)];
+  document.documentElement.style.setProperty('--bg', bg);
+}
+
+// Start button handler
+document.getElementById('startBtn').addEventListener('click', () => {
+  document.getElementById('introScreen').style.display = 'none';
+  pickBackground();
+  initGame();
+});
+
   </script>
 </body>
 </html>
