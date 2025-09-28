@@ -395,6 +395,11 @@
     </div>
   </div>
   <script>
+    // API base URL: use localhost in development, same origin in production
+    // API base URL: always use the global production backend so the leaderboard is shared universally
+    // TODO: replace the URL below with your actual deployed API endpoint
+    // API base URL: always use the production global backend
+    const API_BASE = 'https://pythonix.vercel.app'; // production API endpoint
     
     // Game settings
     const canvas = document.getElementById('gameCanvas');
@@ -523,38 +528,32 @@ multiplierIndicator.style.display = 'none';
 scoreBoard.parentNode.insertBefore(multiplierIndicator, highScoreBoard.nextSibling);
 
 // --- Leaderboard logic ---
-function getLeaderboard() {
-  let lb = JSON.parse(localStorage.getItem('pythonixLeaderboard') || '[]');
-  // Migrate old format (numbers) to new (objects)
-  lb = lb.map(entry => {
-    if (typeof entry === 'number') {
-      return { name: 'Anonymous', score: entry };
-    }
-    return entry;
-  });
-  return lb;
+// Fetch and render global leaderboard
+async function loadLeaderboard() {
+  try {
+  const resp = await fetch(`${API_BASE}/scores`);
+    const lb = await resp.json();
+    renderLeaderboard(lb);
+  } catch (err) {
+    console.error('Leaderboard load error:', err);
+    renderLeaderboard([]); // fallback to empty list
+  }
 }
-function saveLeaderboard(lb) {
-  localStorage.setItem('pythonixLeaderboard', JSON.stringify(lb));
-}
-function updateLeaderboard(newScore, name) {
-  let lb = getLeaderboard();
-  let nameScoreMap = {};
-  lb.forEach(entry => {
-    if (!nameScoreMap[entry.name] || entry.score > nameScoreMap[entry.name]) {
-      nameScoreMap[entry.name] = entry.score;
-    }
-  });
-  // Update or add the new score
-  nameScoreMap[name || 'Anonymous'] = Math.max(nameScoreMap[name || 'Anonymous'] || 0, newScore);
-  // Convert back to array
-  lb = Object.keys(nameScoreMap).map(name => ({ name, score: nameScoreMap[name] }));
-  lb = lb.sort((a, b) => b.score - a.score).slice(0, 5); // Top 5 unique best scores
-  saveLeaderboard(lb);
-  renderLeaderboard();
+
+async function updateLeaderboard(newScore, name) {
+  try {
+  await fetch(`${API_BASE}/scores`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, score: newScore })
+    });
+    await loadLeaderboard();
+  } catch (err) {
+    console.error('Score update error:', err);
+  }
 }
 function renderLeaderboard(data) {
-  const lb = data || getLeaderboard();
+  const lb = data || [];
   const list = document.getElementById('leaderboardList');
   list.innerHTML = '';
   if (lb.length === 0) {
@@ -568,7 +567,7 @@ function renderLeaderboard(data) {
   });
 }
 // Call on load
-renderLeaderboard();
+loadLeaderboard();
 
     // Responsive canvas
     function resizeCanvas() {
@@ -827,12 +826,12 @@ function updateMultiplierDisplay() {
   drawGameOver();
   // Send score to backend and fetch updated leaderboard
   try {
-    await fetch('http://localhost:3000/scores', {
+  await fetch(`${API_BASE}/scores`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: playerName, score })
     });
-    const resp = await fetch('http://localhost:3000/scores');
+  const resp = await fetch(`${API_BASE}/scores`);
     const lb = await resp.json();
     renderLeaderboard(lb);
   } catch (err) {

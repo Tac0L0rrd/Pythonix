@@ -3,8 +3,12 @@ const sqlite = require('sqlite3').verbose();
 const cors = require('cors');
 
 const app = express();
+const path = require('path');
+// Parse JSON bodies
 app.use(express.json());
 app.use(cors()); // allow frontend calls
+// Serve static files (index.html, assets)
+app.use(express.static(path.join(__dirname)));
 
 // Initialize SQLite database (pythonix.db)
 const db = new sqlite.Database('pythonix.db', err => {
