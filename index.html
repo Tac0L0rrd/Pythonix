@@ -5,6 +5,8 @@
   <title>Pythonix</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Base URL for API endpoints; leave blank for same origin (relative) -->
+  <meta name="api-base" content="">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <style>
     html, body {
@@ -548,57 +550,30 @@ function updateLocalLeaderboard(newScore, name) {
   saveLocalLeaderboard(sorted);
 }
 async function loadLeaderboard() {
-  // Attempt to load global leaderboard, fallback to localStorage
   try {
-    const resp = await fetch('/scores');
-    if (!resp.ok) throw new Error('Network response was not ok');
-    const lb = await resp.json();
-    if (Array.isArray(lb) && lb.length > 0) {
-      renderLeaderboard(lb);
-      // Also cache to localStorage
-      saveLocalLeaderboard(lb);
-      return;
-    }
-    throw new Error('Empty global leaderboard');
+    const resp = await fetch(`${API_BASE}/scores`);
+    const lb   = await resp.json();
+    renderLeaderboard(lb);
   } catch (err) {
-    console.warn('Global leaderboard load failed, using local:', err);
-    renderLeaderboard(getLocalLeaderboard());
+    console.error('Leaderboard load error:', err);
+    renderLeaderboard([]); 
   }
 }
 
-async function updateLeaderboard(newScore, name) {
-  // Try posting to global API, fallback to localStorage
-  let posted = false;
+async function updateLeaderboard(score, name) {
   try {
-    const resp = await fetch('/scores', {
+    await fetch(`${API_BASE}/scores`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, score: newScore })
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ name, score })
     });
-    if (resp.ok) posted = true;
   } catch (err) {
-    console.warn('Global score post failed, saving locally:', err);
+    console.error('Score post error:', err);
   }
-  // Always update local leaderboard
-  updateLocalLeaderboard(newScore, name);
-  // Reload leaderboard (global or local)
   await loadLeaderboard();
 }
-function renderLeaderboard(data) {
-  const lb = data || [];
-  const list = document.getElementById('leaderboardList');
-  list.innerHTML = '';
-  if (lb.length === 0) {
-    list.innerHTML = '<li style="color:#888">No scores yet</li>';
-    return;
-  }
-  lb.forEach((entry) => {
-    const li = document.createElement('li');
-    li.textContent = `${entry.name}: ${entry.score}`;
-    list.appendChild(li);
-  });
-}
-// Call on load
+
+// Call on page load
 loadLeaderboard();
 
     // Responsive canvas
@@ -963,7 +938,9 @@ document.getElementById('startBtn').addEventListener('click', () => {
   initGame();
 });
 
-const API_BASE = 'https://pythonix-api.onrender.com';
+// Determine API_BASE from meta tag (and fallback to same origin)
+const metaApiBase = document.querySelector('meta[name="api-base"]').getAttribute('content').trim();
+const API_BASE = 'https://api.pythonix.com';  // ← your deployed backend
   </script>
 </body>
 </html>
