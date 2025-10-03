@@ -25,34 +25,153 @@
 
     /* --- Consolidated, improved navbar styles (replace duplicates) --- */
 .navbar {
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:12px 18px;
-  max-width:1100px;
-  margin:18px auto;
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  border-radius:14px;
-  border: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 10px 40px rgba(2,6,23,0.55), inset 0 1px 0 rgba(255,255,255,0.02);
-  backdrop-filter: blur(8px) saturate(140%);
-  transition: transform .22s ease, box-shadow .22s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 8px 12px;
+  max-width: 1100px;
+  margin: 18px auto;
+  background: hsla(0,0%,100%,.05);
+  border-radius: 12px;
+  border: 1px solid hsla(0,0%,100%,.1);
+  box-shadow: 0 10px 40px rgba(2, 6, 23, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px) saturate(140%);
+  transition: all .3s ease;
+  position: sticky;
+  top: 10px;
+  z-index: 1000;
+  will-change: transform, box-shadow;
 }
-.navbar:hover { transform: translateY(-6px); box-shadow: 0 20px 80px rgba(2,6,23,0.65); }
-.navbar-brand { display:flex; align-items:center; gap:12px; padding-right:10px; border-right:1px solid rgba(255,255,255,0.03); }
-.navbar-brand h2 { margin:0; color: #fff; font-size:1rem; text-shadow: 0 6px 18px rgba(0,0,0,0.45); }
+
+.navbar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 80px rgba(2, 6, 23, 0.65);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.navbar-brand h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 1rem;
+  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
 .nav-accent {
-  display:inline-block; width:8px; height:32px; border-radius:6px;
-  background: linear-gradient(180deg,#7ef1ff,#7b4dff); box-shadow: 0 6px 18px rgba(125,50,255,0.28);
-  margin-right:6px;
+  display: none;
 }
-.navbar-controls { display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding-left:8px; }
-.navbar-controls label { background:rgba(255,255,255,0.8); padding:8px 12px; border-radius:10px; color:#222222; font-weight:700; font-size:0.85rem; text-shadow: none; }
-.navbar-controls select, .navbar-controls input[type="text"] { background: rgba(255,255,255,0.9); border:1px solid rgba(0,0,0,0.2); color:#333333; padding:6px 8px; border-radius:8px; font-weight:600; }
-.small-btn { background: rgba(255,255,255,0.9); color:#333333; border-radius:10px; padding:8px 12px; border:1px solid rgba(0,0,0,0.2); cursor:pointer; font-weight:700; text-shadow: none; }
+
+.navbar-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding-left: 8px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all .3s ease 0.1s; /* Added 0.1s delay */
+  will-change: opacity, max-height;
+}
+
+.navbar:hover .navbar-controls,
+.navbar:focus-within .navbar-controls,
+.navbar-controls:focus-within {
+  max-height: 200px; /* Show on hover and when interacting */
+  opacity: 1;
+}
+
+.navbar-controls label {
+  background: transparent;
+  padding: 8px 12px;
+  border-radius: 10px;
+  color: #e0e0e0;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-shadow: none;
+}
+
+.navbar-controls select,
+.navbar-controls input[type="text"] {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.navbar-controls select:focus,
+.navbar-controls input[type="text"]:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.navbar-controls label {
+  color: #ffffff;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  font-size: 14px;
+}
+
+.small-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.small-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.stat-item {
+  color: #ffffff;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  font-size: 13px;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#emojiPicker {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  text-align: center;
+  font-size: 18px;
+  width: 50px;
+  padding: 6px;
+  border-radius: 8px;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+}
 
 /* ensure emoji picker stands out */
-.emoji-picker { background: linear-gradient(180deg,#ffffff, #f2f2f2); padding:4px 8px; border-radius:8px; font-size:1.05rem; cursor:pointer; }
+.emoji-picker {
+  background: linear-gradient(180deg, #ffffff, #f2f2f2);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
 
 /* Amazing animated themes with special effects */
 .theme-day { 
@@ -555,30 +674,7 @@
       cursor: default;
     }
 
-    .navbar {
-      /* Updated translucent, curved, 3D bouncy navbar */
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 24px;
-      font-size: 0.9rem;
-      position: sticky;
-      top: 10px;
-      z-index: 1000;
-      width: auto;
-      margin: 20px auto;
-      transform-style: preserve-3d;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-.navbar:hover {
-  transform: translateZ(20px) scale(1.02);
-  box-shadow: 0 12px 24px rgba(0,0,0,0.2);
-}
+    /* REMOVED DUPLICATE NAVBAR STYLES */
 
     .navbar-controls {
       display: flex;
@@ -589,7 +685,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #222222;
+      color: #e0e0e0;
       font-weight: 700;
       font-size: 0.9rem;
       text-shadow: none;
@@ -599,9 +695,9 @@
       padding: 6px 10px;
       font-size: 0.9rem;
       border-radius: 6px;
-      border: 1px solid rgba(0,0,0,0.3);
-      background: rgba(255,255,255,0.95);
-      color: #333333;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.1);
+      color: #ffffff;
       font-weight: 600;
       text-shadow: none;
       min-width: 0;
@@ -953,20 +1049,20 @@
 /* Make navbar stat items (High Score, Foods Eaten) dark and readable */
 .navbar .stat-item {
   padding: 6px 12px !important;
-  background: rgba(255,255,255,0.9) !important;
+  background: rgba(255,255,255,0.1) !important;
   border-radius: 8px;
   text-align: center;
-  color: #222222 !important;
+  color: #ffffff !important;
   font-weight: 700;
   font-size: 0.85rem;
-  border: 1px solid rgba(0,0,0,0.15);
+  border: 1px solid rgba(255,255,255,0.15);
   text-shadow: none;
 }
 
 /* Also make the multiplier display dark */
 #multiplierNav {
-  background: rgba(255,215,0,0.9) !important;
-  color: #333333 !important;
+  background: rgba(255,215,0,0.2) !important;
+  color: #ffffff !important;
   font-weight: 700;
 }
 
@@ -990,7 +1086,6 @@
     <button id="startBtn">Start Game</button>
   </div>
   <div class="navbar">
-    <div class="nav-accent" aria-hidden="true"></div>
     <div class="navbar-brand">
       <h2>🐍 Pythonix</h2>
     </div>
@@ -1006,7 +1101,7 @@
       </label>
       <span id="emojiPickerContainer" style="display:none;">
         <label>Emoji:
-          <span class="emoji-picker" id="emojiPicker">🐍</span>
+          <input type="text" id="emojiPicker" value="🐍" maxlength="4" placeholder="🐍" title="Type or paste any emoji here!">
         </label>
       </span>
       <label>Skin:
@@ -1392,12 +1487,12 @@ function loadAchievements() {
     { id: 'foods_2500', name: 'Bottomless Pit', description: 'Eat 2,500 total foods', unlocked: stats.totalFoodsEaten >= 2500, icon: '🕳️' },
     
     // Special achievements
-    { id: 'long_snake_50', name: 'Really Long Snake', description: 'Grow snake to 50+ segments in one game', unlocked: (stats.maxSnakeLength || 0) >= 50, icon: '🐲' },
-    { id: 'long_snake_100', name: 'Mega Snake', description: 'Grow snake to 100+ segments in one game', unlocked: (stats.maxSnakeLength || 0) >= 100, icon: '🐉' },
-    { id: 'speed_demon', name: 'Speed Demon', description: 'Score 500+ points in under 2 minutes', unlocked: (stats.fastestHighScore || 0) >= 500, icon: '💨' },
-    { id: 'survivor', name: 'Survivor', description: 'Play for 10+ minutes in one game', unlocked: (stats.longestGameTime || 0) >= 600, icon: '⏰' },
-    { id: 'power_hungry', name: 'Power Hungry', description: 'Eat 10 power-ups in one game', unlocked: (stats.maxPowerupsInGame || 0) >= 10, icon: '⚡' },
-    { id: 'perfectionist', name: 'Perfectionist', description: 'Score 1000+ without hitting walls (use full board)', unlocked: (stats.perfectRuns || 0) >= 1, icon: '✨' }
+    { id: 'high_scorer', name: 'High Scorer', description: 'Achieve a score higher than 750 points', unlocked: highScore >= 750, icon: '⭐' },
+    { id: 'food_chain', name: 'Food Chain', description: 'Eat 50 foods in a single game', unlocked: highScore >= 500, icon: '🔗' },
+    { id: 'marathon_player', name: 'Marathon Player', description: 'Play 15 games in a row', unlocked: stats.gamesPlayed >= 15, icon: '🏃' },
+    { id: 'consistent', name: 'Consistent', description: 'Score over 200 points (achievable multiple times)', unlocked: highScore >= 200, icon: '🎯' },
+    { id: 'explorer', name: 'Explorer', description: 'Try different game modes (play any game)', unlocked: stats.gamesPlayed >= 1, icon: '🗺️' },
+    { id: 'veteran', name: 'Veteran', description: 'Reach a high score of 1500+ points', unlocked: highScore >= 1500, icon: '🎖️' }
   ];
   
   let html = '<div class="achievements-grid">';
@@ -2095,6 +2190,72 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Snake skin selector connected');
   }
   
+  // Connect Snake Shape selector
+  const snakeShapeSelect = document.getElementById('snakeShape');
+  const emojiPickerContainer = document.getElementById('emojiPickerContainer');
+  if (snakeShapeSelect) {
+    snakeShapeSelect.addEventListener('change', function() {
+      snakeShape = this.value;
+      localStorage.setItem('pythonixSnakeShape', snakeShape);
+      
+      // Show/hide emoji picker based on selection
+      if (snakeShape === 'emoji') {
+        emojiPickerContainer.style.display = 'inline';
+      } else {
+        emojiPickerContainer.style.display = 'none';
+      }
+      
+      console.log('Snake shape changed to:', snakeShape);
+    });
+    
+    // Set initial shape
+    const savedShape = localStorage.getItem('pythonixSnakeShape') || 'square';
+    snakeShapeSelect.value = savedShape;
+    snakeShape = savedShape;
+    
+    // Show emoji picker if needed
+    if (snakeShape === 'emoji') {
+      emojiPickerContainer.style.display = 'inline';
+    }
+    
+    console.log('Snake shape selector connected');
+  }
+  
+  // Connect Emoji Picker
+  const emojiPicker = document.getElementById('emojiPicker');
+  if (emojiPicker) {
+    // Handle input changes
+    emojiPicker.addEventListener('input', function() {
+      const inputValue = this.value.trim();
+      
+      // Basic validation - allow any text but prefer emojis
+      if (inputValue.length > 0) {
+        snakeEmoji = inputValue;
+        localStorage.setItem('pythonixSnakeEmoji', snakeEmoji);
+        console.log('Snake emoji changed to:', snakeEmoji);
+      }
+    });
+    
+    // Handle paste events for better emoji support
+    emojiPicker.addEventListener('paste', function(e) {
+      setTimeout(() => {
+        const inputValue = this.value.trim();
+        if (inputValue.length > 0) {
+          snakeEmoji = inputValue;
+          localStorage.setItem('pythonixSnakeEmoji', snakeEmoji);
+          console.log('Snake emoji pasted:', snakeEmoji);
+        }
+      }, 10);
+    });
+    
+    // Set initial emoji
+    const savedEmoji = localStorage.getItem('pythonixSnakeEmoji') || '🐍';
+    snakeEmoji = savedEmoji;
+    emojiPicker.value = snakeEmoji;
+    
+    console.log('Emoji picker connected');
+  }
+  
   // Connect Game Mode selector
   const gameModeSelect = document.getElementById('gameMode');
   if (gameModeSelect) {
@@ -2187,7 +2348,6 @@ window.addEventListener('load', function() {
     }
   });
 });
-
 </script>
 </body>
 </html>
