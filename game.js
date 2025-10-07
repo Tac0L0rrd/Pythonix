@@ -28,6 +28,13 @@ powerSound.volume=0.5;
 const gameOverSound = new Audio('gameover.mp3');
 gameOverSound.volume=0.5;
 
+// Add global volume control for game.js sounds
+window.updateGameJsVolume = function(volume) {
+  eatSound.volume = volume;
+  powerSound.volume = volume;
+  gameOverSound.volume = volume;
+};
+
 function resizeCanvas(){
   canvas.width = Math.floor(window.innerWidth/boxSize)*boxSize;
   canvas.height= Math.floor(window.innerHeight/boxSize)*boxSize;
@@ -115,7 +122,14 @@ function gameLoop(){
   let head={...snake[snake.length-1]};
   if(direction==='LEFT')head.x--;if(direction==='RIGHT')head.x++;
   if(direction==='UP')head.y--;if(direction==='DOWN')head.y++;
-  if(head.x<0||head.x>=boardWidth||head.y<0||head.y>=boardHeight||snake.some(s=>s.x===head.x&&s.y===head.y)){
+  
+  // Handle wall wrapping
+  if(head.x<0)head.x=boardWidth-1;
+  if(head.x>=boardWidth)head.x=0;
+  if(head.y<0)head.y=boardHeight-1;
+  if(head.y>=boardHeight)head.y=0;
+  
+  if(snake.some(s=>s.x===head.x&&s.y===head.y)){
     clearInterval(gameInterval);gameOverSound.play();return;
   }
   snake.push(head);
