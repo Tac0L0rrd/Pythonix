@@ -269,7 +269,9 @@
 /* Amazing animated themes with special effects */
 .theme-day { 
   background: linear-gradient(135deg, #87CEEB 0%, #98FB98 40%, #F0E68C 100%);
-  --board-bg: #f7fffe;
+  --board-bg: #f0f8ff;
+  --container-bg: rgba(255, 255, 255, 0.9);
+  --container-border: rgba(0, 100, 200, 0.4);
   position: relative;
 }
 .theme-day::before {
@@ -283,10 +285,12 @@
     radial-gradient(60px 30px at 100px 50px, rgba(255,255,255,0.8), transparent),
     radial-gradient(80px 40px at 300px 100px, rgba(255,255,255,0.6), transparent),
     radial-gradient(50px 25px at 500px 80px, rgba(255,255,255,0.7), transparent),
-    radial-gradient(70px 35px at 200px 150px, rgba(255,255,255,0.5), transparent);
+    radial-gradient(70px 35px at 200px 150px, rgba(255,255,255,0.5), transparent),
+    radial-gradient(90px 45px at 700px 120px, rgba(255,255,255,0.6), transparent),
+    radial-gradient(55px 28px at 800px 60px, rgba(255,255,255,0.7), transparent);
   background-repeat: repeat;
-  background-size: 600px 200px;
-  animation: cloudDrift 20s linear infinite;
+  background-size: 900px 200px;
+  animation: cloudDrift 30s linear infinite;
 }
 .theme-day::after {
   content: '';
@@ -303,7 +307,9 @@
 
 .theme-night { 
   background: linear-gradient(135deg, #0c0c0c 0%, #1a0033 50%, #000051 100%);
-  --board-bg: #071229;
+  --board-bg: #050f1e;
+  --container-bg: rgba(20, 20, 50, 0.8);
+  --container-border: rgba(0, 255, 255, 0.4);
   position: relative;
 }
 .theme-night::before {
@@ -664,8 +670,8 @@
 
     /* Amazing new 3D theme animations */
     @keyframes cloudDrift {
-      0% { transform: translateX(-200px); }
-      100% { transform: translateX(100vw); }
+      0% { transform: translateX(-300px); }
+      100% { transform: translateX(calc(100vw + 300px)); }
     }
     @keyframes sunPulse {
       0%, 100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 50px rgba(255,215,0,0.5); }
@@ -863,6 +869,11 @@
     body.game-active .container {
       display: block !important;
     }
+    
+    /* Hide intro screen when game is active */
+    body.game-active .intro-screen {
+      display: none !important;
+    }
 
     html, body {
       min-height: 100vh;
@@ -946,6 +957,8 @@
       justify-content: center;
       min-height: 100vh;
       width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
       box-sizing: border-box;
       padding: 20px;
     }
@@ -1127,7 +1140,7 @@
       left: 0 !important; 
       right: 0 !important; 
       bottom: 0 !important;
-      background: #000;
+      background: linear-gradient(135deg, #001433 0%, #003366 25%, #006699 50%, #0099cc 75%, #33aaff 100%);
       display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
@@ -1149,15 +1162,17 @@
         repeating-linear-gradient(0deg, 
           transparent, 
           transparent 2px, 
-          rgba(0, 255, 0, 0.03) 3px),
-        radial-gradient(circle at 50% 50%, rgba(0, 255, 0, 0.1), transparent 70%);
+          rgba(0, 150, 255, 0.1) 3px),
+        radial-gradient(circle at 50% 20%, rgba(51, 170, 255, 0.3), transparent 50%),
+        radial-gradient(circle at 20% 80%, rgba(0, 153, 204, 0.2), transparent 40%),
+        radial-gradient(circle at 80% 60%, rgba(0, 150, 255, 0.2), transparent 35%);
       pointer-events: none;
-      animation: crtScanlines 0.1s linear infinite;
+      animation: blueGlow 8s ease-in-out infinite;
     }
     
-    @keyframes crtScanlines {
-      0% { transform: translateY(0px); }
-      100% { transform: translateY(4px); }
+    @keyframes blueGlow {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
     }
     
     .intro-container {
@@ -1175,33 +1190,57 @@
       font-size: 3em;
       margin: 0;
       text-align: center;
-      color: #00ff00;
+      background: linear-gradient(45deg, #33aaff, #0099cc, #0080ff, #66ccff);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       text-shadow: 
-        0 0 10px #00ff00,
-        0 0 20px #00ff00,
-        0 0 30px #00ff00;
+        0 0 20px #33aaff,
+        0 0 40px #0099cc,
+        0 0 60px #0080ff;
       letter-spacing: 4px;
-      animation: titleGlow 2s ease-in-out infinite alternate;
+      animation: blueTitle 3s ease-in-out infinite;
     }
     
-    @keyframes titleGlow {
-      from { text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00; }
-      to { text-shadow: 0 0 5px #00ff00, 0 0 15px #00ff00, 0 0 25px #00ff00, 0 0 35px #00ff00; }
+    @keyframes blueTitle {
+      0%, 100% { 
+        background-position: 0% 50%;
+        text-shadow: 
+          0 0 20px #33aaff,
+          0 0 40px #0099cc,
+          0 0 60px #0080ff;
+      }
+      50% { 
+        background-position: 100% 50%;
+        text-shadow: 
+          0 0 30px #33aaff,
+          0 0 50px #0099cc,
+          0 0 70px #0080ff,
+          0 0 90px #66ccff;
+      }
     }
     
     .intro-subtitle {
       text-align: center;
       font-size: 0.8em;
-      color: #ffff00;
+      color: #66ccff;
       margin: 0;
       font-weight: normal;
       letter-spacing: 2px;
-      animation: blink 1.5s ease-in-out infinite;
+      text-shadow: 0 0 10px #66ccff;
+      animation: blueBlink 2s ease-in-out infinite;
     }
     
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0.3; }
+    @keyframes blueBlink {
+      0%, 50% { 
+        opacity: 1; 
+        text-shadow: 0 0 10px #66ccff;
+      }
+      51%, 100% { 
+        opacity: 0.6; 
+        text-shadow: 0 0 5px #66ccff;
+      }
     }
     
     .menu-options {
@@ -1217,22 +1256,28 @@
       align-items: center;
       gap: 15px;
       font-size: 1.2em;
-      color: #ccc;
+      color: #99ccff;
       cursor: pointer;
       transition: all 0.3s ease;
       padding: 10px 20px;
       letter-spacing: 2px;
+      text-shadow: 0 0 5px #99ccff;
     }
     
     .menu-item.active {
-      color: #00ff00;
-      text-shadow: 0 0 10px #00ff00;
+      color: #33aaff;
+      text-shadow: 
+        0 0 15px #33aaff,
+        0 0 25px #0080ff;
+      transform: scale(1.05);
     }
     
     .menu-item.active .menu-arrow {
-      color: #00ff00;
-      text-shadow: 0 0 10px #00ff00;
-      animation: arrowBounce 1s ease-in-out infinite;
+      color: #33aaff;
+      text-shadow: 
+        0 0 15px #33aaff,
+        0 0 25px #0080ff;
+      animation: blueArrow 1.5s ease-in-out infinite;
     }
     
     .menu-arrow {
@@ -1245,9 +1290,15 @@
       opacity: 1;
     }
     
-    @keyframes arrowBounce {
-      0%, 100% { transform: translateX(0px); }
-      50% { transform: translateX(5px); }
+    @keyframes blueArrow {
+      0%, 100% { 
+        transform: translateX(0px);
+        text-shadow: 0 0 15px #33aaff, 0 0 25px #0080ff;
+      }
+      50% { 
+        transform: translateX(8px);
+        text-shadow: 0 0 20px #33aaff, 0 0 35px #0080ff, 0 0 45px #66ccff;
+      }
     }
     
     .controls-hint {
@@ -1256,9 +1307,11 @@
     
     .controls-hint p {
       font-size: 0.7em;
-      color: #666;
+      color: #6699cc;
       margin: 0;
       letter-spacing: 1px;
+      text-shadow: 0 0 5px #6699cc;
+      opacity: 0.8;
     }
     
     /* Remove old button styles */
@@ -1270,20 +1323,26 @@
     #instructionsContent {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #001433 0%, #003366 25%, #006699 50%, #0099cc 75%, #33aaff 100%);
       z-index: 1001;
       overflow-y: auto;
       padding: 20px;
       display: none;
     }
     
+    #instructionsContent.show {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    
     .instructions-close-btn {
       position: fixed;
       top: 20px;
       right: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
+      background: rgba(51, 170, 255, 0.3);
+      border: 2px solid #33aaff;
+      color: #33aaff;
       font-size: 1.5em;
       width: 50px;
       height: 50px;
@@ -1292,11 +1351,16 @@
       backdrop-filter: blur(10px);
       transition: all 0.3s ease;
       z-index: 1002;
+      text-shadow: 0 0 10px #33aaff;
+      box-shadow: 0 0 20px rgba(51, 170, 255, 0.5);
     }
     
     .instructions-close-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(51, 170, 255, 0.5);
+      color: #fff;
       transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(51, 170, 255, 0.8);
+      text-shadow: 0 0 15px #33aaff;
     }
     
     .intro-screen button {
@@ -1356,29 +1420,31 @@
     }
     
     .instructions-section {
-      background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+      background: linear-gradient(135deg, rgba(51, 170, 255, 0.15), rgba(0, 153, 204, 0.1));
       border-radius: 20px;
       padding: 30px;
-      margin: 10px 0;
+      margin: 20px 0;
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      border: 1px solid rgba(51, 170, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(51, 170, 255, 0.2);
     }
     
     .instructions-section h2 {
-      color: #fff;
+      color: #66ccff;
       margin-top: 0;
       margin-bottom: 20px;
       font-size: 1.6em;
       font-weight: 600;
+      text-shadow: 0 0 10px #66ccff;
     }
     
     .instructions-section h3 {
-      color: #4fc3f7;
+      color: #99ccff;
       margin-top: 25px;
       margin-bottom: 15px;
       font-size: 1.2em;
       font-weight: 500;
+      text-shadow: 0 0 8px #99ccff;
     }
     
     .instructions-grid {
@@ -1389,24 +1455,27 @@
     }
     
     .instruction-item {
-      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      background: linear-gradient(135deg, rgba(51, 170, 255, 0.1), rgba(0, 153, 204, 0.05));
       padding: 20px;
       border-radius: 15px;
-      border-left: 4px solid #4fc3f7;
+      border-left: 4px solid #33aaff;
       backdrop-filter: blur(5px);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(51, 170, 255, 0.2);
     }
     
     .instruction-item:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      box-shadow: 0 8px 25px rgba(51, 170, 255, 0.3);
+      border-color: #33aaff;
     }
     
     .instruction-item h4 {
-      color: #ffeb3b;
+      color: #ffff99;
       margin: 0 0 10px 0;
       font-size: 1.1em;
       font-weight: 600;
+      text-shadow: 0 0 8px #ffff99;
     }
     
     .instruction-item p {
@@ -1424,7 +1493,7 @@
     }
     
     .control-item {
-      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      background: linear-gradient(135deg, rgba(51, 170, 255, 0.1), rgba(0, 153, 204, 0.05));
       padding: 12px 16px;
       border-radius: 10px;
       display: flex;
@@ -1432,21 +1501,26 @@
       align-items: center;
       backdrop-filter: blur(5px);
       transition: transform 0.2s ease;
+      border: 1px solid rgba(51, 170, 255, 0.2);
+      color: rgba(255, 255, 255, 0.9);
     }
     
     .control-item:hover {
       transform: scale(1.02);
+      border-color: #33aaff;
+      box-shadow: 0 4px 15px rgba(51, 170, 255, 0.2);
     }
     
     .control-key {
-      background: linear-gradient(135deg, #333, #555);
+      background: linear-gradient(135deg, #003366, #006699);
       padding: 6px 12px;
       border-radius: 8px;
       font-family: 'Courier New', monospace;
       font-weight: bold;
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      border: 1px solid #666;
+      color: #66ccff;
+      box-shadow: 0 2px 8px rgba(51, 170, 255, 0.3);
+      border: 1px solid #33aaff;
+      text-shadow: 0 0 5px #66ccff;
     }
     
     /* Responsive Design */
@@ -1671,8 +1745,8 @@
   <!-- Instructions Overlay -->
   <div id="instructionsContent" style="display: none;">
     <button class="instructions-close-btn" onclick="toggleInstructions()">✕</button>
-    <div class="intro-container" style="max-width: 900px; justify-content: flex-start; padding-top: 40px; overflow-y: auto; height: 100vh;">
-      <h1>📖 Game Instructions</h1>
+    <div class="intro-container" style="max-width: 900px; width: 100%; padding: 40px 20px; text-align: center; margin: 0 auto; align-self: flex-start; margin-top: 40px;">
+      <h1 style="text-align: center; font-size: 2.5em; margin-bottom: 40px; background: linear-gradient(45deg, #33aaff, #0099cc, #0080ff, #66ccff); background-size: 300% 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-shadow: 0 0 20px #33aaff, 0 0 40px #0099cc; letter-spacing: 3px; animation: blueTitle 3s ease-in-out infinite;">📖 Game Instructions</h1>
         <div class="instructions-section">
           <h2>🎮 How to Play</h2>
           <p>Control your snake to eat food and grow longer while avoiding walls and your own tail. The goal is to achieve the highest score possible!</p>
@@ -1746,6 +1820,18 @@
               <h4>🌈 Rainbow</h4>
               <p><strong>Works with any theme!</strong></p>
               <p>Animated rainbow colors that cycle continuously. Fun for any environment!</p>
+            </div>
+            
+            <div class="instruction-item">
+              <h4>☀️ Daylight Snake</h4>
+              <p><strong>Perfect for Day theme!</strong></p>
+              <p>Warm, sunny colors that shift like sunlight throughout the day. Golden and amber tones!</p>
+            </div>
+            
+            <div class="instruction-item">
+              <h4>✨ Starlight Snake</h4>
+              <p><strong>Perfect for Night theme!</strong></p>
+              <p>Twinkling star-like effect with cool blue and purple night colors. Mesmerizing glow!</p>
             </div>
           </div>
         </div>
@@ -1849,6 +1935,8 @@
               <option value="neon">Neon Grid</option>
               <option value="arcade">Arcade</option>
               <option value="rainbow">Rainbow (animated)</option>
+              <option value="daylight">Daylight Snake</option>
+              <option value="starlight">Starlight Snake</option>
             </select>
           </label>
         </div>
@@ -2448,6 +2536,16 @@ function drawBoard() {
     colorA = "#1a0a2e";
     colorB = "#2d1b4e";
     borderColor = "#ffd700";
+  } else if (currentTheme.includes('theme-day')) {
+    // Day theme - bright, sunny colors with sky blue accents
+    colorA = "#e6f3ff";
+    colorB = "#d1e9ff";
+    borderColor = "#87ceeb";
+  } else if (currentTheme.includes('theme-night')) {
+    // Night theme - dark with starry accents
+    colorA = "#0a1428";
+    colorB = "#142545";
+    borderColor = "#4169e1";
   } else {
     // Default theme
     colorA = "#A8DBA8";
@@ -2485,6 +2583,25 @@ function drawBoard() {
         }
       } else if (currentTheme.includes('theme-classic')) {
         // Simple clean look - no special effects
+      } else if (currentTheme.includes('theme-day')) {
+        // Day theme - add subtle sunlight effect
+        if ((x + y) % 8 === 0) {
+          const sunlight = ctx.createRadialGradient(
+            x * boxSize + boxSize/2, y * boxSize + boxSize/2, 0,
+            x * boxSize + boxSize/2, y * boxSize + boxSize/2, boxSize
+          );
+          sunlight.addColorStop(0, 'rgba(255, 215, 0, 0.1)');
+          sunlight.addColorStop(1, 'transparent');
+          ctx.fillStyle = sunlight;
+          ctx.fillRect(x * boxSize, y * boxSize, boxSize, boxSize);
+        }
+      } else if (currentTheme.includes('theme-night')) {
+        // Night theme - add twinkling star effect
+        if ((x * 3 + y * 5) % 13 === 0) {
+          const twinkle = Math.sin(performance.now() / 1000 + x + y) * 0.5 + 0.5;
+          ctx.fillStyle = `rgba(135, 206, 235, ${twinkle * 0.3})`;
+          ctx.fillRect(x * boxSize + boxSize/3, y * boxSize + boxSize/3, boxSize/3, boxSize/3);
+        }
       }
       
       // Draw border
@@ -2556,7 +2673,26 @@ function drawBoard() {
           }
         }
         if (snakeSkin === 'rainbow') return `hsl(${Math.floor((performance.now()/50)%360)}, 90%, 55%)`;
-        
+        if (snakeSkin === 'daylight') {
+          // Sunny, warm colors with smooth golden transitions
+          const time = performance.now() / 600; // Slower, smoother animation
+          const dayPhase = Math.sin(time / 3) * 0.5 + 0.5; // Gentle oscillation 0-1
+          
+          // Warm color range: golden yellow to warm orange
+          const hue = 35 + Math.sin(time / 2) * 20; // 15-55 degrees (yellow to orange)
+          const saturation = 75 + Math.sin(time / 1.5) * 15; // 60-90% saturation
+          const lightness = 55 + Math.sin(time / 2.5) * 15; // 40-70% lightness
+          
+          return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
+        if (snakeSkin === 'starlight') {
+          // Slower, smoother twinkling star-like effect with cool night colors
+          const time = performance.now() / 800; // Much slower animation
+          const twinkle = Math.sin(time) * 0.2 + 0.8; // Smaller variation, brighter base
+          const hue = 220 + Math.sin(time / 2) * 20; // Slower hue shift, blue to purple range
+          const lightness = 60 + Math.sin(time * 1.5) * 15; // Gentle lightness variation
+          return `hsla(${hue}, 85%, ${lightness}%, ${0.9 + twinkle * 0.1})`;
+        }
         // Default fallback
         return currentTheme.includes('theme-') ? 
           rootStyles.getPropertyValue('--snake-color').trim() || '#4CAF50' : '#4CAF50';
@@ -2659,6 +2795,124 @@ function drawBoard() {
           
           // Reset color for next segment
           ctx.fillStyle = snakeColor;
+        } else if (snakeSkin === 'daylight') {
+          // Daylight skin with golden sunray effects
+          const time = performance.now() / 1000;
+          
+          // Draw base segment with subtle glow
+          ctx.shadowColor = snakeColor;
+          ctx.shadowBlur = 3;
+          ctx.fillRect(x, y, boxSize, boxSize);
+          ctx.shadowBlur = 0;
+          
+          // Add floating golden particles/sunbeams
+          const numParticles = 2 + Math.floor(Math.random() * 3); // 2-4 particles per segment
+          
+          for (let particle = 0; particle < numParticles; particle++) {
+            const particleTime = time + (i * 0.3) + (particle * 0.5);
+            const glow = Math.sin(particleTime * 1.5 + particle) * 0.3 + 0.7; // 0.4 to 1
+            
+            if (glow > 0.5) { // Only show when bright enough
+              const particleX = x + (boxSize * 0.15) + (particle * boxSize * 0.3) + Math.sin(particleTime + particle) * 4;
+              const particleY = y + (boxSize * 0.15) + ((particle % 2) * boxSize * 0.7) + Math.cos(particleTime * 0.8 + particle) * 4;
+              const particleSize = 1.5 + glow * 2;
+              
+              // Create golden sunbeam color
+              const goldHue = 45 + Math.sin(particleTime) * 10; // Golden yellow range
+              const goldAlpha = glow * 0.6;
+              
+              ctx.fillStyle = `hsla(${goldHue}, 85%, 70%, ${goldAlpha})`;
+              
+              // Draw diamond-shaped sunbeam
+              ctx.save();
+              ctx.translate(particleX, particleY);
+              ctx.rotate(particleTime + particle);
+              
+              ctx.beginPath();
+              ctx.moveTo(0, -particleSize);
+              ctx.lineTo(particleSize * 0.6, 0);
+              ctx.lineTo(0, particleSize);
+              ctx.lineTo(-particleSize * 0.6, 0);
+              ctx.closePath();
+              ctx.fill();
+              
+              // Add golden glow
+              ctx.shadowColor = `hsla(${goldHue}, 90%, 75%, ${goldAlpha * 0.8})`;
+              ctx.shadowBlur = particleSize * 1.5;
+              ctx.fill();
+              
+              ctx.restore();
+            }
+          }
+          
+          // Add warm highlight on top edge
+          ctx.fillStyle = 'rgba(255, 215, 0, 0.2)';
+          ctx.fillRect(x, y, boxSize, 2);
+          
+          // Reset for next segment
+          ctx.fillStyle = snakeColor;
+          ctx.shadowBlur = 0;
+        } else if (snakeSkin === 'starlight') {
+          // Starlight skin with shimmering star effects
+          const time = performance.now() / 1000;
+          
+          // Draw base segment
+          ctx.fillRect(x, y, boxSize, boxSize);
+          
+          // Add multiple shimmering stars on each segment
+          const numStars = 3 + Math.floor(Math.random() * 3); // 3-5 stars per segment
+          
+          for (let star = 0; star < numStars; star++) {
+            const starTime = time + (i * 0.5) + (star * 0.3); // Offset each star's timing
+            const shimmer = Math.sin(starTime * 2 + star) * 0.5 + 0.5; // 0 to 1
+            
+            if (shimmer > 0.3) { // Only show star when bright enough
+              const starX = x + (boxSize * 0.2) + (star * boxSize * 0.25) + Math.sin(starTime + star) * 3;
+              const starY = y + (boxSize * 0.2) + ((star % 2) * boxSize * 0.6) + Math.cos(starTime + star) * 3;
+              const starSize = 1 + shimmer * 2;
+              
+              // Create shimmering star color
+              const starHue = 200 + Math.sin(starTime) * 30;
+              const starAlpha = shimmer * 0.8;
+              
+              ctx.fillStyle = `hsla(${starHue}, 90%, 85%, ${starAlpha})`;
+              
+              // Draw 4-pointed star
+              ctx.save();
+              ctx.translate(starX, starY);
+              ctx.beginPath();
+              
+              // Star shape with 4 points
+              for (let point = 0; point < 4; point++) {
+                const angle = (point * Math.PI) / 2;
+                const outerRadius = starSize;
+                const innerRadius = starSize * 0.4;
+                
+                if (point === 0) {
+                  ctx.moveTo(0, -outerRadius);
+                } else {
+                  ctx.lineTo(0, -outerRadius);
+                }
+                
+                ctx.lineTo(innerRadius * Math.sin(angle + Math.PI/4), -innerRadius * Math.cos(angle + Math.PI/4));
+                ctx.rotate(Math.PI / 2);
+              }
+              
+              ctx.closePath();
+              ctx.fill();
+              
+              // Add star glow
+              ctx.shadowColor = `hsla(${starHue}, 90%, 85%, ${starAlpha * 0.5})`;
+              ctx.shadowBlur = starSize * 2;
+              ctx.fill();
+              
+              ctx.restore();
+            }
+          }
+          
+          // Reset for next segment
+          ctx.fillStyle = snakeColor;
+          ctx.shadowBlur = 0;
         } else {
           // Default square for any other combination
           ctx.fillRect(x, y, boxSize, boxSize);
@@ -3287,7 +3541,7 @@ function startGame() {
 }
 
 function restartGame() {
-  console.log('Returning to start screen...');
+  console.log('Restarting game directly...');
   
   // Stop game over sound immediately
   try {
@@ -3303,18 +3557,23 @@ function restartGame() {
     gameOverScreen.style.display = 'none';
   }
   
-  // Return to start screen
-  returnToStartScreen();
+  // Restart the game directly (don't go back to start screen)
+  initGame();
+  
+  // Make sure game elements stay visible
+  document.body.classList.add('game-active');
 }
 
 // Global function to toggle instructions
 function toggleInstructions() {
   const instructionsContent = document.getElementById('instructionsContent');
   if (instructionsContent) {
-    if (instructionsContent.style.display === 'none') {
-      instructionsContent.style.display = 'block';
+    if (instructionsContent.style.display === 'none' || instructionsContent.style.display === '') {
+      instructionsContent.style.display = 'flex';
+      instructionsContent.classList.add('show');
     } else {
       instructionsContent.style.display = 'none';
+      instructionsContent.classList.remove('show');
     }
   }
 }
