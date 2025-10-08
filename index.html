@@ -33,200 +33,12 @@
       cursor: default;
     }
 
-    /* --- Consolidated, improved navbar styles (replace duplicates) --- */
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  padding: 8px 12px;
-  max-width: 1100px;
-  margin: 18px auto;
-  background: hsla(0,0%,100%,.05);
-  border-radius: 12px;
-  border: 1px solid hsla(0,0%,100%,.1);
-  box-shadow: 0 10px 40px rgba(2, 6, 23, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(12px) saturate(140%);
-  transition: all .3s ease;
-  position: sticky;
-  top: 10px;
-  z-index: 1000;
-  will-change: transform, box-shadow;
-}
 
-.navbar:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 20px 80px rgba(2, 6, 23, 0.65);
-}
-
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-right: 10px;
-  border-right: 1px solid rgba(255, 255, 255, 0.03);
-}
-
-.navbar-brand h2 {
-  margin: 0;
-  color: #fff;
-  font-size: 1rem;
-  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
-}
-
-.nav-accent {
-  display: none;
-}
-
-.navbar-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  align-items: flex-start;
-  padding: 8px 16px;
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: all .3s ease 0.1s; /* Added 0.1s delay */
-  will-change: opacity, max-height;
-}
-
-.navbar:hover .navbar-controls,
-.navbar:focus-within .navbar-controls,
-.navbar-controls:focus-within {
-  max-height: 400px; /* Increased height for new layout */
-  opacity: 1;
-}
-
-/* Control group styling */
-.control-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-}
-
-.group-title {
-  font-size: 11px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.7);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 4px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.control-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-}
-
-.stats-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.navbar-controls label {
-  background: transparent;
-  padding: 8px 12px;
-  border-radius: 10px;
-  color: #e0e0e0;
-  font-weight: 700;
-  font-size: 0.85rem;
-  text-shadow: none;
-}
-
-.navbar-controls select,
-.navbar-controls input[type="text"] {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #ffffff;
-  padding: 6px 8px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-/* Improve dropdown visibility */
-.navbar-controls select {
-  background: rgba(40, 60, 80, 0.9);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.navbar-controls input[type="range"] {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-  height: 6px;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  width: 80px;
-  margin-right: 8px;
-}
-
-.navbar-controls input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #ffffff;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.navbar-controls input[type="range"]::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #ffffff;
-  cursor: pointer;
   border: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.navbar-controls select:focus,
-.navbar-controls input[type="text"]:focus {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.6);
-  background: rgba(50, 70, 90, 0.95);
-}
-
-.navbar-controls input[type="text"]:focus {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.navbar-controls select option {
-  background: #2c3e50;
-  color: #ffffff;
-  padding: 8px;
-  font-weight: 600;
-}
-
-.navbar-controls select option:hover {
-  background: #34495e;
-}
-
-.navbar-controls label {
-  color: #ffffff;
-  font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  font-size: 14px;
-}
-
-.small-btn {
+    .small-btn {
   background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
   border-radius: 10px;
@@ -857,11 +669,6 @@
       display: none; /* Initially hidden */
     }
     
-    /* Hide navbar initially */
-    .navbar {
-      display: none !important;
-    }
-    
     /* Hide game container initially */
     .container {
       display: none !important;
@@ -870,10 +677,6 @@
     /* Show game elements when game is active */
     body.game-active #gameCanvas {
       display: block !important;
-    }
-    
-    body.game-active .navbar {
-      display: flex !important;
     }
     
     body.game-active .container {
@@ -897,67 +700,6 @@
       font-weight: 600;
       /* mimic current.com logo style */
       cursor: default;
-    }
-
-    /* REMOVED DUPLICATE NAVBAR STYLES */
-
-    .navbar-controls {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-    }
-    .navbar-controls label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #e0e0e0;
-      font-weight: 700;
-      font-size: 0.9rem;
-      text-shadow: none;
-    }
-
-    .navbar input, .navbar select {
-      padding: 6px 10px;
-      font-size: 0.9rem;
-      border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.3);
-      background: rgba(255,255,255,0.1);
-      color: #ffffff;
-      font-weight: 600;
-      text-shadow: none;
-      min-width: 0;
-      max-width: 120px;
-    }
-
-    .navbar input[type="text"] {
-      max-width: 120px;
-    }
-
-    .navbar input[type="color"] {
-      /* Revert to default sizing to avoid clipping */
-  /* fixed size color picker */
-  width: 32px !important;
-  height: 32px !important;
-  padding: 0 !important;
-  border-radius: 50% !important;
-  border: none !important;
-  background: none !important;
-  min-width: 32px !important;
-  max-width: 32px !important;
-    }
-
-    .navbar .emoji-picker {
-      font-size: 1.2em;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 4px 6px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .navbar .emoji-picker:hover {
-      background: #f5f5f5;
     }
 
     .container {
@@ -999,27 +741,8 @@
 
     .touch-btn {
       width: 48px;
-      .navbar-controls {
-        /* absolutely place beneath title, hidden by default */
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        opacity: 0;
-        max-height: 0;
-        margin-top: 0;
-        pointer-events: none;
-        overflow: hidden;
-        transition: opacity 0.3s ease, max-height 0.3s ease, margin-top 0.3s ease;
-      }
       box-shadow: 0 2px 8px #acb6e5;
       cursor: pointer;
-      .navbar:hover .navbar-controls {
-        opacity: 1;
-        max-height: 200px;
-        margin-top: 10px;
-        pointer-events: auto;
-      }
       transform: scale(0.95);
     }
 
@@ -1096,42 +819,6 @@
     }
 
     @media (max-width: 700px) {
-      .navbar {
-        padding: 6px 12px;
-        font-size: 0.6em;
-      }
-      .navbar-brand h2 {
-        font-size: 1em;
-      }
-      .navbar-controls {
-        gap: 16px;
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .control-group {
-        width: 100%;
-      }
-      .control-row,
-      .stats-row,
-      .action-buttons {
-        justify-content: center;
-        gap: 8px;
-      }
-      .navbar-controls label {
-        font-size: 0.8em;
-          background: #ffffff;
-          border-radius: 12px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-          padding: 8px 16px;
-          min-width: 240px;  /* wider than title */
-          opacity: 0;
-          max-height: 0;
-          margin: 0;
-          pointer-events: none;
-          overflow: hidden;
-          transition: opacity 0.3s ease, max-height 0.3s ease, margin-top 0.3s ease;
-        min-height: 180px;
-      }
       .card {
         padding: 20px;
         border-radius: 15px;
@@ -1695,26 +1382,6 @@
   font-size: 0.9rem;
 }
 
-/* Make navbar stat items (High Score, Foods Eaten) dark and readable */
-.navbar .stat-item {
-  padding: 6px 12px !important;
-  background: rgba(255,255,255,0.1) !important;
-  border-radius: 8px;
-  text-align: center;
-  color: #ffffff !important;
-  font-weight: 700;
-  font-size: 0.85rem;
-  border: 1px solid rgba(255,255,255,0.15);
-  text-shadow: none;
-}
-
-/* Also make the multiplier display dark */
-#multiplierNav {
-  background: rgba(255,215,0,0.2) !important;
-  color: #ffffff !important;
-  font-weight: 700;
-}
-
 /* Style for clear games button */
 .clear-btn {
   background: rgba(220, 53, 69, 0.9) !important;
@@ -1906,102 +1573,7 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="navbar">
-    <div class="navbar-brand">
-      <h2>🐍 Pythonix</h2>
-    </div>
-    <div class="navbar-controls">
-      <!-- Player Settings Group -->
-      <div class="control-group">
-        <div class="group-title">Player</div>
-        <div class="control-row">
-          <label>Name:
-            <input type="text" id="playerName" placeholder="Enter name" maxlength="20">
-          </label>
-        </div>
-      </div>
-
-      <!-- Snake Customization Group -->
-      <div class="control-group">
-        <div class="group-title">Snake Style</div>
-        <div class="control-row">
-          <label>Shape:
-            <select id="snakeShape">
-              <option value="square">Square</option>
-              <option value="emoji">Emoji</option>
-            </select>
-          </label>
-          <span id="emojiPickerContainer" style="display:none;">
-            <label>Emoji:
-              <input type="text" id="emojiPicker" value="🐍" maxlength="4" placeholder="🐍" title="Type or paste any emoji here!">
-            </label>
-          </span>
-          <label>Skin:
-            <select id="snakeSkin">
-              <option value="classic">Classic Snake</option>
-              <option value="pacman">Pac-Man</option>
-              <option value="gameboy">Game Boy</option>
-              <option value="neon">Neon Grid</option>
-              <option value="arcade">Arcade</option>
-              <option value="rainbow">Rainbow (animated)</option>
-              <option value="daylight">Daylight Snake</option>
-              <option value="starlight">Starlight Snake</option>
-            </select>
-          </label>
-        </div>
-      </div>
-
-      <!-- Game Settings Group -->
-      <div class="control-group">
-        <div class="group-title">Game Settings</div>
-        <div class="control-row">
-          <label>Mode:
-            <select id="gameMode">
-              <option value="classic">Classic</option>
-              <option value="time">Time Attack</option>
-              <option value="hard">Hard Mode</option>
-            </select>
-          </label>
-          <label>Theme:
-            <select id="themeSelect">
-              <option value="auto">Day/Night (Auto)</option>
-              <option value="day">Day</option>
-              <option value="night">Night</option>
-              <option value="classic">Classic Snake</option>
-              <option value="pacman">Pac-Man Arcade</option>
-              <option value="gameboy">Game Boy</option>
-              <option value="neon">Neon Grid</option>
-              <option value="arcade">Retro Arcade</option>
-            </select>
-          </label>
-          <label>Volume:
-            <input type="range" id="volumeSlider" min="0" max="100" value="50">
-            <span id="volumeValue">50%</span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Stats and Actions Group -->
-      <div class="control-group">
-        <div class="group-title">Stats & Actions</div>
-        <div class="stats-row">
-          <span class="stat-item" id="highScoreNav">High Score: 0</span>
-          <span class="stat-item" id="foodsEatenNav">Foods Eaten: 0</span>
-          <span class="stat-item" id="multiplierNav" style="display:none;">x2 (0s)</span>
-          <label id="timeAttackDisplay" style="display:none;">Time:
-            <span id="timeLeft">--</span>s
-          </label>
-        </div>
-        <div class="action-buttons">
-          <button id="showHistory" class="small-btn">History</button>
-          <button id="showAchievements" class="small-btn">Achievements</button>
-          <button id="clearGames" class="small-btn clear-btn">Clear Games</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="container">
+  
     <div class="card">
       <h1>Pythonix</h1>
       <div class="score-board" id="scoreBoard">Score: 0</div>
