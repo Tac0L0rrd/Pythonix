@@ -1570,6 +1570,268 @@
   transform: translateY(-1px);
 }
 
+/* Authentication Modal Styles */
+.auth-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(10px);
+}
+
+.auth-container {
+  background: linear-gradient(135deg, #001433 0%, #003366 25%, #006699 50%, #0099cc 75%, #33aaff 100%);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 400px;
+  width: 90%;
+  border: 2px solid rgba(51, 170, 255, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.auth-container h2 {
+  color: #33aaff;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.5em;
+  text-shadow: 0 0 20px rgba(51, 170, 255, 0.5);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(51, 170, 255, 0.3);
+  border-radius: 10px;
+  padding: 15px;
+  color: #fff;
+  font-size: 1em;
+  transition: all 0.3s ease;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: #33aaff;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 20px rgba(51, 170, 255, 0.3);
+}
+
+.auth-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.auth-button {
+  background: linear-gradient(135deg, #33aaff 0%, #0099cc 100%);
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  color: #fff;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.auth-button:hover {
+  background: linear-gradient(135deg, #0099cc 0%, #33aaff 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(51, 170, 255, 0.4);
+}
+
+.auth-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.auth-switch a {
+  color: #33aaff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+
+.guest-option {
+  text-align: center;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.guest-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  padding: 10px 20px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.guest-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Leaderboard Modal Styles */
+.leaderboard-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(10px);
+}
+
+.leaderboard-container {
+  background: linear-gradient(135deg, #001433 0%, #003366 25%, #006699 50%, #0099cc 75%, #33aaff 100%);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 2px solid rgba(51, 170, 255, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.leaderboard-container h2 {
+  color: #33aaff;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+  text-shadow: 0 0 20px rgba(51, 170, 255, 0.5);
+}
+
+.leaderboard-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.leaderboard-tab {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(51, 170, 255, 0.3);
+  border-radius: 10px;
+  padding: 10px 15px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9em;
+}
+
+.leaderboard-tab.active {
+  background: rgba(51, 170, 255, 0.3);
+  border-color: #33aaff;
+}
+
+.leaderboard-tab:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.leaderboard-item {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.leaderboard-rank {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #33aaff;
+  min-width: 30px;
+  text-align: center;
+}
+
+.leaderboard-rank.gold { color: #FFD700; }
+.leaderboard-rank.silver { color: #C0C0C0; }
+.leaderboard-rank.bronze { color: #CD7F32; }
+
+.leaderboard-info {
+  flex-grow: 1;
+}
+
+.leaderboard-name {
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 5px;
+}
+
+.leaderboard-stats {
+  font-size: 0.8em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.leaderboard-score {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #33aaff;
+  text-shadow: 0 0 10px rgba(51, 170, 255, 0.5);
+}
+
+.user-rank-info {
+  background: rgba(255, 215, 0, 0.2);
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #FFD700;
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #33aaff;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-modal:hover {
+  color: #fff;
+  transform: scale(1.2);
+}
+
   </style>
 </head>
 <body class="theme-day">
@@ -1588,10 +1850,19 @@
           <span class="menu-arrow">►</span>
           <span>INSTRUCTIONS</span>
         </div>
+        <div class="menu-item" id="leaderboardOption">
+          <span class="menu-arrow">►</span>
+          <span>LEADERBOARD</span>
+        </div>
+        <div class="menu-item" id="accountOption">
+          <span class="menu-arrow">►</span>
+          <span id="accountText">LOGIN/SIGNUP</span>
+        </div>
       </div>
       
       <div class="controls-hint">
         <p>USE ↑↓ ARROWS TO SELECT • SPACEBAR TO CONFIRM</p>
+        <div id="userStatus" style="margin-top: 10px; color: #66b5ff; font-size: 0.7em;"></div>
       </div>
     </div>
   </div>
@@ -1751,6 +2022,60 @@
       </div>
     </div>
   </div>
+  
+  <!-- Authentication Modal -->
+  <div id="authModal" class="auth-modal">
+    <div class="auth-container">
+      <button class="close-modal" onclick="closeAuthModal()">✕</button>
+      <h2 id="authTitle">Login to Pythonix</h2>
+      
+      <form id="authForm" class="auth-form">
+        <input type="text" id="authUsername" class="auth-input" placeholder="Username" required>
+        <input type="email" id="authEmail" class="auth-input" placeholder="Email (optional for login)" style="display: none;">
+        <input type="text" id="authDisplayName" class="auth-input" placeholder="Display Name (optional)" style="display: none;">
+        <input type="password" id="authPassword" class="auth-input" placeholder="Password" required>
+        <button type="submit" id="authSubmit" class="auth-button">Login</button>
+      </form>
+      
+      <div class="auth-switch">
+        <span id="authSwitchText">Don't have an account?</span>
+        <a id="authSwitchLink" onclick="toggleAuthMode()">Sign up</a>
+      </div>
+      
+      <div class="guest-option">
+        <button type="button" class="guest-button" onclick="playAsGuest()">Continue as Guest</button>
+        <p style="color: rgba(255,255,255,0.6); font-size: 0.8em; margin-top: 10px;">
+          Guest accounts have limited features and progress isn't saved permanently.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Leaderboard Modal -->
+  <div id="leaderboardModal" class="leaderboard-modal">
+    <div class="leaderboard-container">
+      <button class="close-modal" onclick="closeLeaderboardModal()">✕</button>
+      <h2>🏆 Leaderboard</h2>
+      
+      <div class="leaderboard-tabs">
+        <button class="leaderboard-tab active" onclick="switchLeaderboardTab('classic')">Classic</button>
+        <button class="leaderboard-tab" onclick="switchLeaderboardTab('time')">Time Attack</button>
+        <button class="leaderboard-tab" onclick="switchLeaderboardTab('hard')">Hard Mode</button>
+      </div>
+      
+      <div id="userRankInfo" class="user-rank-info" style="display: none;">
+        <div>Your Rank: <span id="userRank">#--</span></div>
+        <div>Your Best: <span id="userBest">0</span></div>
+      </div>
+      
+      <div id="leaderboardContent" class="leaderboard-list">
+        <div style="text-align: center; color: rgba(255,255,255,0.7); padding: 40px;">
+          Loading leaderboard...
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <div class="navbar">
     <div class="navbar-brand">
       <h2>🐍 Pythonix</h2>
@@ -2019,6 +2344,422 @@
 </style>
 
 <script>
+// Authentication and User Management
+class AuthManager {
+  constructor() {
+    this.currentUser = null;
+    this.authToken = localStorage.getItem('pythonixToken');
+    this.isAuthMode = false; // false = login, true = register
+    this.init();
+  }
+  
+  async init() {
+    if (this.authToken) {
+      try {
+        const response = await fetch('/auth/profile', {
+          headers: { 'Authorization': `Bearer ${this.authToken}` }
+        });
+        
+        if (response.ok) {
+          this.currentUser = await response.json();
+          this.updateUserStatus();
+        } else {
+          localStorage.removeItem('pythonixToken');
+          this.authToken = null;
+        }
+      } catch (error) {
+        console.log('Auth check failed:', error);
+      }
+    }
+  }
+  
+  updateUserStatus() {
+    const userStatus = document.getElementById('userStatus');
+    const accountText = document.getElementById('accountText');
+    
+    if (this.currentUser) {
+      userStatus.innerHTML = `Welcome, ${this.currentUser.displayName}${this.currentUser.isGuest ? ' (Guest)' : ''}`;
+      accountText.textContent = this.currentUser.isGuest ? 'UPGRADE ACCOUNT' : 'PROFILE';
+    } else {
+      userStatus.innerHTML = '';
+      accountText.textContent = 'LOGIN/SIGNUP';
+    }
+  }
+  
+  async login(username, password) {
+    try {
+      const response = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        this.authToken = data.token;
+        this.currentUser = data.user;
+        localStorage.setItem('pythonixToken', this.authToken);
+        this.updateUserStatus();
+        closeAuthModal();
+        showNotification('Login successful!', 'success');
+        return true;
+      } else {
+        showNotification(data.error || 'Login failed', 'error');
+        return false;
+      }
+    } catch (error) {
+      showNotification('Connection error', 'error');
+      return false;
+    }
+  }
+  
+  async register(username, email, password, displayName) {
+    try {
+      const response = await fetch('/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password, displayName })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        this.authToken = data.token;
+        this.currentUser = data.user;
+        localStorage.setItem('pythonixToken', this.authToken);
+        this.updateUserStatus();
+        closeAuthModal();
+        showNotification('Account created successfully!', 'success');
+        return true;
+      } else {
+        showNotification(data.error || 'Registration failed', 'error');
+        return false;
+      }
+    } catch (error) {
+      showNotification('Connection error', 'error');
+      return false;
+    }
+  }
+  
+  async createGuest() {
+    try {
+      const response = await fetch('/auth/guest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        this.authToken = data.token;
+        this.currentUser = data.user;
+        localStorage.setItem('pythonixToken', this.authToken);
+        this.updateUserStatus();
+        closeAuthModal();
+        showNotification('Playing as guest!', 'info');
+        return true;
+      } else {
+        showNotification('Failed to create guest account', 'error');
+        return false;
+      }
+    } catch (error) {
+      showNotification('Connection error', 'error');
+      return false;
+    }
+  }
+  
+  logout() {
+    this.currentUser = null;
+    this.authToken = null;
+    localStorage.removeItem('pythonixToken');
+    this.updateUserStatus();
+    showNotification('Logged out successfully', 'info');
+  }
+  
+  getAuthHeaders() {
+    return this.authToken ? { 'Authorization': `Bearer ${this.authToken}` } : {};
+  }
+}
+
+// Leaderboard Management
+class LeaderboardManager {
+  constructor() {
+    this.currentMode = 'classic';
+    this.leaderboardData = {};
+  }
+  
+  async loadLeaderboard(gameMode = 'classic') {
+    try {
+      const headers = authManager.getAuthHeaders();
+      const response = await fetch(`/leaderboard/global?mode=${gameMode}&limit=50`, {
+        headers
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        this.leaderboardData[gameMode] = data;
+        this.displayLeaderboard(data);
+      } else {
+        showNotification('Failed to load leaderboard', 'error');
+      }
+    } catch (error) {
+      showNotification('Connection error', 'error');
+    }
+  }
+  
+  displayLeaderboard(data) {
+    const content = document.getElementById('leaderboardContent');
+    const userRankInfo = document.getElementById('userRankInfo');
+    
+    // Show user rank if available
+    if (data.userRank && authManager.currentUser) {
+      document.getElementById('userRank').textContent = `#${data.userRank}`;
+      userRankInfo.style.display = 'block';
+    } else {
+      userRankInfo.style.display = 'none';
+    }
+    
+    if (!data.leaderboard || data.leaderboard.length === 0) {
+      content.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.7); padding: 40px;">No scores yet. Be the first!</div>';
+      return;
+    }
+    
+    content.innerHTML = data.leaderboard.map((player, index) => {
+      let rankClass = '';
+      if (index === 0) rankClass = 'gold';
+      else if (index === 1) rankClass = 'silver';
+      else if (index === 2) rankClass = 'bronze';
+      
+      const isCurrentUser = authManager.currentUser && player.username === authManager.currentUser.username;
+      
+      return `
+        <div class="leaderboard-item" style="${isCurrentUser ? 'border-color: #FFD700; background: rgba(255,215,0,0.1);' : ''}">
+          <div class="leaderboard-rank ${rankClass}">#${index + 1}</div>
+          <div class="leaderboard-info">
+            <div class="leaderboard-name">
+              ${player.displayName} ${isCurrentUser ? '(You)' : ''}
+              ${player.isGuest ? '<span style="color: #888; font-size: 0.8em;">(Guest)</span>' : ''}
+            </div>
+            <div class="leaderboard-stats">
+              ${player.gamesPlayed || 0} games • ${player.totalFoodsEaten || 0} foods eaten
+            </div>
+          </div>
+          <div class="leaderboard-score">${player.highScore.toLocaleString()}</div>
+        </div>
+      `;
+    }).join('');
+  }
+  
+  async submitScore(score, gameMode, gameData) {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...authManager.getAuthHeaders()
+      };
+      
+      const response = await fetch('/scores', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          score,
+          gameMode,
+          snakeSkin: gameData.snakeSkin || 'classic',
+          theme: gameData.theme || 'auto',
+          gameDuration: gameData.duration || 0,
+          foodsEaten: gameData.foodsEaten || 0
+        })
+      });
+      
+      if (response.ok) {
+        return true;
+      } else {
+        console.error('Failed to submit score');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error submitting score:', error);
+      return false;
+    }
+  }
+}
+
+// Notification System
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.innerHTML = message;
+  
+  // Add notification styles if not already present
+  if (!document.querySelector('#notification-styles')) {
+    const style = document.createElement('style');
+    style.id = 'notification-styles';
+    style.textContent = `
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 10px;
+        color: white;
+        font-weight: bold;
+        z-index: 3000;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+      }
+      .notification.success { background: linear-gradient(135deg, #4CAF50, #45a049); }
+      .notification.error { background: linear-gradient(135deg, #f44336, #da190b); }
+      .notification.info { background: linear-gradient(135deg, #2196F3, #0b7dda); }
+      .notification.show { opacity: 1; transform: translateX(0); }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => notification.classList.add('show'), 100);
+  setTimeout(() => {
+    notification.classList.remove('show');
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
+
+// Initialize managers
+const authManager = new AuthManager();
+const leaderboardManager = new LeaderboardManager();
+
+// Authentication Modal Functions
+function openAuthModal() {
+  document.getElementById('authModal').style.display = 'flex';
+  if (authManager.currentUser && authManager.currentUser.isGuest) {
+    // Show upgrade options for guest users
+    toggleAuthMode(true); // Switch to register mode
+  }
+}
+
+function closeAuthModal() {
+  document.getElementById('authModal').style.display = 'none';
+  resetAuthForm();
+}
+
+function toggleAuthMode(forceRegister = false) {
+  authManager.isAuthMode = forceRegister || !authManager.isAuthMode;
+  
+  const title = document.getElementById('authTitle');
+  const email = document.getElementById('authEmail');
+  const displayName = document.getElementById('authDisplayName');
+  const submit = document.getElementById('authSubmit');
+  const switchText = document.getElementById('authSwitchText');
+  const switchLink = document.getElementById('authSwitchLink');
+  
+  if (authManager.isAuthMode) {
+    title.textContent = 'Create Account';
+    email.style.display = 'block';
+    displayName.style.display = 'block';
+    submit.textContent = 'Sign Up';
+    switchText.textContent = 'Already have an account?';
+    switchLink.textContent = 'Login';
+  } else {
+    title.textContent = 'Login to Pythonix';
+    email.style.display = 'none';
+    displayName.style.display = 'none';
+    submit.textContent = 'Login';
+    switchText.textContent = "Don't have an account?";
+    switchLink.textContent = 'Sign up';
+  }
+}
+
+function resetAuthForm() {
+  document.getElementById('authForm').reset();
+  authManager.isAuthMode = false;
+  toggleAuthMode();
+}
+
+async function playAsGuest() {
+  await authManager.createGuest();
+}
+
+// Leaderboard Modal Functions
+function openLeaderboardModal() {
+  document.getElementById('leaderboardModal').style.display = 'flex';
+  leaderboardManager.loadLeaderboard(leaderboardManager.currentMode);
+}
+
+function closeLeaderboardModal() {
+  document.getElementById('leaderboardModal').style.display = 'none';
+}
+
+function switchLeaderboardTab(mode) {
+  // Update tab appearance
+  document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  leaderboardManager.currentMode = mode;
+  leaderboardManager.loadLeaderboard(mode);
+}
+
+// Enhanced menu navigation with new options
+
+function updateMenuSelection() {
+  menuItems.forEach((id, index) => {
+    const element = document.getElementById(id);
+    if (index === currentMenuIndex) {
+      element.classList.add('active');
+    } else {
+      element.classList.remove('active');
+    }
+  });
+}
+
+function handleMenuAction() {
+  const selectedItem = menuItems[currentMenuIndex];
+  
+  switch(selectedItem) {
+    case 'startOption':
+      startGame();
+      break;
+    case 'instructionsOption':
+      toggleInstructions();
+      break;
+    case 'leaderboardOption':
+      openLeaderboardModal();
+      break;
+    case 'accountOption':
+      if (authManager.currentUser) {
+        if (authManager.currentUser.isGuest) {
+          openAuthModal(); // Show upgrade options
+        } else {
+          // Show profile or logout option
+          if (confirm('Do you want to logout?')) {
+            authManager.logout();
+          }
+        }
+      } else {
+        openAuthModal();
+      }
+      break;
+  }
+}
+
+// Event Listeners
+document.getElementById('authForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const username = document.getElementById('authUsername').value.trim();
+  const email = document.getElementById('authEmail').value.trim();
+  const displayName = document.getElementById('authDisplayName').value.trim();
+  const password = document.getElementById('authPassword').value;
+  
+  if (authManager.isAuthMode) {
+    await authManager.register(username, email, password, displayName);
+  } else {
+    await authManager.login(username, password);
+  }
+});
+
 // Global game variables
 let canvas, ctx, boxSize = 40, boardWidth, boardHeight;
 let snake, direction, food, score = 0, foodsEaten = 0;
@@ -2033,6 +2774,7 @@ let multiplierActive = false;
 let multiplierInterval, speedInterval, multiplierExpireTime;
 let gameTimeLeft = 60, gameTimeInterval;
 let multiplierTimeLeft = 0, speedTimeLeft = 0;
+let gameStartTime = null;
 
 // Sound effects
 const eatSound = new Audio('eat.mp3');
@@ -3270,6 +4012,18 @@ function endGame() {
     console.log('Game over sound playback failed:', e);
   }
   
+  // Submit score to leaderboard
+  const gameEndTime = Date.now();
+  const gameDuration = gameStartTime ? Math.floor((gameEndTime - gameStartTime) / 1000) : 0;
+  
+  leaderboardManager.submitScore(score, gameMode, {
+    snakeSkin: snakeSkin,
+    theme: document.body.className.includes('theme-') ? 
+           document.body.className.match(/theme-(\w+)/)?.[1] || 'day' : 'day',
+    duration: gameDuration,
+    foodsEaten: foodsEaten
+  });
+  
   // Update high score
   const highScore = parseInt(localStorage.getItem('pythonixHighScore') || '0');
   if (score > highScore) {
@@ -3522,6 +4276,12 @@ function initGame() {
 function startGame() {
   console.log('Starting game...');
   
+  // Record game start time
+  gameStartTime = Date.now();
+  
+  // Stop background music when starting game
+  stopBackgroundMusic();
+  
   // Hide intro screen
   const introScreen = document.getElementById('introScreen');
   if (introScreen) {
@@ -3575,7 +4335,7 @@ function toggleInstructions() {
 
 // Menu navigation variables
 let currentMenuIndex = 0;
-const menuItems = ['startOption', 'instructionsOption'];
+const menuItems = ['startOption', 'instructionsOption', 'leaderboardOption', 'accountOption'];
 
 // Update menu selection
 function updateMenuSelection() {
@@ -3606,12 +4366,7 @@ function handleMenuNavigation(event) {
   } else if (event.code === 'Space') {
     event.preventDefault();
     playButtonClick(); // Play click sound on selection
-    if (currentMenuIndex === 0) {
-      stopBackgroundMusic(); // Stop menu music when starting game
-      startGame();
-    } else if (currentMenuIndex === 1) {
-      toggleInstructions();
-    }
+    handleMenuAction();
   }
 }
 
