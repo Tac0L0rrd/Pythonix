@@ -5,7 +5,7 @@
   <title>Pythonix</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script> -->
+  <!-- Base URL for API endpoints; leave blank for same origin (relative) -->
   <meta name="api-base" content="">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   
@@ -206,231 +206,6 @@
       background: #34495e;
     }
 
-    /* ===== SHOP & CURRENCY STYLES ===== */
-    .coin-display {
-      font-family: 'Press Start 2P', monospace;
-      color: #FFD700;
-      text-shadow: 0 0 10px #FFD700;
-      font-size: 16px;
-      margin: 0 15px;
-      background: rgba(255, 215, 0, 0.1);
-      padding: 8px 15px;
-      border-radius: 20px;
-      border: 2px solid #FFD700;
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-      animation: coinGlow 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes coinGlow {
-      0% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
-      100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.6); }
-    }
-
-    .shop-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 9999;
-      overflow-y: auto;
-    }
-
-    .shop-content {
-      max-width: 1200px;
-      margin: 50px auto;
-      padding: 30px;
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
-      border-radius: 20px;
-      border: 2px solid #0080ff;
-      box-shadow: 0 0 50px rgba(0, 128, 255, 0.3);
-    }
-
-    .shop-header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .shop-title {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 24px;
-      color: #66ccff;
-      text-shadow: 0 0 20px #66ccff;
-      margin-bottom: 15px;
-    }
-
-    .shop-tabs {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-    }
-
-    .shop-tab {
-      background: rgba(102, 204, 255, 0.1);
-      border: 2px solid #66ccff;
-      color: #66ccff;
-      padding: 10px 20px;
-      margin: 5px;
-      border-radius: 10px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .shop-tab.active {
-      background: #66ccff;
-      color: #1a1a2e;
-      text-shadow: none;
-    }
-
-    .shop-tab:hover {
-      background: rgba(102, 204, 255, 0.2);
-      transform: translateY(-2px);
-    }
-
-    .shop-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-
-    .shop-item {
-      background: rgba(102, 204, 255, 0.1);
-      border: 2px solid #66ccff;
-      border-radius: 15px;
-      padding: 20px;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-
-    .shop-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(102, 204, 255, 0.3);
-    }
-
-    .shop-item.owned {
-      border-color: #4CAF50;
-      background: rgba(76, 175, 80, 0.1);
-    }
-
-    .shop-item.equipped {
-      border-color: #FFD700;
-      background: rgba(255, 215, 0, 0.1);
-      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-    }
-
-    .item-name {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 14px;
-      color: #66ccff;
-      margin-bottom: 10px;
-    }
-
-    .item-description {
-      font-size: 12px;
-      color: #ccc;
-      margin-bottom: 15px;
-      line-height: 1.4;
-    }
-
-    .item-price {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 12px;
-      color: #FFD700;
-      margin-bottom: 15px;
-    }
-
-    .shop-button {
-      background: linear-gradient(45deg, #66ccff, #3399ff);
-      border: none;
-      color: #1a1a2e;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .shop-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 15px rgba(102, 204, 255, 0.4);
-    }
-
-    .shop-button:disabled {
-      background: #666;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .shop-button.owned {
-      background: #4CAF50;
-    }
-
-    .shop-button.equipped {
-      background: #FFD700;
-      color: #000;
-    }
-
-    .close-shop {
-      position: absolute;
-      top: 20px; right: 30px;
-      background: #ff4444;
-      border: none;
-      color: white;
-      font-size: 20px;
-      padding: 10px 15px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-family: 'Press Start 2P', monospace;
-    }
-
-    /* ===== SNAKE SKIN EFFECTS ===== */
-    .snake-skin-neon .snake-segment {
-      box-shadow: 0 0 15px #00ffff, inset 0 0 15px #00ffff;
-      background: linear-gradient(45deg, #00ffff, #0080ff) !important;
-    }
-
-    .snake-skin-rainbow .snake-segment {
-      background: linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080) !important;
-      animation: rainbowShift 2s linear infinite;
-    }
-
-    .snake-skin-metallic .snake-segment {
-      background: linear-gradient(45deg, #c0c0c0, #e6e6e6, #c0c0c0) !important;
-      box-shadow: inset 0 0 10px rgba(255,255,255,0.5), 0 0 10px rgba(192,192,192,0.8);
-    }
-
-    .snake-skin-synthwave .snake-segment {
-      background: linear-gradient(45deg, #ff00ff, #00ffff) !important;
-      box-shadow: 0 0 20px #ff00ff, inset 0 0 10px #00ffff;
-      animation: synthwavePulse 1.5s ease-in-out infinite alternate;
-    }
-
-    .snake-skin-glowing .snake-segment {
-      background: radial-gradient(circle, #ffffff, #66ccff) !important;
-      box-shadow: 0 0 25px #66ccff, 0 0 40px #3399ff, inset 0 0 15px #ffffff;
-      animation: glowPulse 1s ease-in-out infinite alternate;
-    }
-
-    @keyframes rainbowShift {
-      0% { filter: hue-rotate(0deg); }
-      100% { filter: hue-rotate(360deg); }
-    }
-
-    @keyframes synthwavePulse {
-      0% { box-shadow: 0 0 20px #ff00ff, inset 0 0 10px #00ffff; }
-      100% { box-shadow: 0 0 30px #ff00ff, 0 0 20px #00ffff, inset 0 0 15px #ff00ff; }
-    }
-
-    @keyframes glowPulse {
-      0% { box-shadow: 0 0 25px #66ccff, 0 0 40px #3399ff, inset 0 0 15px #ffffff; }
-      100% { box-shadow: 0 0 35px #66ccff, 0 0 60px #3399ff, inset 0 0 25px #ffffff; }
-    }
-
     .small-btn {
   background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
@@ -504,8 +279,8 @@
     radial-gradient(90px 45px at 700px 120px, rgba(255,255,255,0.6), transparent),
     radial-gradient(55px 28px at 800px 60px, rgba(255,255,255,0.7), transparent);
   background-repeat: repeat;
-  background-size: 1800px 200px;
-  animation: cloudDrift 60s linear infinite;
+  background-size: 900px 200px;
+  animation: cloudDrift 30s linear infinite;
 }
 .theme-day::after {
   content: '';
@@ -654,6 +429,49 @@
   background-repeat: repeat;
   background-size: 440px 360px;
   animation: pacmanDots 2s ease-in-out infinite;
+}
+
+.theme-gameboy { 
+  background: #9bbc0f;
+  --board-bg: #8bac0f;
+  --snake-color: #306230;
+  --food-color: #0f380f;
+  --powerup-color: #1e4620;
+  --container-bg: #8bac0f;
+  --container-border: #306230;
+  --text-color: #306230;
+  position: relative;
+  font-family: 'Courier New', monospace;
+}
+.theme-gameboy::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: 
+    repeating-linear-gradient(0deg, 
+      transparent, 
+      transparent 1px, 
+      rgba(48, 98, 48, 0.1) 2px,
+      rgba(48, 98, 48, 0.1) 3px,
+      transparent 4px);
+  animation: gameboyScreen 0.1s linear infinite;
+}
+.theme-gameboy::after {
+  content: 'DOT MATRIX WITH STEREO SOUND';
+  position: fixed;
+  bottom: 10px; 
+  left: 50%;
+  transform: translateX(-50%);
+  color: #306230;
+  font-family: 'Courier New', monospace;
+  font-size: 6px;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.7;
+  letter-spacing: 1px;
 }
 
 .theme-neon { 
@@ -842,12 +660,8 @@
 
     /* Amazing new 3D theme animations */
     @keyframes cloudDrift {
-      0% { transform: translateX(0px); }
-      100% { transform: translateX(-1800px); }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.7; text-shadow: 0 0 10px #66ccff, 0 0 20px #3399ff; }
-      50% { opacity: 1; text-shadow: 0 0 15px #66ccff, 0 0 30px #3399ff, 0 0 40px #0080ff; }
+      0% { transform: translateX(-300px); }
+      100% { transform: translateX(calc(100vw + 300px)); }
     }
     @keyframes sunPulse {
       0%, 100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 50px rgba(255,215,0,0.5); }
@@ -971,6 +785,12 @@
       0% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.3; transform: scale(0.8); }
       100% { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes gameboyScreen {
+      0% { opacity: 1; }
+      99% { opacity: 1; }
+      100% { opacity: 0.98; }
     }
     
     @keyframes neonGlow {
@@ -1308,7 +1128,6 @@
     .menu-item {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
       gap: 15px;
       font-size: 1.2em;
       color: #99ccff;
@@ -1317,8 +1136,12 @@
       padding: 10px 20px;
       letter-spacing: 2px;
       text-shadow: 0 0 5px #99ccff;
-      min-width: 200px;
-      text-align: left;
+    }
+    
+    .menu-item:hover {
+      color: #66b5ff;
+      text-shadow: 0 0 15px #66b5ff;
+      transform: translateX(10px);
     }
     
     .menu-item.active {
@@ -1363,13 +1186,12 @@
     }
     
     .controls-hint p {
-      font-size: 0.8em;
-      color: #66ccff;
+      font-size: 0.7em;
+      color: #6699cc;
       margin: 0;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px #66ccff, 0 0 20px #3399ff;
-      opacity: 0.9;
-      animation: pulse 3s ease-in-out infinite;
+      letter-spacing: 1px;
+      text-shadow: 0 0 5px #6699cc;
+      opacity: 0.8;
     }
     
     /* Remove old button styles */
@@ -1768,10 +1590,6 @@
           <span class="menu-arrow">►</span>
           <span>START GAME</span>
         </div>
-        <div class="menu-item" id="shopOption">
-          <span class="menu-arrow">►</span>
-          <span>🪙 SHOP</span>
-        </div>
         <div class="menu-item" id="instructionsOption">
           <span class="menu-arrow">►</span>
           <span>INSTRUCTIONS</span>
@@ -1779,7 +1597,8 @@
       </div>
       
       <div class="controls-hint">
-        <p>🐍 SLITHER YOUR WAY TO GREATNESS • PYTHONIX AWAITS 🐍</p>
+        <p>USE ↑↓ ARROWS TO SELECT • SPACEBAR TO CONFIRM</p>
+        <div id="userStatus" style="margin-top: 10px; color: #66b5ff; font-size: 0.7em;"></div>
       </div>
     </div>
   </div>
@@ -1838,7 +1657,14 @@
             </div>
             
             <div class="instruction-item">
-              <h4> Neon Grid</h4>
+              <h4>🟩 Game Boy</h4>
+              <p><strong>Theme:</strong> Game Boy</p>
+              <p><strong>Skin:</strong> Game Boy</p>
+              <p>LCD-style green pixels with scanlines. Authentic handheld gaming experience!</p>
+            </div>
+            
+            <div class="instruction-item">
+              <h4>💙 Neon Grid</h4>
               <p><strong>Theme:</strong> Neon Grid</p>
               <p><strong>Skin:</strong> Neon Grid</p>
               <p>Glowing cyber snake with neon effects. Futuristic grid-based gameplay!</p>
@@ -1929,68 +1755,10 @@
             <p>• Each theme offers a unique visual experience - try them all!</p>
           </div>
         </div>
-
-        <div class="instructions-section">
-          <h2>🪙 Ways to Earn Coins</h2>
-          <p>Coins let you unlock cosmetic skins, trails, and other customizations in the Shop!</p>
-          
-          <div class="instructions-grid">
-            <div class="instruction-item">
-              <h4>🎮 Play Games</h4>
-              <p><strong>Reward:</strong> +1 coin per 50 points</p>
-              <p>The more you score, the more coins you earn!</p>
-            </div>
-            
-            <div class="instruction-item">
-              <h4>🎯 Score Milestones</h4>
-              <p><strong>Rewards:</strong> +10 to +500 coins</p>
-              <p>Bonus coins for reaching 100, 250, 500, 1000+ points</p>
-            </div>
-            
-            <div class="instruction-item">
-              <h4>⏰ Active Playtime</h4>
-              <p><strong>Reward:</strong> +5 coins every 2 minutes</p>
-              <p>Stay engaged and get rewarded for your time!</p>
-            </div>
-            
-            <div class="instruction-item">
-              <h4>🏁 Complete Rounds</h4>
-              <p><strong>Reward:</strong> +20 coins</p>
-              <p>Finish games that last 30+ seconds</p>
-            </div>
-            
-            <div class="instruction-item">
-              <h4>🏆 Unlock Achievements</h4>
-              <p><strong>Rewards:</strong> +25 to +500 coins</p>
-              <p>One-time rewards for reaching milestones</p>
-            </div>
-            
-            <div class="instruction-item">
-              <h4>🗓️ Daily Login</h4>
-              <p><strong>Rewards:</strong> +50 to +300 coins</p>
-              <p>Streak bonuses for consecutive days!</p>
-            </div>
-            
-            <div class="instruction-item">
-              <h4>🎯 Daily Challenges</h4>
-              <p><strong>Rewards:</strong> +75 to +150 coins</p>
-              <p>Complete 2 random challenges each day</p>
-            </div>
-            
-            <div class="instruction-item">
-              <h4>📺 Watch Ads</h4>
-              <p><strong>Reward:</strong> +100 coins</p>
-              <p>Maximum 5 ads per day with 5-minute cooldowns</p>
-            </div>
-          </div>
-          
-          <div class="instruction-item" style="margin-top: 20px;">
-            <p style="text-align: center; color: #66ccff; font-weight: bold;">💰 Multiple ways to earn - Keep playing to unlock customizations!</p>
-          </div>
-        </div>
       </div>
     </div>
   </div>
+  
   <div class="navbar">
     <div class="navbar-brand">
       <h2>🐍 Pythonix</h2>
@@ -2025,6 +1793,7 @@
             <select id="snakeSkin">
               <option value="classic">Classic Snake</option>
               <option value="pacman">Pac-Man</option>
+              <option value="gameboy">Game Boy</option>
               <option value="neon">Neon Grid</option>
               <option value="arcade">Arcade</option>
               <option value="rainbow">Rainbow (animated)</option>
@@ -2053,6 +1822,7 @@
               <option value="night">Night</option>
               <option value="classic">Classic Snake</option>
               <option value="pacman">Pac-Man Arcade</option>
+              <option value="gameboy">Game Boy</option>
               <option value="neon">Neon Grid</option>
               <option value="arcade">Retro Arcade</option>
             </select>
@@ -2079,7 +1849,6 @@
           <button id="showHistory" class="small-btn">History</button>
           <button id="showAchievements" class="small-btn">Achievements</button>
           <button id="clearGames" class="small-btn clear-btn">Clear Games</button>
-          <div class="coin-display" id="navCoinDisplay">🪙 0</div>
         </div>
       </div>
     </div>
@@ -2095,9 +1864,9 @@
           <button onclick="restartGame()">Restart</button>
         </div>
       </div>
-      <div style="margin-top:18px; text-align: center;">
-        <span style="color:#666;font-size:1.2em;font-style:italic;text-shadow:0 0 10px rgba(102,204,255,0.5); font-weight: bold;">
-          🐍 "Grow long, grow strong, become legendary" 🐍
+      <div style="margin-top:18px;">
+        <span style="color:#444;font-size:1em;">
+          Use <b>WASD</b>, <b>arrow keys</b>, <b>swipe</b>, or <b>touch controls</b> to play
         </span>
       </div>
     </div>
@@ -2117,68 +1886,6 @@
     <span class="close" onclick="document.getElementById('historyModal').style.display='none'">&times;</span>
     <h2>📈 Game History</h2>
     <div id="historyContent">Loading history...</div>
-  </div>
-</div>
-
-<!-- Shop Modal -->
-<div id="shopModal" class="shop-modal">
-  <div class="shop-content">
-    <button class="close-shop" onclick="closeShop()">&times;</button>
-    
-    <div class="shop-header">
-      <h2 class="shop-title">🐍 PYTHONIX SHOP 🐍</h2>
-      <div class="coin-display" id="shopCoinDisplay">🪙 0</div>
-    </div>
-    
-    <div class="shop-tabs">
-      <button class="shop-tab active" onclick="showShopTab('skins')">Snake Skins</button>
-      <button class="shop-tab" onclick="showShopTab('trails')">Trail Effects</button>
-      <button class="shop-tab" onclick="showShopTab('sounds')">Sound Packs</button>
-      <button class="shop-tab" onclick="showShopTab('utility')">Utility</button>
-      <button class="shop-tab" onclick="showShopTab('badges')">Badges</button>
-    </div>
-    
-    <div id="shopItems" class="shop-grid">
-      <!-- Items will be populated by JavaScript -->
-    </div>
-  </div>
-  
-  <!-- Bottom section outside of shop-content -->
-  <div style="max-width: 1200px; margin: 0 auto 50px auto; padding: 0 30px;">
-    <div style="text-align: center; margin-top: 20px;">
-      <button class="shop-button" onclick="watchAdForCoins()" style="margin: 10px; background: linear-gradient(45deg, #FF6B6B, #FF8E8E);">
-        📺 Watch Ad (+100 coins)
-      </button>
-      <button class="shop-button" onclick="showDailyChallenges()" style="margin: 10px; background: linear-gradient(45deg, #4ECDC4, #45B7B8);">
-        🎯 Daily Challenges (+75-150 coins)
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Daily Challenges Modal -->
-<div id="challengesModal" class="shop-modal">
-  <div class="shop-content">
-    <button class="close-shop" onclick="closeChallenges()">&times;</button>
-    
-    <div class="shop-header">
-      <h2 class="shop-title">🎯 DAILY CHALLENGES 🎯</h2>
-      <div class="coin-display" id="challengesCoinDisplay">🪙 0</div>
-    </div>
-    
-    <div id="challengesContent" style="max-width: 600px; margin: 0 auto;">
-      <!-- Challenges will be populated by JavaScript -->
-    </div>
-    
-    <div style="text-align: center; margin-top: 20px;">
-      <button class="shop-button" onclick="closeChallenges()" style="background: linear-gradient(45deg, #666, #888);">
-        Close
-      </button>
-    </div>
-    
-    <div style="text-align: center; margin-top: 15px; color: #ccc; font-size: 12px;">
-      ⏰ Challenges reset daily at midnight • Complete them for bonus coins!
-    </div>
   </div>
 </div>
 
@@ -2320,530 +2027,444 @@
 </style>
 
 <script>
-// ===== PYTHONIX SHOP & CURRENCY SYSTEM =====
-
-// Currency Management
-function getCoins() {
-  return parseInt(localStorage.getItem('pythonixCoins') || '0');
-}
-
-function addCoins(amount, source = 'unknown') {
-  const currentCoins = getCoins();
-  const newAmount = currentCoins + amount;
-  localStorage.setItem('pythonixCoins', newAmount.toString());
-  
-  // Analytics: Track coin sources
-  logCoinSource(source, amount);
-  
-  updateCoinDisplay();
-  console.log(`Added ${amount} coins from ${source}! Total: ${newAmount}`);
-  return newAmount;
-}
-
-// Analytics: Log coin source usage
-function logCoinSource(source, amount) {
-  const analytics = JSON.parse(localStorage.getItem('pythonixCoinAnalytics') || '{}');
-  const today = new Date().toDateString();
-  
-  if (!analytics[today]) {
-    analytics[today] = {};
+function handleMenuAction() {
+  constructor() {
+    this.currentUser = null;
+    this.authToken = localStorage.getItem('pythonixToken');
+    this.isAuthMode = false; // false = login, true = register
+    this.init();
   }
   
-  if (!analytics[today][source]) {
-    analytics[today][source] = { count: 0, total: 0 };
-  }
-  
-  analytics[today][source].count++;
-  analytics[today][source].total += amount;
-  
-  localStorage.setItem('pythonixCoinAnalytics', JSON.stringify(analytics));
-}
-
-function spendCoins(amount) {
-  const currentCoins = getCoins();
-  if (currentCoins >= amount) {
-    const newAmount = currentCoins - amount;
-    localStorage.setItem('pythonixCoins', newAmount.toString());
-    updateCoinDisplay();
-    console.log(`Spent ${amount} coins! Remaining: ${newAmount}`);
-    return true;
-  }
-  console.log(`Insufficient coins! Need ${amount}, have ${currentCoins}`);
-  return false;
-}
-
-function updateCoinDisplay() {
-  const coinElements = document.querySelectorAll('.coin-display');
-  const coins = getCoins();
-  coinElements.forEach(el => {
-    if (el) el.textContent = `🪙 ${coins}`;
-  });
-}
-
-// Shop Items Database
-const SHOP_ITEMS = {
-  // Snake Skins (Basic - 100 coins)
-  'skin_neon': { name: 'Neon Snake', price: 100, type: 'skin', description: 'Electric blue glow effect' },
-  'skin_pixel': { name: 'Pixel Snake', price: 100, type: 'skin', description: 'Retro pixelated look' },
-  'skin_8bit_blue': { name: '8-Bit Blue Snake', price: 100, type: 'skin', description: 'Classic arcade style' },
-  
-  // Snake Skins (Premium - 500 coins)
-  'skin_rainbow': { name: 'Rainbow Snake', price: 500, type: 'skin', description: 'Shifting rainbow colors' },
-  'skin_metallic': { name: 'Metallic Snake', price: 500, type: 'skin', description: 'Chrome metal finish' },
-  'skin_synthwave': { name: 'Synthwave Snake', price: 500, type: 'skin', description: 'Retro-futuristic glow' },
-  'skin_glowing': { name: 'Plasma Snake', price: 500, type: 'skin', description: 'Intense plasma glow' },
-  
-  // Trail Effects
-  'trail_fire': { name: 'Fire Trail', price: 300, type: 'trail', description: 'Blazing fire trail' },
-  'trail_electricity': { name: 'Electric Trail', price: 300, type: 'trail', description: 'Lightning sparks' },
-  'trail_vaporwave': { name: 'Vaporwave Trail', price: 400, type: 'trail', description: 'Retro neon glow' },
-  'trail_laser': { name: 'Laser Trail', price: 400, type: 'trail', description: 'Sci-fi laser beam' },
-  
-  // Sound Packs
-  'sound_retro': { name: 'Retro Sound Pack', price: 200, type: 'sound', description: 'Classic arcade sounds' },
-  'sound_scifi': { name: 'Sci-Fi Sound Pack', price: 250, type: 'sound', description: 'Futuristic sound effects' },
-  'sound_arcade': { name: 'Arcade Sound Pack', price: 200, type: 'sound', description: '8-bit game sounds' },
-  
-  // Utility Items
-  'continue_token': { name: 'Continue Token', price: 150, type: 'utility', description: 'Restart from last score once per game' },
-  'name_change': { name: 'Name Change', price: 100, type: 'utility', description: 'Change your leaderboard name' },
-  
-  // Title Badges
-  'badge_master': { name: 'Snake Master Badge', price: 1000, type: 'badge', description: 'Elite player status' },
-  'badge_synthwave': { name: 'Synthwave Legend Badge', price: 800, type: 'badge', description: 'Retro gaming expert' },
-  'badge_speedster': { name: 'Speed Demon Badge', price: 600, type: 'badge', description: 'Fast reflexes champion' }
-};
-
-// Player Inventory Management
-function getOwnedItems() {
-  const owned = localStorage.getItem('pythonixOwnedItems');
-  return owned ? JSON.parse(owned) : ['skin_classic', 'trail_none', 'sound_default'];
-}
-
-function addOwnedItem(itemId) {
-  const owned = getOwnedItems();
-  if (!owned.includes(itemId)) {
-    owned.push(itemId);
-    localStorage.setItem('pythonixOwnedItems', JSON.stringify(owned));
-  }
-}
-
-function hasItem(itemId) {
-  return getOwnedItems().includes(itemId);
-}
-
-// Current Equipment
-function getEquippedItems() {
-  const equipped = localStorage.getItem('pythonixEquippedItems');
-  return equipped ? JSON.parse(equipped) : {
-    skin: 'skin_classic',
-    trail: 'trail_none', 
-    sound: 'sound_default',
-    badge: 'badge_none'
-  };
-}
-
-function equipItem(itemId, type) {
-  const equipped = getEquippedItems();
-  equipped[type] = itemId;
-  localStorage.setItem('pythonixEquippedItems', JSON.stringify(equipped));
-  applyVisualEffects();
-}
-
-// Daily Login Bonus
-function checkDailyBonus() {
-  const today = new Date().toDateString();
-  const lastLogin = localStorage.getItem('pythonixLastLogin');
-  
-  if (lastLogin !== today) {
-    localStorage.setItem('pythonixLastLogin', today);
-    addCoins(50);
-    showNotification('Daily Login Bonus: +50 coins! 🪙');
-    return true;
-  }
-  return false;
-}
-
-// Score-based coin rewards
-function awardCoinsForScore(score) {
-  let coinsEarned = 0;
-  
-  // Base reward: 1 coin per 50 points
-  const baseCoins = Math.floor(score / 50);
-  coinsEarned += baseCoins;
-  
-  // Milestone rewards: Extra coins for reaching score thresholds
-  const milestones = [
-    { score: 100, coins: 10, message: "Century Club Bonus!" },
-    { score: 250, coins: 25, message: "Quarter Master Bonus!" },
-    { score: 500, coins: 50, message: "High Roller Bonus!" },
-    { score: 1000, coins: 100, message: "Millennium Bonus!" },
-    { score: 2500, coins: 250, message: "Elite Player Bonus!" },
-    { score: 5000, coins: 500, message: "Snake Master Bonus!" }
-  ];
-  
-  // Check for milestone rewards (only award once per game)
-  const currentSession = JSON.parse(localStorage.getItem('pythonixCurrentSession') || '{"milestonesEarned": []}');
-  
-  milestones.forEach(milestone => {
-    if (score >= milestone.score && !currentSession.milestonesEarned.includes(milestone.score)) {
-      coinsEarned += milestone.coins;
-      currentSession.milestonesEarned.push(milestone.score);
-      showNotification(`🎯 ${milestone.message} +${milestone.coins} coins!`);
-    }
-  });
-  
-  localStorage.setItem('pythonixCurrentSession', JSON.stringify(currentSession));
-  
-  if (coinsEarned > 0) {
-    addCoins(coinsEarned, 'score_milestones');
-    if (baseCoins > 0) {
-      showNotification(`Score Reward: +${baseCoins} coins!`, 'coin');
+  async init() {
+    if (this.authToken) {
+      try {
+        const response = await fetch('/auth/profile', {
+          headers: { 'Authorization': `Bearer ${this.authToken}` }
+        });
+        
+        if (response.ok) {
+          this.currentUser = await response.json();
+          this.updateUserStatus();
+        } else {
+          localStorage.removeItem('pythonixToken');
+          this.authToken = null;
+        }
+      } catch (error) {
+        console.log('Auth check failed:', error);
+      }
     }
   }
-}
-
-// Playtime-based rewards
-let gameStartTime = null;
-let playtimeInterval = null;
-
-function startPlaytimeTracking() {
-  gameStartTime = Date.now();
   
-  // Award 5 coins every 2 minutes of active play
-  playtimeInterval = setInterval(() => {
-    if (!isGameOver) {
-      addCoins(5, 'playtime');
-      showNotification("Playtime Bonus: +5 coins!", 'coin');
-    }
-  }, 120000); // 2 minutes
-}
-
-function stopPlaytimeTracking() {
-  if (playtimeInterval) {
-    clearInterval(playtimeInterval);
-    playtimeInterval = null;
-  }
-  
-  // Award completion bonus for finishing a round
-  if (gameStartTime) {
-    const playTime = Date.now() - gameStartTime;
-    if (playTime > 30000) { // Must play for at least 30 seconds
-      addCoins(20, 'round_completion');
-      showNotification("Round Completion: +20 coins!", 'coin');
-    }
-    gameStartTime = null;
-  }
-}
-
-// Achievement-based coin rewards
-function checkAchievementRewards(score, stats) {
-  const achievementRewards = [
-    // Survival achievements
-    { id: 'survive_60s', condition: () => gameStartTime && (Date.now() - gameStartTime) >= 60000, coins: 150, message: "Survivor! +150 coins!" },
-    { id: 'survive_120s', condition: () => gameStartTime && (Date.now() - gameStartTime) >= 120000, coins: 300, message: "Endurance Master! +300 coins!" },
+  updateUserStatus() {
+    const userStatus = document.getElementById('userStatus');
+    const accountText = document.getElementById('accountText');
     
-    // Score achievements
-    { id: 'first_50', condition: () => score >= 50, coins: 25, message: "First Steps! +25 coins!" },
-    { id: 'first_100', condition: () => score >= 100, coins: 50, message: "Getting Started! +50 coins!" },
-    { id: 'first_500', condition: () => score >= 500, coins: 100, message: "Rising Star! +100 coins!" },
-    
-    // Food achievements
-    { id: 'eat_25', condition: () => stats.totalFoodsEaten >= 25, coins: 75, message: "Hungry Snake! +75 coins!" },
-    { id: 'eat_50', condition: () => stats.totalFoodsEaten >= 50, coins: 150, message: "Voracious! +150 coins!" },
-    { id: 'eat_100', condition: () => stats.totalFoodsEaten >= 100, coins: 300, message: "Glutton! +300 coins!" },
-    
-    // Game count achievements
-    { id: 'play_5', condition: () => stats.gamesPlayed >= 5, coins: 100, message: "Persistent! +100 coins!" },
-    { id: 'play_10', condition: () => stats.gamesPlayed >= 10, coins: 200, message: "Dedicated! +200 coins!" },
-    { id: 'play_25', condition: () => stats.gamesPlayed >= 25, coins: 500, message: "Addicted! +500 coins!" }
-  ];
-  
-  const earnedAchievements = JSON.parse(localStorage.getItem('pythonixEarnedAchievements') || '[]');
-  
-  achievementRewards.forEach(achievement => {
-    if (!earnedAchievements.includes(achievement.id) && achievement.condition()) {
-      earnedAchievements.push(achievement.id);
-      addCoins(achievement.coins, 'achievements');
-      showNotification(`🏆 ${achievement.message}`, 'achievement');
-    }
-  });
-  
-  localStorage.setItem('pythonixEarnedAchievements', JSON.stringify(earnedAchievements));
-}
-
-// Enhanced daily login system with streaks
-function checkDailyBonus() {
-  const today = new Date().toDateString();
-  const lastLogin = localStorage.getItem('pythonixLastLogin');
-  const loginStreak = parseInt(localStorage.getItem('pythonixLoginStreak') || '0');
-  
-  if (lastLogin !== today) {
-    localStorage.setItem('pythonixLastLogin', today);
-    
-    // Check if this is consecutive day
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const isConsecutive = lastLogin === yesterday.toDateString();
-    
-    const newStreak = isConsecutive ? loginStreak + 1 : 1;
-    localStorage.setItem('pythonixLoginStreak', newStreak.toString());
-    
-    // Progressive daily rewards
-    const streakRewards = [
-      { day: 1, coins: 50, message: "Daily Login: +50 coins!" },
-      { day: 2, coins: 75, message: "Day 2 Streak: +75 coins!" },
-      { day: 3, coins: 100, message: "Day 3 Streak: +100 coins!" },
-      { day: 4, coins: 125, message: "Day 4 Streak: +125 coins!" },
-      { day: 5, coins: 150, message: "Day 5 Streak: +150 coins!" },
-      { day: 6, coins: 200, message: "Day 6 Streak: +200 coins!" },
-      { day: 7, coins: 300, message: "Week Complete: +300 coins!" }
-    ];
-    
-    const reward = streakRewards.find(r => r.day === Math.min(newStreak, 7)) || streakRewards[6];
-    addCoins(reward.coins, 'daily_login');
-    showNotification(reward.message, 'coin');
-    
-    return true;
-  }
-  return false;
-}
-
-// Daily challenges system
-function initializeDailyChallenges() {
-  const today = new Date().toDateString();
-  const dailyChallenges = JSON.parse(localStorage.getItem('pythonixDailyChallenges') || '{}');
-  
-  if (dailyChallenges.date !== today) {
-    // Generate new daily challenges
-    const challenges = [
-      { id: 'score_200', description: "Score 200 points in a single game", target: 200, type: 'score', reward: 100, completed: false },
-      { id: 'play_3', description: "Play 3 games today", target: 3, type: 'games', reward: 75, completed: false },
-      { id: 'eat_30', description: "Eat 30 foods in a single game", target: 30, type: 'foods', reward: 125, completed: false },
-      { id: 'survive_90', description: "Survive for 90 seconds", target: 90, type: 'survival', reward: 150, completed: false }
-    ];
-    
-    // Pick 2 random challenges for today
-    const todaysChallenges = challenges.sort(() => 0.5 - Math.random()).slice(0, 2);
-    
-    localStorage.setItem('pythonixDailyChallenges', JSON.stringify({
-      date: today,
-      challenges: todaysChallenges,
-      gamesPlayedToday: 0
-    }));
-  }
-}
-
-function checkDailyChallenges(score, foodsEaten, survivalTime) {
-  const dailyData = JSON.parse(localStorage.getItem('pythonixDailyChallenges') || '{}');
-  if (!dailyData.challenges) return;
-  
-  let updated = false;
-  
-  dailyData.challenges.forEach(challenge => {
-    if (challenge.completed) return;
-    
-    let completed = false;
-    switch(challenge.type) {
-      case 'score':
-        completed = score >= challenge.target;
-        break;
-      case 'games':
-        dailyData.gamesPlayedToday = (dailyData.gamesPlayedToday || 0) + 1;
-        completed = dailyData.gamesPlayedToday >= challenge.target;
-        break;
-      case 'foods':
-        completed = foodsEaten >= challenge.target;
-        break;
-      case 'survival':
-        completed = survivalTime >= challenge.target;
-        break;
+    if (userStatus && this.currentUser) {
+      userStatus.innerHTML = `Welcome, ${this.currentUser.displayName}${this.currentUser.isGuest ? ' (Guest)' : ''}`;
+    } else if (userStatus) {
+      userStatus.innerHTML = '';
     }
     
-    if (completed) {
-      challenge.completed = true;
-      addCoins(challenge.reward, 'daily_challenges');
-      showNotification(`🎯 Challenge Complete: ${challenge.description} (+${challenge.reward} coins!)`, 'challenge');
-      updated = true;
+    if (accountText) {
+      if (this.currentUser) {
+        accountText.textContent = this.currentUser.isGuest ? 'UPGRADE ACCOUNT' : 'PROFILE';
+      } else {
+        accountText.textContent = 'LOGIN/SIGNUP';
+      }
     }
-  });
-  
-  if (updated) {
-    localStorage.setItem('pythonixDailyChallenges', JSON.stringify(dailyData));
-  }
-}
-
-// CrazyGames rewarded ads integration with cooldowns and daily caps
-function watchAdForCoins() {
-  const today = new Date().toDateString();
-  const adData = JSON.parse(localStorage.getItem('pythonixAdData') || '{"date": "", "count": 0, "lastAd": 0}');
-  
-  // Reset daily count if new day
-  if (adData.date !== today) {
-    adData.date = today;
-    adData.count = 0;
   }
   
-  // Check daily limit (max 5 ads per day)
-  if (adData.count >= 5) {
-    showNotification('Daily ad limit reached! Come back tomorrow for more.', 'ad');
-    return;
-  }
-  
-  // Check cooldown (5 minutes between ads)
-  const cooldownTime = 5 * 60 * 1000; // 5 minutes in milliseconds
-  const timeSinceLastAd = Date.now() - adData.lastAd;
-  
-  if (timeSinceLastAd < cooldownTime) {
-    const remainingMinutes = Math.ceil((cooldownTime - timeSinceLastAd) / 60000);
-    showNotification(`Ad cooldown: ${remainingMinutes} minute(s) remaining`, 'ad');
-    return;
-  }
-  
-  if (crazygames && crazygames.ad) {
-    console.log("CrazyGames: Requesting rewarded ad...");
-    
-    crazygames.ad.requestAd("rewarded", () => {
-      // Ad completed successfully
-      const adReward = 100;
-      adData.count++;
-      adData.lastAd = Date.now();
-      localStorage.setItem('pythonixAdData', JSON.stringify(adData));
+  async login(username, password) {
+    try {
+      console.log('Attempting login to:', window.location.origin + '/auth/login');
+      const response = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
       
-      addCoins(adReward, 'ads');
-      showNotification(`Ad Reward: +${adReward} coins! (${5 - adData.count} ads left today)`, 'ad');
-      console.log("CrazyGames: Rewarded ad completed, coins awarded");
-    }, (error) => {
-      // Ad failed or was skipped
-      console.log("CrazyGames: Rewarded ad failed or skipped:", error);
-      showNotification("Ad not available right now. Try again later!", 'ad');
-    });
-  } else {
-    // Fallback for local development
-    showNotification("Ads not available in development mode", 'ad');
+      const data = await response.json();
+      
+      if (response.ok) {
+        this.authToken = data.token;
+        this.currentUser = data.user;
+        localStorage.setItem('pythonixToken', this.authToken);
+        this.updateUserStatus();
+        closeAuthModal();
+        showNotification('Login successful!', 'success');
+        return true;
+      } else {
+        showNotification(data.error || 'Login failed', 'error');
+        return false;
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      console.log('Current URL:', window.location.href);
+      showNotification('Connection error', 'error');
+      return false;
+    }
+  }
+  
+  async register(username, email, password, displayName) {
+    try {
+      console.log('Attempting registration to:', window.location.origin + '/auth/register');
+      const response = await fetch('/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password, displayName })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        this.authToken = data.token;
+        this.currentUser = data.user;
+        localStorage.setItem('pythonixToken', this.authToken);
+        this.updateUserStatus();
+        closeAuthModal();
+        showNotification('Account created successfully!', 'success');
+        return true;
+      } else {
+        showNotification(data.error || 'Registration failed', 'error');
+        return false;
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      console.log('Current URL:', window.location.href);
+      showNotification('Connection error', 'error');
+      return false;
+    }
+  }
+  
+  async createGuest() {
+    try {
+      const response = await fetch('/auth/guest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        this.authToken = data.token;
+        this.currentUser = data.user;
+        localStorage.setItem('pythonixToken', this.authToken);
+        this.updateUserStatus();
+        closeAuthModal();
+        showNotification('Playing as guest!', 'info');
+        return true;
+      } else {
+        showNotification('Failed to create guest account', 'error');
+        return false;
+      }
+    } catch (error) {
+      showNotification('Connection error', 'error');
+      return false;
+    }
+  }
+  
+  logout() {
+    this.currentUser = null;
+    this.authToken = null;
+    localStorage.removeItem('pythonixToken');
+    this.updateUserStatus();
+    showNotification('Logged out successfully', 'info');
+  }
+  
+  getAuthHeaders() {
+    return this.authToken ? { 'Authorization': `Bearer ${this.authToken}` } : {};
   }
 }
 
-// Free daily continue token
-function checkFreeDailyContinue() {
-  const today = new Date().toDateString();
-  const lastFreeToken = localStorage.getItem('pythonixLastFreeToken');
-  
-  if (lastFreeToken !== today) {
-    localStorage.setItem('pythonixLastFreeToken', today);
-    // Add a free continue token to inventory
-    const ownedItems = getOwnedItems();
-    ownedItems.push('continue_token_free');
-    localStorage.setItem('pythonixOwnedItems', JSON.stringify(ownedItems));
-    showNotification("🎁 Daily Free Continue Token received!");
-    return true;
-  }
-  return false;
-}
-
-// Visual Effects Application
-function applyVisualEffects() {
-  const equipped = getEquippedItems();
-  
-  // Apply snake skin
-  applySnakeSkin(equipped.skin);
-  
-  // Apply trail effect
-  applyTrailEffect(equipped.trail);
-  
-  // Apply sound pack
-  applySoundPack(equipped.sound);
-}
-
-function applySnakeSkin(skinId) {
-  // This will be implemented with CSS classes and canvas rendering
-  document.body.className = document.body.className.replace(/snake-skin-\w+/g, '');
-  if (skinId !== 'skin_classic') {
-    document.body.classList.add(`snake-skin-${skinId.replace('skin_', '')}`);
-  }
-}
-
-function applyTrailEffect(trailId) {
-  document.body.className = document.body.className.replace(/trail-effect-\w+/g, '');
-  if (trailId !== 'trail_none') {
-    document.body.classList.add(`trail-effect-${trailId.replace('trail_', '')}`);
-  }
-}
-
-function applySoundPack(soundId) {
-  // Sound pack logic will be implemented separately
-  localStorage.setItem('pythonixActiveSoundPack', soundId);
-}
-
-// Enhanced notification system with better visuals
-function showNotification(message, type = 'coin') {
-  // Create or update notification element
-  let notification = document.getElementById('coinNotification');
-  if (!notification) {
-    notification = document.createElement('div');
-    notification.id = 'coinNotification';
-    document.body.appendChild(notification);
+// Leaderboard Management
+class LeaderboardManager {
+  constructor() {
+    this.currentMode = 'classic';
+    this.leaderboardData = {};
   }
   
-  // Different styles for different notification types
-  let bgColor, borderColor, icon;
-  switch(type) {
-    case 'coin':
-      bgColor = 'linear-gradient(45deg, #FFD700, #FFA500)';
-      borderColor = '#FFD700';
-      icon = '🪙';
-      break;
-    case 'achievement':
-      bgColor = 'linear-gradient(45deg, #4CAF50, #66BB6A)';
-      borderColor = '#4CAF50';
-      icon = '🏆';
-      break;
-    case 'challenge':
-      bgColor = 'linear-gradient(45deg, #2196F3, #42A5F5)';
-      borderColor = '#2196F3';
-      icon = '🎯';
-      break;
-    case 'ad':
-      bgColor = 'linear-gradient(45deg, #FF6B6B, #FF8E8E)';
-      borderColor = '#FF6B6B';
-      icon = '📺';
-      break;
-    default:
-      bgColor = 'linear-gradient(45deg, #FFD700, #FFA500)';
-      borderColor = '#FFD700';
-      icon = '🪙';
+  async loadLeaderboard(gameMode = 'classic') {
+    try {
+      const headers = authManager.getAuthHeaders();
+      const response = await fetch(`/leaderboard/global?mode=${gameMode}&limit=50`, {
+        headers
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        this.leaderboardData[gameMode] = data;
+        this.displayLeaderboard(data);
+      } else {
+        showNotification('Failed to load leaderboard', 'error');
+      }
+    } catch (error) {
+      showNotification('Connection error', 'error');
+    }
   }
   
-  notification.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: ${bgColor};
-    color: #000;
-    padding: 15px 20px;
-    border-radius: 10px;
-    border: 2px solid ${borderColor};
-    font-family: 'Press Start 2P', monospace;
-    font-size: 12px;
-    z-index: 10000;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    transform: translateX(400px);
-    transition: transform 0.3s ease;
-    max-width: 300px;
-    text-align: center;
-  `;
+  displayLeaderboard(data) {
+    const content = document.getElementById('leaderboardContent');
+    const userRankInfo = document.getElementById('userRankInfo');
+    
+    // Show user rank if available
+    if (data.userRank && authManager.currentUser) {
+      document.getElementById('userRank').textContent = `#${data.userRank}`;
+      userRankInfo.style.display = 'block';
+    } else {
+      userRankInfo.style.display = 'none';
+    }
+    
+    if (!data.leaderboard || data.leaderboard.length === 0) {
+      content.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.7); padding: 40px;">No scores yet. Be the first!</div>';
+      return;
+    }
+    
+    content.innerHTML = data.leaderboard.map((player, index) => {
+      let rankClass = '';
+      if (index === 0) rankClass = 'gold';
+      else if (index === 1) rankClass = 'silver';
+      else if (index === 2) rankClass = 'bronze';
+      
+      const isCurrentUser = authManager.currentUser && player.username === authManager.currentUser.username;
+      
+      return `
+        <div class="leaderboard-item" style="${isCurrentUser ? 'border-color: #FFD700; background: rgba(255,215,0,0.1);' : ''}">
+          <div class="leaderboard-rank ${rankClass}">#${index + 1}</div>
+          <div class="leaderboard-info">
+            <div class="leaderboard-name">
+              ${player.displayName} ${isCurrentUser ? '(You)' : ''}
+              ${player.isGuest ? '<span style="color: #888; font-size: 0.8em;">(Guest)</span>' : ''}
+            </div>
+            <div class="leaderboard-stats">
+              ${player.gamesPlayed || 0} games • ${player.totalFoodsEaten || 0} foods eaten
+            </div>
+          </div>
+          <div class="leaderboard-score">${player.highScore.toLocaleString()}</div>
+        </div>
+      `;
+    }).join('');
+  }
   
-  notification.innerHTML = `${icon} ${message}`;
-  notification.style.transform = 'translateX(0)';
+  async submitScore(score, gameMode, gameData) {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...authManager.getAuthHeaders()
+      };
+      
+      const response = await fetch('/scores', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          score,
+          gameMode,
+          snakeSkin: gameData.snakeSkin || 'classic',
+          theme: gameData.theme || 'auto',
+          gameDuration: gameData.duration || 0,
+          foodsEaten: gameData.foodsEaten || 0
+        })
+      });
+      
+      if (response.ok) {
+        return true;
+      } else {
+        console.error('Failed to submit score');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error submitting score:', error);
+      return false;
+    }
+  }
+}
+
+// Notification System
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.innerHTML = message;
   
+  // Add notification styles if not already present
+  if (!document.querySelector('#notification-styles')) {
+    const style = document.createElement('style');
+    style.id = 'notification-styles';
+    style.textContent = `
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 10px;
+        color: white;
+        font-weight: bold;
+        z-index: 3000;
+        opacity: 0;
+        transform: translateX(100%);
+        transition: all 0.3s ease;
+      }
+      .notification.success { background: linear-gradient(135deg, #4CAF50, #45a049); }
+      .notification.error { background: linear-gradient(135deg, #f44336, #da190b); }
+      .notification.info { background: linear-gradient(135deg, #2196F3, #0b7dda); }
+      .notification.show { opacity: 1; transform: translateX(0); }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => notification.classList.add('show'), 100);
   setTimeout(() => {
-    notification.style.transform = 'translateX(400px)';
-  }, 4000);
+    notification.classList.remove('show');
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
 }
 
-// ===== CrazyGames SDK Integration =====
-// Initialize the CrazyGames SDK
-const crazygames = window.CrazyGames?.SDK;
+// Initialize managers
+const authManager = new AuthManager();
+const leaderboardManager = new LeaderboardManager();
+
+// Authentication Modal Functions
+function openAuthModal() {
+  console.log('Opening auth modal');
+  const modal = document.getElementById('authModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    if (authManager.currentUser && authManager.currentUser.isGuest) {
+      // Show upgrade options for guest users
+      toggleAuthMode(true); // Switch to register mode
+    }
+  } else {
+    console.error('Auth modal not found');
+  }
+}
+
+function closeAuthModal() {
+  document.getElementById('authModal').style.display = 'none';
+  resetAuthForm();
+}
+
+function toggleAuthMode(forceRegister = false) {
+  authManager.isAuthMode = forceRegister || !authManager.isAuthMode;
+  
+  const title = document.getElementById('authTitle');
+  const email = document.getElementById('authEmail');
+  const displayName = document.getElementById('authDisplayName');
+  const submit = document.getElementById('authSubmit');
+  const switchText = document.getElementById('authSwitchText');
+  const switchLink = document.getElementById('authSwitchLink');
+  
+  if (authManager.isAuthMode) {
+    title.textContent = 'Create Account';
+    email.style.display = 'block';
+    displayName.style.display = 'block';
+    submit.textContent = 'Sign Up';
+    switchText.textContent = 'Already have an account?';
+    switchLink.textContent = 'Login';
+  } else {
+    title.textContent = 'Login to Pythonix';
+    email.style.display = 'none';
+    displayName.style.display = 'none';
+    submit.textContent = 'Login';
+    switchText.textContent = "Don't have an account?";
+    switchLink.textContent = 'Sign up';
+  }
+}
+
+function resetAuthForm() {
+  document.getElementById('authForm').reset();
+  authManager.isAuthMode = false;
+  toggleAuthMode();
+}
+
+async function playAsGuest() {
+  await authManager.createGuest();
+}
+
+// Leaderboard Modal Functions
+function openLeaderboardModal() {
+  console.log('Opening leaderboard modal');
+  const modal = document.getElementById('leaderboardModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    leaderboardManager.loadLeaderboard(leaderboardManager.currentMode);
+  } else {
+    console.error('Leaderboard modal not found');
+  }
+}
+
+function closeLeaderboardModal() {
+  document.getElementById('leaderboardModal').style.display = 'none';
+}
+
+function switchLeaderboardTab(mode) {
+  // Update tab appearance
+  document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  leaderboardManager.currentMode = mode;
+  leaderboardManager.loadLeaderboard(mode);
+}
+
+// Enhanced menu navigation with new options
+
+function updateMenuSelection() {
+  menuItems.forEach((id, index) => {
+    const element = document.getElementById(id);
+    if (index === currentMenuIndex) {
+      element.classList.add('active');
+    } else {
+      element.classList.remove('active');
+    }
+  });
+}
+
+function handleMenuAction() {
+  const selectedItem = menuItems[currentMenuIndex];
+  
+  switch(selectedItem) {
+    case 'startOption':
+      startGame();
+      break;
+    case 'instructionsOption':
+      toggleInstructions();
+      break;
+    case 'leaderboardOption':
+      openLeaderboardModal();
+      break;
+    case 'accountOption':
+      if (authManager.currentUser) {
+        if (authManager.currentUser.isGuest) {
+          openAuthModal(); // Show upgrade options
+        } else {
+          // Show profile or logout option
+          if (confirm('Do you want to logout?')) {
+            authManager.logout();
+          }
+        }
+      } else {
+        openAuthModal();
+      }
+      break;
+  }
+}
+
+// Event Listeners
+document.getElementById('authForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const username = document.getElementById('authUsername').value.trim();
+  const email = document.getElementById('authEmail').value.trim();
+  const displayName = document.getElementById('authDisplayName').value.trim();
+  const password = document.getElementById('authPassword').value;
+  
+  if (authManager.isAuthMode) {
+    await authManager.register(username, email, password, displayName);
+  } else {
+    await authManager.login(username, password);
+  }
+});
 
 // Global game variables
 let canvas, ctx, boxSize = 40, boardWidth, boardHeight;
@@ -2859,6 +2480,7 @@ let multiplierActive = false;
 let multiplierInterval, speedInterval, multiplierExpireTime;
 let gameTimeLeft = 60, gameTimeInterval;
 let multiplierTimeLeft = 0, speedTimeLeft = 0;
+let gameStartTime = null;
 
 // Sound effects
 const eatSound = new Audio('eat.mp3');
@@ -2867,46 +2489,6 @@ const powerSound = new Audio('powerup.mp3');
 powerSound.volume = 0.5;
 const gameOverSound = new Audio('gameover.mp3');
 gameOverSound.volume = 0.5;
-
-// ===== CrazyGames SDK Functions =====
-
-// Loading Events
-function startLoading() {
-  if (crazygames) {
-    crazygames.game.loadingStart();
-    console.log("CrazyGames: Loading started");
-  }
-}
-
-function finishLoading() {
-  if (crazygames) {
-    crazygames.game.loadingStop();
-    console.log("CrazyGames: Loading finished");
-  }
-}
-
-// Ads
-function showAdBeforeRestart() {
-  if (crazygames) {
-    console.log("CrazyGames: Requesting ad...");
-    crazygames.ad.requestAd("midgame", () => {
-      console.log("CrazyGames: Ad finished. Game can continue...");
-      // Don't auto-restart, let user decide
-    });
-  }
-}
-
-// Get user info (optional)
-function getUserInfo() {
-  if (crazygames) {
-    crazygames.user.getUser().then((user) => {
-      console.log("CrazyGames: Player info:", user);
-      // user.locale, user.platform, etc.
-    }).catch(err => {
-      console.log("CrazyGames: Could not get user info:", err);
-    });
-  }
-}
 
 // Menu sounds
 const backgroundMusic = new Audio('menu.wav');
@@ -3251,227 +2833,6 @@ function loadAchievements() {
   achievementsContent.innerHTML = html;
 }
 
-// ===== SHOP FUNCTIONS =====
-
-function showShop() {
-  console.log('Opening shop...');
-  const modal = document.getElementById('shopModal');
-  if (modal) {
-    modal.style.display = 'flex';
-    updateCoinDisplay();
-    showShopTab('skins'); // Show skins tab by default
-  } else {
-    console.error('Shop modal not found');
-  }
-}
-
-function closeShop() {
-  const modal = document.getElementById('shopModal');
-  if (modal) {
-    modal.style.display = 'none';
-  }
-}
-
-function showShopTab(tabName) {
-  // Update tab appearance
-  document.querySelectorAll('.shop-tab').forEach(tab => {
-    tab.classList.remove('active');
-    if (tab.textContent.toLowerCase().includes(tabName)) {
-      tab.classList.add('active');
-    }
-  });
-  
-  // Filter items by type
-  let itemsToShow = [];
-  switch(tabName) {
-    case 'skins':
-      itemsToShow = Object.entries(SHOP_ITEMS).filter(([id, item]) => item.type === 'skin');
-      break;
-    case 'trails':
-      itemsToShow = Object.entries(SHOP_ITEMS).filter(([id, item]) => item.type === 'trail');
-      break;
-    case 'sounds':
-      itemsToShow = Object.entries(SHOP_ITEMS).filter(([id, item]) => item.type === 'sound');
-      break;
-    case 'utility':
-      itemsToShow = Object.entries(SHOP_ITEMS).filter(([id, item]) => item.type === 'utility');
-      break;
-    case 'badges':
-      itemsToShow = Object.entries(SHOP_ITEMS).filter(([id, item]) => item.type === 'badge');
-      break;
-  }
-  
-  // Render items
-  renderShopItems(itemsToShow);
-}
-
-function renderShopItems(items) {
-  const container = document.getElementById('shopItems');
-  if (!container) return;
-  
-  const ownedItems = getOwnedItems();
-  const equippedItems = getEquippedItems();
-  const playerCoins = getCoins();
-  
-  container.innerHTML = items.map(([itemId, item]) => {
-    const isOwned = ownedItems.includes(itemId);
-    const isEquipped = Object.values(equippedItems).includes(itemId);
-    const canAfford = playerCoins >= item.price;
-    
-    let buttonText = 'Buy';
-    let buttonClass = 'shop-button';
-    let buttonDisabled = '';
-    
-    if (isEquipped) {
-      buttonText = 'Equipped';
-      buttonClass += ' equipped';
-      buttonDisabled = 'disabled';
-    } else if (isOwned) {
-      buttonText = 'Equip';
-      buttonClass += ' owned';
-    } else if (!canAfford) {
-      buttonText = 'Not enough coins';
-      buttonDisabled = 'disabled';
-    }
-    
-    return `
-      <div class="shop-item ${isOwned ? 'owned' : ''} ${isEquipped ? 'equipped' : ''}">
-        <div class="item-name">${item.name}</div>
-        <div class="item-description">${item.description}</div>
-        <div class="item-price">🪙 ${item.price}</div>
-        <button class="${buttonClass}" 
-                onclick="handleItemClick('${itemId}')" 
-                ${buttonDisabled}>
-          ${buttonText}
-        </button>
-      </div>
-    `;
-  }).join('');
-}
-
-function handleItemClick(itemId) {
-  const item = SHOP_ITEMS[itemId];
-  if (!item) return;
-  
-  const ownedItems = getOwnedItems();
-  const isOwned = ownedItems.includes(itemId);
-  
-  if (isOwned) {
-    // Equip the item
-    equipItem(itemId, item.type);
-    showNotification(`Equipped: ${item.name}! ✨`);
-    // Refresh current tab
-    const activeTab = document.querySelector('.shop-tab.active');
-    if (activeTab) {
-      const tabType = activeTab.textContent.toLowerCase().includes('snake') ? 'skins' :
-                     activeTab.textContent.toLowerCase().includes('trail') ? 'trails' :
-                     activeTab.textContent.toLowerCase().includes('sound') ? 'sounds' :
-                     activeTab.textContent.toLowerCase().includes('utility') ? 'utility' : 'badges';
-      showShopTab(tabType);
-    }
-  } else {
-    // Try to buy the item
-    if (spendCoins(item.price)) {
-      addOwnedItem(itemId);
-      equipItem(itemId, item.type);
-      showNotification(`Purchased: ${item.name}! 🎉`);
-      // Refresh current tab
-      const activeTab = document.querySelector('.shop-tab.active');
-      if (activeTab) {
-        const tabType = activeTab.textContent.toLowerCase().includes('snake') ? 'skins' :
-                       activeTab.textContent.toLowerCase().includes('trail') ? 'trails' :
-                       activeTab.textContent.toLowerCase().includes('sound') ? 'sounds' :
-                       activeTab.textContent.toLowerCase().includes('utility') ? 'utility' : 'badges';
-        showShopTab(tabType);
-      }
-    } else {
-      showNotification(`Need ${item.price - getCoins()} more coins! 💰`);
-    }
-  }
-}
-
-function showDailyChallenges() {
-  console.log('Opening daily challenges...');
-  const modal = document.getElementById('challengesModal');
-  if (modal) {
-    modal.style.display = 'flex';
-    updateCoinDisplay();
-    renderDailyChallenges();
-  } else {
-    console.error('Challenges modal not found');
-  }
-}
-
-function closeChallenges() {
-  const modal = document.getElementById('challengesModal');
-  if (modal) {
-    modal.style.display = 'none';
-  }
-}
-
-function renderDailyChallenges() {
-  const container = document.getElementById('challengesContent');
-  if (!container) return;
-  
-  const dailyData = JSON.parse(localStorage.getItem('pythonixDailyChallenges') || '{}');
-  const loginStreak = parseInt(localStorage.getItem('pythonixLoginStreak') || '0');
-  
-  if (!dailyData.challenges) {
-    container.innerHTML = '<p style="text-align: center; color: #ccc;">No challenges available. Try refreshing!</p>';
-    return;
-  }
-  
-  let html = `
-    <div style="margin-bottom: 30px; text-align: center;">
-      <h3 style="color: #66ccff; margin-bottom: 15px;">🔥 Login Streak: ${loginStreak} days</h3>
-      <p style="color: #ccc; font-size: 14px;">Keep logging in daily for increasing rewards!</p>
-    </div>
-    
-    <div style="margin-bottom: 20px;">
-      <h3 style="color: #66ccff; margin-bottom: 15px;">Today's Challenges</h3>
-  `;
-  
-  dailyData.challenges.forEach(challenge => {
-    const statusIcon = challenge.completed ? '✅' : '⏳';
-    const statusText = challenge.completed ? 'COMPLETED' : 'IN PROGRESS';
-    const statusColor = challenge.completed ? '#4CAF50' : '#FFA500';
-    
-    html += `
-      <div style="background: rgba(102, 204, 255, 0.1); border: 2px solid ${statusColor}; border-radius: 10px; padding: 15px; margin-bottom: 15px;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div style="font-size: 14px; color: #66ccff; margin-bottom: 5px;">${statusIcon} ${challenge.description}</div>
-            <div style="font-size: 12px; color: #ccc;">Reward: 🪙 ${challenge.reward} coins</div>
-          </div>
-          <div style="text-align: right;">
-            <div style="font-size: 12px; color: ${statusColor}; font-weight: bold;">${statusText}</div>
-          </div>
-        </div>
-      </div>
-    `;
-  });
-  
-  html += `
-    </div>
-    
-    <div style="text-align: center; margin-top: 30px;">
-      <h3 style="color: #66ccff; margin-bottom: 15px;">💰 Ways to Earn Coins</h3>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; font-size: 12px; color: #ccc;">
-        <div>📊 Score Points<br>1 coin per 50 points</div>
-        <div>🎯 Score Milestones<br>Bonus coins at 100, 250, 500+</div>
-        <div>⏰ Play Time<br>5 coins every 2 minutes</div>
-        <div>🏁 Complete Rounds<br>20 coins per completion</div>
-        <div>🏆 Unlock Achievements<br>25-500 coins each</div>
-        <div>🗓️ Daily Login<br>50-300 coins (streak bonus)</div>
-        <div>🎯 Daily Challenges<br>75-150 coins each</div>
-        <div>📺 Watch Ads<br>100 coins per ad</div>
-      </div>
-    </div>
-  `;
-  
-  container.innerHTML = html;
-}
-
 function loadGameHistory() {
   const historyContent = document.getElementById('historyContent');
   if (!historyContent) {
@@ -3592,6 +2953,11 @@ function drawBoard() {
     colorA = "#000040";
     colorB = "#000060";
     borderColor = "#0000ff";
+  } else if (currentTheme.includes('theme-gameboy')) {
+    // Game Boy - LCD green tones
+    colorA = "#9bbc0f";
+    colorB = "#8bac0f";
+    borderColor = "#306230";
   } else if (currentTheme.includes('theme-neon')) {
     // Neon - dark with cyan grid
     colorA = "#001122";
@@ -3630,6 +2996,12 @@ function drawBoard() {
         // Add subtle glow to borders
         ctx.shadowColor = borderColor;
         ctx.shadowBlur = 2;
+      } else if (currentTheme.includes('theme-gameboy')) {
+        // Add scanline effect every few rows
+        if (y % 3 === 0) {
+          ctx.fillStyle = 'rgba(48, 98, 48, 0.1)';
+          ctx.fillRect(x * boxSize, y * boxSize, boxSize, 1);
+        }
       } else if (currentTheme.includes('theme-pacman')) {
         // Add maze-like appearance with thicker walls at edges
         if (x === 0 || x === boardWidth - 1 || y === 0 || y === boardHeight - 1) {
@@ -3705,6 +3077,10 @@ function drawBoard() {
         if (snakeSkin === 'pacman') {
           return currentTheme.includes('theme-pacman') ? 
             rootStyles.getPropertyValue('--snake-color').trim() || '#ffff00' : '#ffff00';
+        }
+        if (snakeSkin === 'gameboy') {
+          return currentTheme.includes('theme-gameboy') ? 
+            rootStyles.getPropertyValue('--snake-color').trim() || '#306230' : '#306230';
         }
         if (snakeSkin === 'neon') {
           if (currentTheme.includes('theme-neon')) {
@@ -3795,6 +3171,19 @@ function drawBoard() {
             ctx.arc(cx, cy, boxSize * 0.35, 0, 2 * Math.PI);
             ctx.fill();
           }
+        } else if ((currentTheme.includes('theme-gameboy') && snakeSkin === 'gameboy') || 
+                   (snakeSkin === 'gameboy' && !currentTheme.includes('theme-'))) {
+          // Draw Game Boy style with LCD pixel effect and subtle border
+          const pixelSize = boxSize - 3;
+          ctx.fillRect(x + 1.5, y + 1.5, pixelSize, pixelSize);
+          
+          // Add subtle highlight for LCD effect
+          ctx.fillStyle = 'rgba(155, 188, 15, 0.3)';
+          ctx.fillRect(x + 1.5, y + 1.5, pixelSize, 2);
+          ctx.fillRect(x + 1.5, y + 1.5, 2, pixelSize);
+          
+          // Reset color for next segment
+          ctx.fillStyle = snakeColor;
         } else if ((currentTheme.includes('theme-neon') && snakeSkin === 'neon') || 
                    (snakeSkin === 'neon' && !currentTheme.includes('theme-'))) {
           // Draw with glow effect
@@ -3969,7 +3358,31 @@ function drawBoard() {
         const cy = (head.y + 0.5) * boxSize;
         
         // Theme-specific eye styling
-        if (snakeSkin === 'arcade') {
+        if (snakeSkin === 'gameboy') {
+          // Game Boy style - simple dark pixels
+          ctx.fillStyle = '#0f380f';
+          const eyeSize = boxSize * 0.1;
+          const eyeOffset = boxSize * 0.18;
+          
+          let eye1X, eye1Y, eye2X, eye2Y;
+          if (direction === 'UP') {
+            eye1X = cx - eyeOffset; eye1Y = cy - eyeOffset;
+            eye2X = cx + eyeOffset; eye2Y = cy - eyeOffset;
+          } else if (direction === 'DOWN') {
+            eye1X = cx - eyeOffset; eye1Y = cy + eyeOffset;
+            eye2X = cx + eyeOffset; eye2Y = cy + eyeOffset;
+          } else if (direction === 'LEFT') {
+            eye1X = cx - eyeOffset; eye1Y = cy - eyeOffset;
+            eye2X = cx - eyeOffset; eye2Y = cy + eyeOffset;
+          } else {
+            eye1X = cx + eyeOffset; eye1Y = cy - eyeOffset;
+            eye2X = cx + eyeOffset; eye2Y = cy + eyeOffset;
+          }
+          
+          ctx.fillRect(eye1X - eyeSize/2, eye1Y - eyeSize/2, eyeSize, eyeSize);
+          ctx.fillRect(eye2X - eyeSize/2, eye2Y - eyeSize/2, eyeSize, eyeSize);
+          
+        } else if (snakeSkin === 'arcade') {
           // Arcade style - glowing eyes
           ctx.fillStyle = '#fff';
           ctx.shadowColor = '#fff';
@@ -4047,6 +3460,9 @@ function drawBoard() {
         // Draw as small dot like Pac-Man pellets
         ctx.arc(fx, fy, boxSize * 0.15, 0, 2 * Math.PI);
         ctx.fill();
+      } else if (currentTheme.includes('theme-gameboy')) {
+        // Draw as small pixel block
+        ctx.fillRect(fx - boxSize * 0.2, fy - boxSize * 0.2, boxSize * 0.4, boxSize * 0.4);
       } else if (currentTheme.includes('theme-classic')) {
         // Draw as simple square food
         ctx.fillRect(fx - boxSize * 0.25, fy - boxSize * 0.25, boxSize * 0.5, boxSize * 0.5);
@@ -4085,6 +3501,12 @@ function drawBoard() {
         ctx.arc(fx, fy, boxSize * 0.45, 0, 2 * Math.PI);
         ctx.fill();
         ctx.globalAlpha = 1.0;
+      } else if (currentTheme.includes('theme-gameboy')) {
+        // Draw as larger pixel block with border
+        ctx.fillRect(fx - boxSize * 0.35, fy - boxSize * 0.35, boxSize * 0.7, boxSize * 0.7);
+        ctx.strokeStyle = '#0f380f';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(fx - boxSize * 0.35, fy - boxSize * 0.35, boxSize * 0.7, boxSize * 0.7);
       } else if (currentTheme.includes('theme-classic')) {
         // Draw as flashing square
         const flash = Math.floor(performance.now() / 200) % 2;
@@ -4136,6 +3558,11 @@ function drawBoard() {
         ctx.arc(fx, fy, boxSize * 0.45, 0, 2 * Math.PI);
         ctx.fill();
         ctx.globalAlpha = 1.0;
+      } else if (currentTheme.includes('theme-gameboy')) {
+        // Draw as larger pixel block with animation
+        const pulse = Math.sin(performance.now() / 200) * 0.1 + 1;
+        const size = boxSize * 0.35 * pulse;
+        ctx.fillRect(fx - size, fy - size, size * 2, size * 2);
       } else if (currentTheme.includes('theme-classic')) {
         // Draw as flashing triangle
         const flash = Math.floor(performance.now() / 150) % 2;
@@ -4283,12 +3710,6 @@ function endGame() {
   isGameOver = true;
   clearInterval(gameInterval);
   
-  // ===== CrazyGames SDK: Game ended =====
-  if (crazygames) {
-    crazygames.game.gameplayStop();
-    console.log("CrazyGames: Gameplay stopped");
-  }
-  
   // Play game over sound
   try {
     gameOverSound.currentTime = 0; // Reset sound to start
@@ -4297,36 +3718,22 @@ function endGame() {
     console.log('Game over sound playback failed:', e);
   }
   
+  // Submit score to leaderboard
+  const gameEndTime = Date.now();
+  const gameDuration = gameStartTime ? Math.floor((gameEndTime - gameStartTime) / 1000) : 0;
+  
+  leaderboardManager.submitScore(score, gameMode, {
+    snakeSkin: snakeSkin,
+    theme: document.body.className.includes('theme-') ? 
+           document.body.className.match(/theme-(\w+)/)?.[1] || 'day' : 'day',
+    duration: gameDuration,
+    foodsEaten: foodsEaten
+  });
+  
   // Update high score
   const highScore = parseInt(localStorage.getItem('pythonixHighScore') || '0');
   if (score > highScore) {
     localStorage.setItem('pythonixHighScore', score);
-    console.log("🎉 New high score:", score);
-  }
-  
-  // Award coins based on score
-  awardCoinsForScore(score);
-  
-  // Stop playtime tracking and award completion bonus
-  stopPlaytimeTracking();
-  
-  // Update stats and check for achievement rewards
-  const currentStats = JSON.parse(localStorage.getItem('pythonixStats') || '{"gamesPlayed": 0, "totalFoodsEaten": 0}');
-  currentStats.gamesPlayed++;
-  currentStats.totalFoodsEaten += foodsEaten;
-  localStorage.setItem('pythonixStats', JSON.stringify(currentStats));
-  
-  // Check achievement rewards
-  checkAchievementRewards(score, currentStats);
-  
-  // Check daily challenges
-  const session = JSON.parse(localStorage.getItem('pythonixCurrentSession') || '{}');
-  const survivalTime = session.startTime ? Math.floor((Date.now() - session.startTime) / 1000) : 0;
-  checkDailyChallenges(score, foodsEaten, survivalTime);
-  
-  // ===== CrazyGames SDK: Show ad before allowing restart =====
-  if (crazygames) {
-    showAdBeforeRestart();
   }
   
   // Show game over screen
@@ -4575,20 +3982,11 @@ function initGame() {
 function startGame() {
   console.log('Starting game...');
   
-  // ===== CrazyGames SDK: Game started =====
-  if (crazygames) {
-    crazygames.game.gameplayStart();
-    console.log("CrazyGames: Gameplay started");
-  }
+  // Record game start time
+  gameStartTime = Date.now();
   
-  // Initialize session tracking
-  localStorage.setItem('pythonixCurrentSession', JSON.stringify({
-    milestonesEarned: [],
-    startTime: Date.now()
-  }));
-  
-  // Start playtime tracking
-  startPlaytimeTracking();
+  // Stop background music when starting game
+  stopBackgroundMusic();
   
   // Hide intro screen
   const introScreen = document.getElementById('introScreen');
@@ -4643,7 +4041,7 @@ function toggleInstructions() {
 
 // Menu navigation variables
 let currentMenuIndex = 0;
-const menuItems = ['startOption', 'shopOption', 'instructionsOption'];
+const menuItems = ['startOption', 'instructionsOption', 'leaderboardOption', 'accountOption'];
 
 // Update menu selection
 function updateMenuSelection() {
@@ -4674,26 +4072,13 @@ function handleMenuNavigation(event) {
   } else if (event.code === 'Space') {
     event.preventDefault();
     playButtonClick(); // Play click sound on selection
-    if (currentMenuIndex === 0) {
-      stopBackgroundMusic(); // Stop menu music when starting game
-      startGame();
-    } else if (currentMenuIndex === 1) {
-      showShop();
-    } else if (currentMenuIndex === 2) {
-      toggleInstructions();
-    }
+    handleMenuAction();
   }
 }
 
 // Connect all buttons when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
   console.log('DOM loaded, connecting menu...');
-  
-  // ===== CrazyGames SDK: Start loading =====
-  startLoading();
-  
-  // Get user info from CrazyGames (optional)
-  getUserInfo();
   
   // Set up menu navigation
   updateMenuSelection();
@@ -4720,6 +4105,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // Connect menu items for mouse clicks
   const startOption = document.getElementById('startOption');
   const instructionsOption = document.getElementById('instructionsOption');
+  const leaderboardOption = document.getElementById('leaderboardOption');
+  const accountOption = document.getElementById('accountOption');
   
   if (startOption) {
     startOption.onclick = () => {
@@ -4742,16 +4129,37 @@ document.addEventListener('DOMContentLoaded', function() {
     instructionsOption.addEventListener('mouseenter', playButtonHover);
   }
   
-  // Connect Shop option
-  const shopOption = document.getElementById('shopOption');
-  if (shopOption) {
-    shopOption.onclick = () => {
+  if (leaderboardOption) {
+    leaderboardOption.onclick = () => {
+      console.log('Leaderboard option clicked');
       playButtonClick();
-      showShop();
+      openLeaderboardModal();
     };
     
     // Add hover effects
-    shopOption.addEventListener('mouseenter', playButtonHover);
+    leaderboardOption.addEventListener('mouseenter', playButtonHover);
+  }
+  
+  if (accountOption) {
+    accountOption.onclick = () => {
+      console.log('Account option clicked');
+      playButtonClick();
+      if (authManager.currentUser) {
+        if (authManager.currentUser.isGuest) {
+          openAuthModal(); // Show upgrade options
+        } else {
+          // Show profile or logout option
+          if (confirm('Do you want to logout?')) {
+            authManager.logout();
+          }
+        }
+      } else {
+        openAuthModal();
+      }
+    };
+    
+    // Add hover effects
+    accountOption.addEventListener('mouseenter', playButtonHover);
   }
   
   // Connect Instructions toggle button (legacy support)
@@ -4914,29 +4322,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize stats display
   updateStatsDisplay();
-  
-  // ===== INITIALIZE COIN SYSTEM =====
-  // Check for daily login bonus
-  checkDailyBonus();
-  
-  // Check for daily free continue token
-  checkFreeDailyContinue();
-  
-  // Initialize daily challenges
-  initializeDailyChallenges();
-  
-  // Update coin display
-  updateCoinDisplay();
-  
-  // Apply any equipped cosmetics
-  applyVisualEffects();
-  
-  // ===== CrazyGames SDK: Finish loading =====
-  // Small delay to ensure everything is ready
-  setTimeout(() => {
-    finishLoading();
-    console.log('Game initialization complete');
-  }, 100);
   
   console.log('All buttons connected successfully');
 });
