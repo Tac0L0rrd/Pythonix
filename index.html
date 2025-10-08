@@ -8,6 +8,16 @@
   <!-- Base URL for API endpoints; leave blank for same origin (relative) -->
   <meta name="api-base" content="">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
+  
+  <!-- 
+  AUDIO FILES USED:
+  - eat.mp3: Food eating sound
+  - powerup.mp3: Power-up sound and menu selections
+  - gameover.mp3: Game over sound
+  - menu.wav: Background music for start menu
+  - hover.wav: Button hover effects
+  - click.wav: Button click sounds
+  -->
   <style>
     html, body {
       min-height: 100vh;
@@ -2188,12 +2198,32 @@ powerSound.volume = 0.5;
 const gameOverSound = new Audio('gameover.mp3');
 gameOverSound.volume = 0.5;
 
+// Menu sounds
+const backgroundMusic = new Audio('menu.wav');
+backgroundMusic.volume = 0.3;
+backgroundMusic.loop = true;
+
+const buttonHoverSound = new Audio('hover.wav');
+buttonHoverSound.volume = 0.4;
+
+const buttonClickSound = new Audio('click.wav');
+buttonClickSound.volume = 0.5;
+
+const menuSelectSound = new Audio('powerup.mp3'); // Reuse powerup sound for selections
+menuSelectSound.volume = 0.4;
+
 // Volume control functionality
 function updateVolume(value) {
   const volume = value / 100;
   eatSound.volume = volume;
   powerSound.volume = volume;
   gameOverSound.volume = volume;
+  
+  // Menu sounds - slightly lower volumes for better balance
+  backgroundMusic.volume = volume * 0.6; // 60% of main volume
+  buttonHoverSound.volume = volume * 0.8; // 80% of main volume  
+  buttonClickSound.volume = volume;
+  menuSelectSound.volume = volume * 0.8; // 80% of main volume
   
   // Update game.js sounds if available
   if (window.updateGameJsVolume) {
@@ -2202,6 +2232,105 @@ function updateVolume(value) {
   
   document.getElementById('volumeValue').textContent = value + '%';
   localStorage.setItem('pythonixVolume', value);
+}
+
+// Menu sound functions
+function playBackgroundMusic() {
+  try {
+    backgroundMusic.currentTime = 0;
+    backgroundMusic.play().catch(e => {
+      console.log('Background music autoplay prevented:', e);
+    });
+  } catch (e) {
+    console.log('Could not play background music:', e);
+  }
+}
+
+function stopBackgroundMusic() {
+  try {
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
+  } catch (e) {
+    console.log('Could not stop background music:', e);
+  }
+}
+
+function playButtonHover() {
+  try {
+    buttonHoverSound.currentTime = 0;
+    buttonHoverSound.play().catch(e => console.log('Button hover sound failed:', e));
+  } catch (e) {
+    console.log('Could not play button hover sound:', e);
+  }
+}
+
+function playButtonClick() {
+  try {
+    buttonClickSound.currentTime = 0;
+    buttonClickSound.play().catch(e => console.log('Button click sound failed:', e));
+  } catch (e) {
+    console.log('Could not play button click sound:', e);
+  }
+}
+
+function playMenuSelect() {
+  try {
+    menuSelectSound.currentTime = 0;
+    menuSelectSound.play().catch(e => console.log('Menu select sound failed:', e));
+  } catch (e) {
+    console.log('Could not play menu select sound:', e);
+  }
+}
+
+// Function to add sound effects to any button or interactive element
+function addSoundEffectsToElement(element) {
+  if (!element) return;
+  
+  // Add hover sound
+  element.addEventListener('mouseenter', playButtonHover);
+  
+  // Add click sound to existing click handler
+  const originalClick = element.onclick;
+  element.onclick = function(event) {
+    playButtonClick();
+    if (originalClick) {
+      return originalClick.call(this, event);
+    }
+  };
+}
+
+// Function to add sound effects to all interactive elements site-wide
+function addSoundEffectsToSite() {
+  // Add sounds to all buttons
+  const buttons = document.querySelectorAll('button');
+  buttons.forEach(addSoundEffectsToElement);
+  
+  // Add sounds to all selects
+  const selects = document.querySelectorAll('select');
+  selects.forEach(select => {
+    select.addEventListener('mouseenter', playButtonHover);
+    select.addEventListener('change', playButtonClick);
+  });
+  
+  // Add sounds to all input sliders
+  const sliders = document.querySelectorAll('input[type="range"]');
+  sliders.forEach(slider => {
+    slider.addEventListener('mouseenter', playButtonHover);
+    slider.addEventListener('input', () => {
+      // Play a quieter click for slider movement
+      try {
+        const clickCopy = buttonClickSound.cloneNode();
+        clickCopy.volume = buttonClickSound.volume * 0.3; // Much quieter for sliders
+        clickCopy.play().catch(e => console.log('Slider sound failed:', e));
+      } catch (e) {
+        console.log('Could not play slider sound:', e);
+      }
+    });
+  });
+  
+  // Add sounds to clickable elements with onclick
+  const clickableElements = document.querySelectorAll('[onclick]');
+  clickableElements.forEach(addSoundEffectsToElement);
 }
 
 // Initialize volume from localStorage or default to 50%
@@ -2214,6 +2343,17 @@ document.addEventListener('DOMContentLoaded', function() {
   volumeSlider.addEventListener('input', function() {
     updateVolume(this.value);
   });
+  
+  // Add sound effects to all interactive elements site-wide
+  addSoundEffectsToSite();
+  
+  // Only start background music on start menu (check if intro screen is visible)
+  setTimeout(() => {
+    const introScreen = document.getElementById('introScreen');
+    if (introScreen && introScreen.style.display !== 'none') {
+      playBackgroundMusic();
+    }
+  }, 1000); // Small delay to ensure page is fully loaded
 });
 
 // Initialize canvas and board dimensions
@@ -3318,23 +3458,34 @@ function returnToStartScreen() {
   // Reset menu selection
   currentMenuIndex = 0;
   updateMenuSelection();
+  
+  // Start background music when returning to start menu
+  playBackgroundMusic();
 }
 
 // Make sure the navbar buttons work
 document.addEventListener('DOMContentLoaded', function() {
-  // Find achievements button and add click handler
+  // Find achievements button and add click handler (preserving sound effects)
   const achievementsBtn = document.querySelector('button[onclick*="showAchievements"]') || 
                            document.querySelector('.small-btn:nth-child(1)');
   if (achievementsBtn) {
-    achievementsBtn.onclick = showAchievements;
+    const originalClick = achievementsBtn.onclick;
+    achievementsBtn.onclick = function(event) {
+      if (originalClick) originalClick.call(this, event);
+      showAchievements();
+    };
     console.log('Achievements button found and connected');
   }
   
-  // Find history button and add click handler  
+  // Find history button and add click handler (preserving sound effects)
   const historyBtn = document.querySelector('button[onclick*="showGameHistory"]') ||
                      document.querySelector('.small-btn:nth-child(2)');
   if (historyBtn) {
-    historyBtn.onclick = showGameHistory;
+    const originalClick = historyBtn.onclick;
+    historyBtn.onclick = function(event) {
+      if (originalClick) originalClick.call(this, event);
+      showGameHistory();
+    };
     console.log('History button found and connected');
   }
 });
@@ -3600,15 +3751,19 @@ function updateMenuSelection() {
 function handleMenuNavigation(event) {
   if (event.code === 'ArrowUp') {
     event.preventDefault();
+    playButtonHover(); // Play hover sound on navigation
     currentMenuIndex = (currentMenuIndex - 1 + menuItems.length) % menuItems.length;
     updateMenuSelection();
   } else if (event.code === 'ArrowDown') {
     event.preventDefault();
+    playButtonHover(); // Play hover sound on navigation
     currentMenuIndex = (currentMenuIndex + 1) % menuItems.length;
     updateMenuSelection();
   } else if (event.code === 'Space') {
     event.preventDefault();
+    playButtonClick(); // Play click sound on selection
     if (currentMenuIndex === 0) {
+      stopBackgroundMusic(); // Stop menu music when starting game
       startGame();
     } else if (currentMenuIndex === 1) {
       toggleInstructions();
@@ -3634,7 +3789,11 @@ document.addEventListener('DOMContentLoaded', function() {
   // Connect Start Game button (legacy support)
   const startBtn = document.getElementById('startBtn');
   if (startBtn) {
-    startBtn.onclick = startGame;
+    startBtn.onclick = () => {
+      playButtonClick();
+      stopBackgroundMusic();
+      startGame();
+    };
     console.log('Start button connected');
   }
   
@@ -3643,11 +3802,24 @@ document.addEventListener('DOMContentLoaded', function() {
   const instructionsOption = document.getElementById('instructionsOption');
   
   if (startOption) {
-    startOption.onclick = startGame;
+    startOption.onclick = () => {
+      playButtonClick();
+      stopBackgroundMusic();
+      startGame();
+    };
+    
+    // Add hover effects
+    startOption.addEventListener('mouseenter', playButtonHover);
   }
   
   if (instructionsOption) {
-    instructionsOption.onclick = toggleInstructions;
+    instructionsOption.onclick = () => {
+      playButtonClick();
+      toggleInstructions();
+    };
+    
+    // Add hover effects
+    instructionsOption.addEventListener('mouseenter', playButtonHover);
   }
   
   // Connect Instructions toggle button (legacy support)
