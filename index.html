@@ -8865,12 +8865,23 @@ async function submitScoreToLootLocker(score, playerName = null) {
 // --- Step 3: Get top scores ---
 async function getLootLockerLeaderboard() {
   try {
+    // Ensure we have a session first
+    if (!lootlockerSessionToken) {
+      const playerName = localStorage.getItem('pythonixPlayerName') || 'Anonymous Snake';
+      await startLootLockerSession(playerName);
+    }
+    
+    if (!lootlockerSessionToken) {
+      throw new Error('No valid session token for leaderboard access');
+    }
+    
     const url = `${LOOTLOCKER_CONFIG.baseUrl}/game/leaderboards/${LOOTLOCKER_CONFIG.leaderboardId}/list`;
     const headers = { 
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "x-session-token": lootlockerSessionToken  // Required for leaderboard access
     };
     
-    console.log('📥 Fetching LootLocker leaderboard...');
+    console.log('📥 Fetching LootLocker leaderboard with session...');
     
     const response = await fetch(url, {
       method: 'GET',
