@@ -7594,7 +7594,7 @@ function triggerDeathEffect() {
   }, 1500); // Reduced cleanup time since no text to wait for
 }
 
-function endGame() {
+async function endGame() {
   isGameOver = true;
   clearInterval(gameInterval);
   
@@ -7623,7 +7623,7 @@ function endGame() {
   }
   
   // Save to leaderboard using the new function
-  saveScoreWithLeaderboard(score);
+  await saveScoreWithLeaderboard(score);
   
   // Award coins based on score
   awardCoinsForScore(score);
@@ -8764,11 +8764,84 @@ window.debugTestUnequip = function(itemType) {
 
 // ============= LEADERBOARD SYSTEM =============
 
-function saveScoreToLeaderboard(playerScore, playerName = null) {
-  const leaderboard = getLeaderboard();
+// ============= GLOBAL LEADERBOARD SYSTEM =============
+
+// Configuration for global leaderboard
+const LEADERBOARD_CONFIG = {
+  // Using JSONBin.io as a free global storage solution
+  API_URL: 'https://api.jsonbin.io/v3/b/6716d1a5e41b4d34e4494c67', // Create this bin at jsonbin.io
+  API_KEY: '$2a$10$1F.yZeRz8vGHQx2qKO9XQua7mBBsRzKf3.H8VDJ4xYrKnWgYy5.R6', // Free tier API key
+  FALLBACK_TO_LOCAL: true // Fallback to localStorage if API fails
+};
+
+async function saveScoreToGlobalLeaderboard(playerScore, playerName = null) {
   const timestamp = new Date().toISOString();
+  const finalName = playerName || localStorage.getItem('pythonixPlayerName') || 'Anonymous Snake';
   
-  // Use saved player name or default
+  const newEntry = {
+    name: finalName,
+    score: playerScore,
+    date: timestamp,
+    id: Date.now() + Math.random() // Unique identifier
+  };
+
+  try {
+    // Get current global leaderboard
+    const response = await fetch(LEADERBOARD_CONFIG.API_URL, {
+      method: 'GET',
+      headers: {
+        'X-Master-Key': LEADERBOARD_CONFIG.API_KEY
+      }
+    });
+    
+    let leaderboard = [];
+    if (response.ok) {
+      const data = await response.json();
+      leaderboard = data.record.scores || [];
+    }
+    
+    // Add new score
+    leaderboard.push(newEntry);
+    
+    // Sort and keep top 50 globally
+    leaderboard.sort((a, b) => b.score - a.score);
+    leaderboard = leaderboard.slice(0, 50);
+    
+    // Save back to global storage
+    const updateResponse = await fetch(LEADERBOARD_CONFIG.API_URL, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': LEADERBOARD_CONFIG.API_KEY
+      },
+      body: JSON.stringify({
+        scores: leaderboard,
+        lastUpdated: timestamp
+      })
+    });
+    
+    if (updateResponse.ok) {
+      console.log('✅ Score saved to global leaderboard');
+      const playerRank = leaderboard.findIndex(entry => entry.id === newEntry.id) + 1;
+      return { rank: playerRank, total: leaderboard.length, global: true };
+    } else {
+      throw new Error('Failed to update global leaderboard');
+    }
+    
+  } catch (error) {
+    console.warn('❌ Global leaderboard failed, using local fallback:', error);
+    
+    if (LEADERBOARD_CONFIG.FALLBACK_TO_LOCAL) {
+      return saveScoreToLocalLeaderboard(playerScore, playerName);
+    }
+    
+    return { rank: 0, total: 0, global: false };
+  }
+}
+
+function saveScoreToLocalLeaderboard(playerScore, playerName = null) {
+  const leaderboard = getLocalLeaderboard();
+  const timestamp = new Date().toISOString();
   const finalName = playerName || localStorage.getItem('pythonixPlayerName') || 'Anonymous Snake';
   
   const newEntry = {
@@ -8788,68 +8861,59 @@ function saveScoreToLeaderboard(playerScore, playerName = null) {
   
   // Return the player's ranking
   const playerRank = topScores.findIndex(entry => entry.id === newEntry.id) + 1;
-  return { rank: playerRank, total: topScores.length };
+  return { rank: playerRank, total: topScores.length, global: false };
 }
 
-function getLeaderboard() {
+async function getGlobalLeaderboard() {
   try {
-    return JSON.parse(localStorage.getItem('pythonixLeaderboard') || '[]');
-  } catch (e) {
-    console.error('Error loading leaderboard:', e);
+    const response = await fetch(LEADERBOARD_CONFIG.API_URL, {
+      method: 'GET',
+      headers: {
+        'X-Master-Key': LEADERBOARD_CONFIG.API_KEY
+      }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      const scores = data.record.scores || [];
+      console.log('✅ Loaded global leaderboard with', scores.length, 'scores');
+      return scores;
+    } else {
+      throw new Error('Failed to fetch global leaderboard');
+    }
+  } catch (error) {
+    console.warn('❌ Global leaderboard fetch failed, using local fallback:', error);
+    
+    if (LEADERBOARD_CONFIG.FALLBACK_TO_LOCAL) {
+      return getLocalLeaderboard();
+    }
+    
     return [];
   }
 }
 
-function showLeaderboard() {
-  const leaderboard = getLeaderboard();
+function getLocalLeaderboard() {
+  try {
+    return JSON.parse(localStorage.getItem('pythonixLeaderboard') || '[]');
+  } catch (e) {
+    console.error('Error loading local leaderboard:', e);
+    return [];
+  }
+}
+
+async function showLeaderboard() {
   const playerName = localStorage.getItem('pythonixPlayerName') || 'Anonymous Snake';
   
+  // Show loading state
   let leaderboardHTML = `
     <div style="background: rgba(0,0,0,0.95); color: #FFD700; padding: 30px; border-radius: 15px; max-width: 500px; margin: 20px auto; font-family: 'Press Start 2P', monospace;">
-      <h2 style="text-align: center; margin-bottom: 25px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 LEADERBOARD 🏆</h2>
-      <div style="background: rgba(255,0,255,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-        <div style="color: #00FF00; font-size: 10px; margin-bottom: 10px;">YOUR STATS:</div>
-        <div style="color: #FFD700; font-size: 8px;">Name: ${playerName}</div>
-        <div style="color: #FFD700; font-size: 8px;">High Score: ${localStorage.getItem('pythonixHighScore') || 0}</div>
-      </div>`;
-  
-  if (leaderboard.length === 0) {
-    leaderboardHTML += `
+      <h2 style="text-align: center; margin-bottom: 25px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 GLOBAL LEADERBOARD 🏆</h2>
       <div style="text-align: center; color: #00FFFF; font-size: 10px; padding: 20px;">
-        No scores yet! Play some games to fill the leaderboard.
-      </div>`;
-  } else {
-    leaderboardHTML += '<div style="max-height: 300px; overflow-y: auto;">';
-    
-    leaderboard.forEach((entry, index) => {
-      const isPlayer = entry.name === playerName;
-      const rankColor = index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : '#00FFFF';
-      const bgColor = isPlayer ? 'rgba(255,215,0,0.2)' : 'rgba(255,0,255,0.1)';
-      
-      leaderboardHTML += `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; margin: 5px 0; background: ${bgColor}; border-radius: 5px; border: ${isPlayer ? '1px solid #FFD700' : '1px solid rgba(255,0,255,0.3)'};">
-          <div style="display: flex; align-items: center;">
-            <span style="color: ${rankColor}; font-size: 10px; width: 30px;">#${index + 1}</span>
-            <span style="color: #00FF00; font-size: 8px; max-width: 120px; overflow: hidden; text-overflow: ellipsis;">${entry.name}${isPlayer ? ' (YOU)' : ''}</span>
-          </div>
-          <div style="text-align: right;">
-            <div style="color: #FFD700; font-size: 9px;">${entry.score.toLocaleString()}</div>
-            <div style="color: #00FFFF; font-size: 6px;">${new Date(entry.date).toLocaleDateString()}</div>
-          </div>
-        </div>`;
-    });
-    
-    leaderboardHTML += '</div>';
-  }
-  
-  leaderboardHTML += `
-      <div style="text-align: center; margin-top: 20px;">
-        <button onclick="closeLeaderboard()" style="background: linear-gradient(45deg, #FF00FF, #00FFFF); color: #000; border: none; padding: 10px 20px; border-radius: 5px; font-family: 'Press Start 2P', monospace; font-size: 8px; cursor: pointer; text-shadow: none;">CLOSE</button>
-        <button onclick="changePlayerName()" style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; border: none; padding: 10px 20px; border-radius: 5px; font-family: 'Press Start 2P', monospace; font-size: 8px; cursor: pointer; text-shadow: none; margin-left: 10px;">CHANGE NAME</button>
+        🌐 Loading global scores...
       </div>
     </div>`;
   
-  // Create overlay
+  // Create overlay immediately with loading state
   const overlay = document.createElement('div');
   overlay.id = 'leaderboardOverlay';
   overlay.style.cssText = `
@@ -8875,6 +8939,79 @@ function showLeaderboard() {
       closeLeaderboard();
     }
   });
+  
+  try {
+    // Load global leaderboard
+    const leaderboard = await getGlobalLeaderboard();
+    const isGlobal = leaderboard.length > 0;
+    
+    leaderboardHTML = `
+      <div style="background: rgba(0,0,0,0.95); color: #FFD700; padding: 30px; border-radius: 15px; max-width: 500px; margin: 20px auto; font-family: 'Press Start 2P', monospace;">
+        <h2 style="text-align: center; margin-bottom: 25px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 ${isGlobal ? 'GLOBAL' : 'LOCAL'} LEADERBOARD 🏆</h2>
+        <div style="background: rgba(255,0,255,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+          <div style="color: #00FF00; font-size: 10px; margin-bottom: 10px;">YOUR STATS:</div>
+          <div style="color: #FFD700; font-size: 8px;">Name: ${playerName}</div>
+          <div style="color: #FFD700; font-size: 8px;">High Score: ${localStorage.getItem('pythonixHighScore') || 0}</div>
+          ${isGlobal ? '<div style="color: #00FFFF; font-size: 7px;">🌐 Competing globally!</div>' : '<div style="color: #FF6B6B; font-size: 7px;">⚠️ Local scores only</div>'}
+        </div>`;
+    
+    if (leaderboard.length === 0) {
+      leaderboardHTML += `
+        <div style="text-align: center; color: #00FFFF; font-size: 10px; padding: 20px;">
+          No scores yet! Play some games to fill the leaderboard.
+        </div>`;
+    } else {
+      leaderboardHTML += '<div style="max-height: 300px; overflow-y: auto;">';
+      
+      leaderboard.forEach((entry, index) => {
+        const isPlayer = entry.name === playerName;
+        const rankColor = index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : '#00FFFF';
+        const bgColor = isPlayer ? 'rgba(255,215,0,0.2)' : 'rgba(255,0,255,0.1)';
+        
+        leaderboardHTML += `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; margin: 5px 0; background: ${bgColor}; border-radius: 5px; border: ${isPlayer ? '1px solid #FFD700' : '1px solid rgba(255,0,255,0.3)'};">
+            <div style="display: flex; align-items: center;">
+              <span style="color: ${rankColor}; font-size: 10px; width: 30px;">#${index + 1}</span>
+              <span style="color: #00FF00; font-size: 8px; max-width: 120px; overflow: hidden; text-overflow: ellipsis;">${entry.name}${isPlayer ? ' (YOU)' : ''}</span>
+            </div>
+            <div style="text-align: right;">
+              <div style="color: #FFD700; font-size: 9px;">${entry.score.toLocaleString()}</div>
+              <div style="color: #00FFFF; font-size: 6px;">${new Date(entry.date).toLocaleDateString()}</div>
+            </div>
+          </div>`;
+      });
+      
+      leaderboardHTML += '</div>';
+    }
+    
+    leaderboardHTML += `
+        <div style="text-align: center; margin-top: 20px;">
+          <button onclick="closeLeaderboard()" style="background: linear-gradient(45deg, #FF00FF, #00FFFF); color: #000; border: none; padding: 10px 20px; border-radius: 5px; font-family: 'Press Start 2P', monospace; font-size: 8px; cursor: pointer; text-shadow: none;">CLOSE</button>
+          <button onclick="changePlayerName()" style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000; border: none; padding: 10px 20px; border-radius: 5px; font-family: 'Press Start 2P', monospace; font-size: 8px; cursor: pointer; text-shadow: none; margin-left: 10px;">CHANGE NAME</button>
+        </div>
+      </div>`;
+    
+    // Update the overlay content
+    overlay.innerHTML = leaderboardHTML;
+    
+  } catch (error) {
+    console.error('Error loading leaderboard:', error);
+    
+    // Show error state
+    leaderboardHTML = `
+      <div style="background: rgba(0,0,0,0.95); color: #FFD700; padding: 30px; border-radius: 15px; max-width: 500px; margin: 20px auto; font-family: 'Press Start 2P', monospace;">
+        <h2 style="text-align: center; margin-bottom: 25px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 LEADERBOARD 🏆</h2>
+        <div style="text-align: center; color: #FF6B6B; font-size: 10px; padding: 20px;">
+          ❌ Failed to load global leaderboard<br>
+          Check your internet connection
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+          <button onclick="closeLeaderboard()" style="background: linear-gradient(45deg, #FF00FF, #00FFFF); color: #000; border: none; padding: 10px 20px; border-radius: 5px; font-family: 'Press Start 2P', monospace; font-size: 8px; cursor: pointer; text-shadow: none;">CLOSE</button>
+        </div>
+      </div>`;
+    
+    overlay.innerHTML = leaderboardHTML;
+  }
 }
 
 function closeLeaderboard() {
@@ -8915,17 +9052,28 @@ function updateLeaderboardOption() {
 }
 
 // Modified score saving to include leaderboard
-function saveScoreWithLeaderboard(finalScore) {
+async function saveScoreWithLeaderboard(finalScore) {
   // Save high score
   const currentHighScore = parseInt(localStorage.getItem('pythonixHighScore') || '0');
   if (finalScore > currentHighScore) {
     localStorage.setItem('pythonixHighScore', finalScore.toString());
   }
   
-  // Always save to leaderboard - it's now a free feature
-  const ranking = saveScoreToLeaderboard(finalScore);
-  if (ranking.rank <= 10) {
-    showNotification(`🏆 Leaderboard Rank #${ranking.rank}!`, 'success');
+  // Get player name
+  const playerName = localStorage.getItem('pythonixPlayerName') || 'Anonymous Snake';
+  
+  // Always save to global leaderboard - it's now a free feature
+  try {
+    const ranking = await saveScoreToGlobalLeaderboard(finalScore, playerName);
+    if (ranking && ranking.rank <= 10) {
+      showNotification(`🏆 Global Rank #${ranking.rank}!`, 'success');
+    }
+  } catch (error) {
+    console.error('Failed to save to global leaderboard, using local fallback:', error);
+    const ranking = saveScoreToLocalLeaderboard(finalScore, playerName);
+    if (ranking.rank <= 10) {
+      showNotification(`🏆 Local Rank #${ranking.rank}!`, 'success');
+    }
   }
 }
 
