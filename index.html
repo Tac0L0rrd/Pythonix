@@ -8769,9 +8769,9 @@ window.debugTestUnequip = function(itemType) {
 // Configuration for global leaderboard
 const LEADERBOARD_CONFIG = {
   // Using JSONBin.io as a free global storage solution
-  API_URL: 'https://api.jsonbin.io/v3/b/6716d1a5e41b4d34e4494c67', // Create this bin at jsonbin.io
-  API_KEY: '$2a$10$1F.yZeRz8vGHQx2qKO9XQua7mBBsRzKf3.H8VDJ4xYrKnWgYy5.R6', // Free tier API key
-  FALLBACK_TO_LOCAL: true // Fallback to localStorage if API fails
+  apiUrl: 'https://api.jsonbin.io/v3/b/6716d1a5e41b4d34e4494c67', // Create this bin at jsonbin.io
+  apiKey: '$2a$10$1F.yZeRz8vGHQx2qKO9XQua7mBBsRzKf3.H8VDJ4xYrKnWgYy5.R6', // Free tier API key
+  fallbackToLocal: true // Fallback to localStorage if API fails
 };
 
 async function saveScoreToGlobalLeaderboard(playerScore, playerName = null) {
@@ -8787,17 +8787,25 @@ async function saveScoreToGlobalLeaderboard(playerScore, playerName = null) {
 
   try {
     // Get current global leaderboard
-    const response = await fetch(LEADERBOARD_CONFIG.API_URL, {
+    const response = await fetch(LEADERBOARD_CONFIG.apiUrl, {
       method: 'GET',
       headers: {
-        'X-Master-Key': LEADERBOARD_CONFIG.API_KEY
+        'X-Master-Key': LEADERBOARD_CONFIG.apiKey
       }
     });
     
     let leaderboard = [];
     if (response.ok) {
       const data = await response.json();
-      leaderboard = data.record.scores || [];
+      // Handle both old and new data structures
+      if (data.record.scores) {
+        leaderboard = data.record.scores; // Old structure with scores wrapper
+      } else if (Array.isArray(data.record)) {
+        leaderboard = data.record; // New direct array structure
+      } else {
+        leaderboard = []; // Empty/invalid data
+      }
+      console.log('📥 Found', leaderboard.length, 'existing scores');
     }
     
     // Add new score
@@ -8808,16 +8816,13 @@ async function saveScoreToGlobalLeaderboard(playerScore, playerName = null) {
     leaderboard = leaderboard.slice(0, 50);
     
     // Save back to global storage
-    const updateResponse = await fetch(LEADERBOARD_CONFIG.API_URL, {
+    const updateResponse = await fetch(LEADERBOARD_CONFIG.apiUrl, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'X-Master-Key': LEADERBOARD_CONFIG.API_KEY
+        'X-Master-Key': LEADERBOARD_CONFIG.apiKey
       },
-      body: JSON.stringify({
-        scores: leaderboard,
-        lastUpdated: timestamp
-      })
+      body: JSON.stringify(leaderboard) // Store direct array, not wrapped in scores object
     });
     
     if (updateResponse.ok) {
@@ -8831,7 +8836,7 @@ async function saveScoreToGlobalLeaderboard(playerScore, playerName = null) {
   } catch (error) {
     console.warn('❌ Global leaderboard failed, using local fallback:', error);
     
-    if (LEADERBOARD_CONFIG.FALLBACK_TO_LOCAL) {
+    if (LEADERBOARD_CONFIG.fallbackToLocal) {
       return saveScoreToLocalLeaderboard(playerScore, playerName);
     }
     
@@ -8866,16 +8871,22 @@ function saveScoreToLocalLeaderboard(playerScore, playerName = null) {
 
 async function getGlobalLeaderboard() {
   try {
-    const response = await fetch(LEADERBOARD_CONFIG.API_URL, {
+    const response = await fetch(LEADERBOARD_CONFIG.apiUrl, {
       method: 'GET',
       headers: {
-        'X-Master-Key': LEADERBOARD_CONFIG.API_KEY
+        'X-Master-Key': LEADERBOARD_CONFIG.apiKey
       }
     });
     
     if (response.ok) {
       const data = await response.json();
-      const scores = data.record.scores || [];
+      // Handle both old and new data structures
+      let scores = [];
+      if (data.record.scores) {
+        scores = data.record.scores; // Old structure with scores wrapper
+      } else if (Array.isArray(data.record)) {
+        scores = data.record; // New direct array structure
+      }
       console.log('✅ Loaded global leaderboard with', scores.length, 'scores');
       return scores;
     } else {
@@ -8884,7 +8895,7 @@ async function getGlobalLeaderboard() {
   } catch (error) {
     console.warn('❌ Global leaderboard fetch failed, using local fallback:', error);
     
-    if (LEADERBOARD_CONFIG.FALLBACK_TO_LOCAL) {
+    if (LEADERBOARD_CONFIG.fallbackToLocal) {
       return getLocalLeaderboard();
     }
     
@@ -8942,7 +8953,9 @@ async function showLeaderboard() {
   
   try {
     // Load global leaderboard
+    console.log('🔍 Loading leaderboard for display...');
     const leaderboard = await getGlobalLeaderboard();
+    console.log('📊 Leaderboard data:', leaderboard);
     const isGlobal = leaderboard.length > 0;
     
     leaderboardHTML = `
@@ -9061,10 +9074,12 @@ async function saveScoreWithLeaderboard(finalScore) {
   
   // Get player name
   const playerName = localStorage.getItem('pythonixPlayerName') || 'Anonymous Snake';
+  console.log('💾 Saving score:', finalScore, 'for player:', playerName);
   
   // Always save to global leaderboard - it's now a free feature
   try {
     const ranking = await saveScoreToGlobalLeaderboard(finalScore, playerName);
+    console.log('🏆 Score saved with ranking:', ranking);
     if (ranking && ranking.rank <= 10) {
       showNotification(`🏆 Global Rank #${ranking.rank}!`, 'success');
     }
