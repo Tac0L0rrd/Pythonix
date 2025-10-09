@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Global Leaderboard Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #000; color: #0f0; }
+        button { padding: 10px; margin: 10px; background: #333; color: #0f0; border: 1px solid #0f0; }
+        .log { background: #111; padding: 10px; margin: 10px; border: 1px solid #333; }
+        .score { display: flex; justify-content: space-between; padding: 5px; border-bottom: 1px solid #333; }
+    </style>
+</head>
+<body>
+    <h1>🐍 Global Leaderboard Test</h1>
+    
+    <div>
+        <input type="text" id="testName" placeholder="Player name" value="TestPlayer">
+        <input type="number" id="testScore" placeholder="Score" value="1000">
+        <button onclick="testSaveScore()">Save Test Score</button>
+        <button onclick="testGetLeaderboard()">Get Leaderboard</button>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+    
+    <div id="log" class="log">
+        <h3>Debug Log:</h3>
+        <div id="logContent"></div>
+    </div>
+    
+    <div id="leaderboard" class="log">
+        <h3>Current Leaderboard:</h3>
+        <div id="leaderboardContent"></div>
+    </div>
+
+    <script>
+        // Copy the exact config and functions from the main game
+        const LEADERBOARD_CONFIG = {
+            apiUrl: 'https://api.jsonbin.io/v3/b/6716d1a5e41b4d34e4494c67',
+            apiKey: '$2a$10$1F.yZeRz8vGHQx2qKO9XQua7mBBsRzKf3.H8VDJ4xYrKnWgYy5.R6',
+            fallbackToLocal: true
+        };
+
+        function log(message) {
+            const logContent = document.getElementById('logContent');
+            const time = new Date().toLocaleTimeString();
+            logContent.innerHTML += `<div>[${time}] ${message}</div>`;
+            logContent.scrollTop = logContent.scrollHeight;
+            console.log(message);
+        }
+
+        function clearLog() {
+            document.getElementById('logContent').innerHTML = '';
+            document.getElementById('leaderboardContent').innerHTML = '';
+        }
+
+        async function saveScoreToGlobalLeaderboard(playerScore, playerName = null) {
+            const timestamp = new Date().toISOString();
+            const finalName = playerName || 'Anonymous Snake';
+            
+            const newEntry = {
+                name: finalName,
+                score: playerScore,
+                date: timestamp,
+                id: Date.now() + Math.random()
+            };
+
+            try {
+                log(`🌐 Attempting to save score: ${playerScore} for ${finalName}`);
+                
+                // Get current global leaderboard
+                const response = await fetch(LEADERBOARD_CONFIG.apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': LEADERBOARD_CONFIG.apiKey
+                    }
+                });
+                
+                log(`📥 GET Response status: ${response.status}`);
+                
+                let leaderboard = [];
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`📊 Raw API response: ${JSON.stringify(data, null, 2)}`);
+                    
+                    // Handle both old and new data structures
+                    if (data.record.scores) {
+                        leaderboard = data.record.scores;
+                        log(`📋 Using old structure, found ${leaderboard.length} scores`);
+                    } else if (Array.isArray(data.record)) {
+                        leaderboard = data.record;
+                        log(`📋 Using new structure, found ${leaderboard.length} scores`);
+                    } else {
+                        leaderboard = [];
+                        log(`📋 No valid data structure found, starting fresh`);
+                    }
+                }
+                
+                // Add new score
+                leaderboard.push(newEntry);
+                log(`➕ Added new score. Total entries: ${leaderboard.length}`);
+                
+                // Sort and keep top 50 globally
+                leaderboard.sort((a, b) => b.score - a.score);
+                leaderboard = leaderboard.slice(0, 50);
+                log(`🏆 Sorted and trimmed to top ${leaderboard.length} scores`);
+                
+                // Save back to global storage
+                const updateResponse = await fetch(LEADERBOARD_CONFIG.apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': LEADERBOARD_CONFIG.apiKey
+                    },
+                    body: JSON.stringify(leaderboard)
+                });
+                
+                log(`📤 PUT Response status: ${updateResponse.status}`);
+                
+                if (updateResponse.ok) {
+                    const playerRank = leaderboard.findIndex(entry => entry.id === newEntry.id) + 1;
+                    log(`✅ Score saved successfully! Rank: ${playerRank}/${leaderboard.length}`);
+                    return { rank: playerRank, total: leaderboard.length, global: true };
+                } else {
+                    const errorText = await updateResponse.text();
+                    log(`❌ PUT failed: ${errorText}`);
+                    throw new Error('Failed to update global leaderboard');
+                }
+                
+            } catch (error) {
+                log(`❌ Error: ${error.message}`);
+                return { rank: 0, total: 0, global: false };
+            }
+        }
+
+        async function getGlobalLeaderboard() {
+            try {
+                log(`🌐 Fetching global leaderboard...`);
+                const response = await fetch(LEADERBOARD_CONFIG.apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'X-Master-Key': LEADERBOARD_CONFIG.apiKey
+                    }
+                });
+                
+                log(`📥 GET Response status: ${response.status}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log(`📊 Raw API response: ${JSON.stringify(data, null, 2)}`);
+                    
+                    let scores = [];
+                    if (data.record.scores) {
+                        scores = data.record.scores;
+                        log(`📋 Using old structure, found ${scores.length} scores`);
+                    } else if (Array.isArray(data.record)) {
+                        scores = data.record;
+                        log(`📋 Using new structure, found ${scores.length} scores`);
+                    }
+                    
+                    return scores;
+                } else {
+                    const errorText = await response.text();
+                    log(`❌ GET failed: ${errorText}`);
+                    throw new Error('Failed to fetch global leaderboard');
+                }
+            } catch (error) {
+                log(`❌ Error: ${error.message}`);
+                return [];
+            }
+        }
+
+        async function testSaveScore() {
+            const name = document.getElementById('testName').value || 'TestPlayer';
+            const score = parseInt(document.getElementById('testScore').value) || 1000;
+            
+            const result = await saveScoreToGlobalLeaderboard(score, name);
+            log(`🎯 Save result: ${JSON.stringify(result)}`);
+        }
+
+        async function testGetLeaderboard() {
+            const leaderboard = await getGlobalLeaderboard();
+            
+            const leaderboardContent = document.getElementById('leaderboardContent');
+            leaderboardContent.innerHTML = '';
+            
+            if (leaderboard.length === 0) {
+                leaderboardContent.innerHTML = '<div>No scores found</div>';
+            } else {
+                leaderboard.forEach((entry, index) => {
+                    leaderboardContent.innerHTML += `
+                        <div class="score">
+                            <span>#${index + 1} ${entry.name}</span>
+                            <span>${entry.score}</span>
+                            <span>${new Date(entry.date).toLocaleString()}</span>
+                        </div>`;
+                });
+            }
+            
+            log(`📊 Displayed ${leaderboard.length} scores`);
+        }
+
+        // Auto-load leaderboard on page load
+        window.onload = () => {
+            log('🚀 Test page loaded');
+            testGetLeaderboard();
+        };
+    </script>
+</body>
+</html>

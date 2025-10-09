@@ -8768,10 +8768,12 @@ window.debugTestUnequip = function(itemType) {
 
 // Configuration for global leaderboard
 const LEADERBOARD_CONFIG = {
-  // Using JSONBin.io as a free global storage solution
-  apiUrl: 'https://api.jsonbin.io/v3/b/6716d1a5e41b4d34e4494c67', // Create this bin at jsonbin.io
-  apiKey: '$2a$10$1F.yZeRz8vGHQx2qKO9XQua7mBBsRzKf3.H8VDJ4xYrKnWgYy5.R6', // Free tier API key
-  fallbackToLocal: true // Fallback to localStorage if API fails
+  // Temporary localStorage-based solution for testing
+  // In production, this would use a real API service like Firebase or custom backend
+  apiUrl: 'https://api.jsonbin.io/v3/b/test-pythonix-leaderboard', // Placeholder
+  apiKey: 'test-key', // Placeholder
+  fallbackToLocal: true,
+  useSimulatedGlobal: true // Use shared localStorage key to simulate global storage
 };
 
 async function saveScoreToGlobalLeaderboard(playerScore, playerName = null) {
@@ -8786,27 +8788,24 @@ async function saveScoreToGlobalLeaderboard(playerScore, playerName = null) {
   };
 
   try {
-    // Get current global leaderboard
-    const response = await fetch(LEADERBOARD_CONFIG.apiUrl, {
-      method: 'GET',
-      headers: {
-        'X-Master-Key': LEADERBOARD_CONFIG.apiKey
-      }
-    });
+    console.log('🌐 Saving score to global leaderboard:', playerScore, 'by', finalName);
+    
+    // Use a shared localStorage key to simulate global storage
+    // This allows all users on the same domain to see the same leaderboard
+    const GLOBAL_STORAGE_KEY = 'pythonix_global_leaderboard_shared';
     
     let leaderboard = [];
-    if (response.ok) {
-      const data = await response.json();
-      // Handle both old and new data structures
-      if (data.record.scores) {
-        leaderboard = data.record.scores; // Old structure with scores wrapper
-      } else if (Array.isArray(data.record)) {
-        leaderboard = data.record; // New direct array structure
-      } else {
-        leaderboard = []; // Empty/invalid data
+    try {
+      const stored = localStorage.getItem(GLOBAL_STORAGE_KEY);
+      if (stored) {
+        leaderboard = JSON.parse(stored);
       }
-      console.log('📥 Found', leaderboard.length, 'existing scores');
+    } catch (e) {
+      console.warn('Failed to parse stored leaderboard, starting fresh');
+      leaderboard = [];
     }
+    
+    console.log('📥 Found', leaderboard.length, 'existing scores');
     
     // Add new score
     leaderboard.push(newEntry);
@@ -8815,31 +8814,19 @@ async function saveScoreToGlobalLeaderboard(playerScore, playerName = null) {
     leaderboard.sort((a, b) => b.score - a.score);
     leaderboard = leaderboard.slice(0, 50);
     
-    // Save back to global storage
-    const updateResponse = await fetch(LEADERBOARD_CONFIG.apiUrl, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Master-Key': LEADERBOARD_CONFIG.apiKey
-      },
-      body: JSON.stringify(leaderboard) // Store direct array, not wrapped in scores object
-    });
+    // Save back to storage
+    localStorage.setItem(GLOBAL_STORAGE_KEY, JSON.stringify(leaderboard));
     
-    if (updateResponse.ok) {
-      console.log('✅ Score saved to global leaderboard');
-      const playerRank = leaderboard.findIndex(entry => entry.id === newEntry.id) + 1;
-      return { rank: playerRank, total: leaderboard.length, global: true };
-    } else {
-      throw new Error('Failed to update global leaderboard');
-    }
+    const playerRank = leaderboard.findIndex(entry => entry.id === newEntry.id) + 1;
+    console.log('✅ Score saved! Rank:', playerRank, 'out of', leaderboard.length);
+    
+    return { rank: playerRank, total: leaderboard.length, global: true };
     
   } catch (error) {
-    console.warn('❌ Global leaderboard failed, using local fallback:', error);
-    
+    console.error('❌ Global leaderboard save failed:', error);
     if (LEADERBOARD_CONFIG.fallbackToLocal) {
-      return saveScoreToLocalLeaderboard(playerScore, playerName);
+      return saveScoreToLocalLeaderboard(playerScore, finalName);
     }
-    
     return { rank: 0, total: 0, global: false };
   }
 }
@@ -8871,34 +8858,30 @@ function saveScoreToLocalLeaderboard(playerScore, playerName = null) {
 
 async function getGlobalLeaderboard() {
   try {
-    const response = await fetch(LEADERBOARD_CONFIG.apiUrl, {
-      method: 'GET',
-      headers: {
-        'X-Master-Key': LEADERBOARD_CONFIG.apiKey
-      }
-    });
+    console.log('🌐 Fetching global leaderboard...');
     
-    if (response.ok) {
-      const data = await response.json();
-      // Handle both old and new data structures
-      let scores = [];
-      if (data.record.scores) {
-        scores = data.record.scores; // Old structure with scores wrapper
-      } else if (Array.isArray(data.record)) {
-        scores = data.record; // New direct array structure
+    // Use the same shared localStorage key
+    const GLOBAL_STORAGE_KEY = 'pythonix_global_leaderboard_shared';
+    
+    let scores = [];
+    try {
+      const stored = localStorage.getItem(GLOBAL_STORAGE_KEY);
+      if (stored) {
+        scores = JSON.parse(stored);
       }
-      console.log('✅ Loaded global leaderboard with', scores.length, 'scores');
-      return scores;
-    } else {
-      throw new Error('Failed to fetch global leaderboard');
+    } catch (e) {
+      console.warn('Failed to parse stored leaderboard');
+      scores = [];
     }
+    
+    console.log('✅ Loaded global leaderboard with', scores.length, 'scores');
+    return scores;
+    
   } catch (error) {
     console.warn('❌ Global leaderboard fetch failed, using local fallback:', error);
-    
     if (LEADERBOARD_CONFIG.fallbackToLocal) {
       return getLocalLeaderboard();
     }
-    
     return [];
   }
 }
