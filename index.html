@@ -8766,67 +8766,181 @@ window.debugTestUnequip = function(itemType) {
 
 // ============= GLOBAL LEADERBOARD SYSTEM =============
 
-// Configuration for global leaderboard
-const LEADERBOARD_CONFIG = {
-  // Temporary localStorage-based solution for testing
-  // In production, this would use a real API service like Firebase or custom backend
-  apiUrl: 'https://api.jsonbin.io/v3/b/test-pythonix-leaderboard', // Placeholder
-  apiKey: 'test-key', // Placeholder
-  fallbackToLocal: true,
-  useSimulatedGlobal: true // Use shared localStorage key to simulate global storage
+// LootLocker Global Leaderboard Integration
+const LOOTLOCKER_CONFIG = {
+  gameApiKey: "dev_24426b1063d84ad2b9055c6e27a98ad8", // Your LootLocker API key
+  leaderboardId: "18748", // Your leaderboard ID
+  baseUrl: "https://api.lootlocker.io",
+  fallbackToLocal: true
 };
 
-async function saveScoreToGlobalLeaderboard(playerScore, playerName = null) {
-  const timestamp = new Date().toISOString();
-  const finalName = playerName || localStorage.getItem('pythonixPlayerName') || 'Anonymous Snake';
-  
-  const newEntry = {
-    name: finalName,
-    score: playerScore,
-    date: timestamp,
-    id: Date.now() + Math.random() // Unique identifier
-  };
+// Global session token for LootLocker
+let lootlockerSessionToken = null;
 
+// --- Step 1: Start a guest session ---
+async function startLootLockerSession(playerName = "Guest") {
   try {
-    console.log('🌐 Saving score to global leaderboard:', playerScore, 'by', finalName);
+    const url = `${LOOTLOCKER_CONFIG.baseUrl}/game/v2/session/guest`;
+    const headers = {
+      "x-api-key": LOOTLOCKER_CONFIG.gameApiKey,
+      "Content-Type": "application/json"
+    };
+    const data = { "player_identifier": playerName };
     
-    // Use a shared localStorage key to simulate global storage
-    // This allows all users on the same domain to see the same leaderboard
-    const GLOBAL_STORAGE_KEY = 'pythonix_global_leaderboard_shared';
+    console.log('🔐 Starting LootLocker session for:', playerName);
     
-    let leaderboard = [];
-    try {
-      const stored = localStorage.getItem(GLOBAL_STORAGE_KEY);
-      if (stored) {
-        leaderboard = JSON.parse(stored);
-      }
-    } catch (e) {
-      console.warn('Failed to parse stored leaderboard, starting fresh');
-      leaderboard = [];
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(data)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Session failed: ${response.status}`);
     }
     
-    console.log('📥 Found', leaderboard.length, 'existing scores');
-    
-    // Add new score
-    leaderboard.push(newEntry);
-    
-    // Sort and keep top 50 globally
-    leaderboard.sort((a, b) => b.score - a.score);
-    leaderboard = leaderboard.slice(0, 50);
-    
-    // Save back to storage
-    localStorage.setItem(GLOBAL_STORAGE_KEY, JSON.stringify(leaderboard));
-    
-    const playerRank = leaderboard.findIndex(entry => entry.id === newEntry.id) + 1;
-    console.log('✅ Score saved! Rank:', playerRank, 'out of', leaderboard.length);
-    
-    return { rank: playerRank, total: leaderboard.length, global: true };
+    const session = await response.json();
+    lootlockerSessionToken = session.session_token;
+    console.log('✅ LootLocker session started successfully');
+    return session.session_token;
     
   } catch (error) {
-    console.error('❌ Global leaderboard save failed:', error);
-    if (LEADERBOARD_CONFIG.fallbackToLocal) {
-      return saveScoreToLocalLeaderboard(playerScore, finalName);
+    console.error('❌ LootLocker session failed:', error);
+    return null;
+  }
+}
+
+// --- Step 2: Submit a score ---
+async function submitScoreToLootLocker(score, playerName = null) {
+  try {
+    // Ensure we have a session
+    if (!lootlockerSessionToken) {
+      const finalName = playerName || localStorage.getItem('pythonixPlayerName') || 'Anonymous Snake';
+      await startLootLockerSession(finalName);
     }
+    
+    if (!lootlockerSessionToken) {
+      throw new Error('No valid session token');
+    }
+    
+    const url = `${LOOTLOCKER_CONFIG.baseUrl}/game/leaderboards/${LOOTLOCKER_CONFIG.leaderboardId}/submit`;
+    const headers = {
+      "x-api-key": LOOTLOCKER_CONFIG.gameApiKey,
+      "x-session-token": lootlockerSessionToken,
+      "Content-Type": "application/json"
+    };
+    const data = { "score": score };
+    
+    console.log('📤 Submitting score to LootLocker:', score);
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(data)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Score submission failed: ${response.status}`);
+    }
+    
+    const result = await response.json();
+    console.log('✅ Score submitted to LootLocker:', result);
+    
+    // Get the player's rank from the response
+    const rank = result.rank || 0;
+    return { rank: rank, total: 0, global: true };
+    
+  } catch (error) {
+    console.error('❌ LootLocker score submission failed:', error);
+    return { rank: 0, total: 0, global: false };
+  }
+}
+
+// --- Step 3: Get top scores ---
+async function getLootLockerLeaderboard() {
+  try {
+    const url = `${LOOTLOCKER_CONFIG.baseUrl}/game/leaderboards/${LOOTLOCKER_CONFIG.leaderboardId}/list`;
+    const headers = { "x-api-key": LOOTLOCKER_CONFIG.gameApiKey };
+    
+    console.log('📥 Fetching LootLocker leaderboard...');
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: headers
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Leaderboard fetch failed: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('✅ LootLocker leaderboard loaded:', data);
+    
+    // Convert LootLocker format to our game format
+    const scores = data.items ? data.items.map(entry => ({
+      name: entry.player.name || 'Anonymous',
+      score: entry.score,
+      date: new Date().toISOString(), // LootLocker doesn't provide date in this endpoint
+      id: entry.player.id || Math.random()
+    })) : [];
+    
+    console.log('📊 Converted', scores.length, 'LootLocker scores');
+    return scores;
+    
+  } catch (error) {
+    console.error('❌ LootLocker leaderboard fetch failed:', error);
+    return [];
+  }
+}
+
+async function saveScoreToGlobalLeaderboard(playerScore, playerName = null) {
+  try {
+    const finalName = playerName || localStorage.getItem('pythonixPlayerName') || 'Anonymous Snake';
+    console.log('🌐 Saving score to LootLocker global leaderboard:', playerScore, 'by', finalName);
+    
+    // Try LootLocker first
+    const result = await submitScoreToLootLocker(playerScore, finalName);
+    
+    if (result.global) {
+      console.log('✅ Score saved to LootLocker! Rank:', result.rank);
+      return result;
+    } else {
+      throw new Error('LootLocker submission failed');
+    }
+    
+  } catch (error) {
+    console.error('❌ LootLocker save failed, using localStorage fallback:', error);
+    
+    if (LOOTLOCKER_CONFIG.fallbackToLocal) {
+      // Fallback to shared localStorage
+      const GLOBAL_STORAGE_KEY = 'pythonix_global_leaderboard_shared';
+      
+      let leaderboard = [];
+      try {
+        const stored = localStorage.getItem(GLOBAL_STORAGE_KEY);
+        if (stored) {
+          leaderboard = JSON.parse(stored);
+        }
+      } catch (e) {
+        leaderboard = [];
+      }
+      
+      const newEntry = {
+        name: finalName,
+        score: playerScore,
+        date: new Date().toISOString(),
+        id: Date.now() + Math.random()
+      };
+      
+      leaderboard.push(newEntry);
+      leaderboard.sort((a, b) => b.score - a.score);
+      leaderboard = leaderboard.slice(0, 50);
+      localStorage.setItem(GLOBAL_STORAGE_KEY, JSON.stringify(leaderboard));
+      
+      const playerRank = leaderboard.findIndex(entry => entry.id === newEntry.id) + 1;
+      return { rank: playerRank, total: leaderboard.length, global: false };
+    }
+    
     return { rank: 0, total: 0, global: false };
   }
 }
@@ -8858,30 +8972,39 @@ function saveScoreToLocalLeaderboard(playerScore, playerName = null) {
 
 async function getGlobalLeaderboard() {
   try {
-    console.log('🌐 Fetching global leaderboard...');
+    console.log('🌐 Fetching global leaderboard from LootLocker...');
     
-    // Use the same shared localStorage key
-    const GLOBAL_STORAGE_KEY = 'pythonix_global_leaderboard_shared';
+    // Try LootLocker first
+    const scores = await getLootLockerLeaderboard();
     
-    let scores = [];
-    try {
-      const stored = localStorage.getItem(GLOBAL_STORAGE_KEY);
-      if (stored) {
-        scores = JSON.parse(stored);
-      }
-    } catch (e) {
-      console.warn('Failed to parse stored leaderboard');
-      scores = [];
+    if (scores.length > 0) {
+      console.log('✅ Using LootLocker global leaderboard with', scores.length, 'scores');
+      return scores;
+    } else {
+      throw new Error('No LootLocker scores available');
     }
-    
-    console.log('✅ Loaded global leaderboard with', scores.length, 'scores');
-    return scores;
     
   } catch (error) {
-    console.warn('❌ Global leaderboard fetch failed, using local fallback:', error);
-    if (LEADERBOARD_CONFIG.fallbackToLocal) {
-      return getLocalLeaderboard();
+    console.warn('❌ LootLocker fetch failed, using localStorage fallback:', error);
+    
+    if (LOOTLOCKER_CONFIG.fallbackToLocal) {
+      // Fallback to shared localStorage
+      const GLOBAL_STORAGE_KEY = 'pythonix_global_leaderboard_shared';
+      
+      let scores = [];
+      try {
+        const stored = localStorage.getItem(GLOBAL_STORAGE_KEY);
+        if (stored) {
+          scores = JSON.parse(stored);
+        }
+      } catch (e) {
+        scores = [];
+      }
+      
+      console.log('📱 Using localStorage fallback with', scores.length, 'scores');
+      return scores;
     }
+    
     return [];
   }
 }
