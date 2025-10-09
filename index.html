@@ -5,155 +5,7 @@
   <title>Pythonix</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script type="module">
-    // CrazyGames SDK initialization with leaderboard
-    import { CrazyGames } from "https://sdk.crazygames.com/crazygames-sdk-v2.js";
-    
-    let crazygames;
-    let currentPlayer = null;
-    
-    async function initializeCrazyGames() {
-      try {
-        crazygames = await CrazyGames.SDK;
-        console.log("CrazyGames SDK initialized successfully");
-        
-        // Get user information
-        await getUserInfo();
-        
-        // Set up pause/resume event listeners
-        crazygames.game.on('pause', () => {
-          console.log("Game paused by CrazyGames");
-          if (typeof pauseGame === 'function' && !isGameOver && !isPaused) {
-            pauseGame();
-          }
-        });
-        
-        crazygames.game.on('resume', () => {
-          console.log("Game resumed by CrazyGames");
-          // Don't auto-resume, let player decide
-        });
-        
-        // Initialize leaderboard display
-        await updateLeaderboardDisplay();
-        
-      } catch (error) {
-        console.error("Failed to initialize CrazyGames SDK:", error);
-      }
-    }
-    
-    async function getUserInfo() {
-      try {
-        currentPlayer = await crazygames.player.getUser();
-        if (currentPlayer) {
-          console.log("User info:", currentPlayer);
-          // Use CrazyGames username if available
-          if (currentPlayer.username) {
-            localStorage.setItem('pythonixPlayerName', currentPlayer.username);
-            console.log("Set player name to:", currentPlayer.username);
-          }
-        } else {
-          console.log("Guest session - no user logged in");
-        }
-      } catch (error) {
-        console.error("Failed to get user info:", error);
-      }
-    }
-    
-    // Submit score to CrazyGames leaderboard
-    async function submitScoreToCrazyGames(score) {
-      try {
-        if (crazygames) {
-          await crazygames.leaderboard.setScore({
-            leaderboardName: "highscores",
-            score: score
-          });
-          console.log("✅ Score submitted to CrazyGames:", score);
-          
-          // Update leaderboard display
-          await updateLeaderboardDisplay();
-          return true;
-        }
-      } catch (error) {
-        console.error("❌ Error submitting score to CrazyGames:", error);
-        return false;
-      }
-      return false;
-    }
-    
-    // Get global leaderboard from CrazyGames
-    async function getCrazyGamesLeaderboard() {
-      try {
-        if (crazygames) {
-          const entries = await crazygames.leaderboard.getEntries({
-            leaderboardName: "highscores",
-            limit: 10
-          });
-          return entries;
-        }
-      } catch (error) {
-        console.error("❌ Error getting CrazyGames leaderboard:", error);
-      }
-      return [];
-    }
-    
-    // Get player's rank from CrazyGames
-    async function getPlayerRank() {
-      try {
-        if (crazygames && currentPlayer) {
-          const myEntry = await crazygames.leaderboard.getPlayerEntry({
-            leaderboardName: "highscores"
-          });
-          return myEntry;
-        }
-      } catch (error) {
-        console.error("❌ Error getting player rank:", error);
-      }
-      return null;
-    }
-    
-    // Update leaderboard display in game
-    async function updateLeaderboardDisplay() {
-      const leaderboard = await getCrazyGamesLeaderboard();
-      console.log("📊 Global leaderboard:", leaderboard);
-      // Store for potential UI display
-      window.globalLeaderboard = leaderboard;
-    }
-    
-    function startLoading() {
-      try {
-        if (crazygames) {
-          crazygames.game.loadingStart();
-          console.log("CrazyGames: Loading started");
-        }
-      } catch (error) {
-        console.error("CrazyGames loading start failed:", error);
-      }
-    }
-    
-    function stopLoading() {
-      try {
-        if (crazygames) {
-          crazygames.game.loadingStop();
-          console.log("CrazyGames: Loading stopped");
-        }
-      } catch (error) {
-        console.error("CrazyGames loading stop failed:", error);
-      }
-    }
-    
-    // Make functions available globally
-    window.crazygames = crazygames;
-    window.submitScoreToCrazyGames = submitScoreToCrazyGames;
-    window.getCrazyGamesLeaderboard = getCrazyGamesLeaderboard;
-    window.getPlayerRank = getPlayerRank;
-    window.updateLeaderboardDisplay = updateLeaderboardDisplay;
-    window.startLoading = startLoading;
-    window.stopLoading = stopLoading;
-    window.getUserInfo = getUserInfo;
-    
-    // Initialize on page load
-    initializeCrazyGames();
-  </script>
+  <script src="https://sdk.crazygames.com/crazygames-sdk-v3.js"></script>
   <meta name="api-base" content="">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   
@@ -7784,6 +7636,9 @@ async function endGame() {
     }
   }
   
+  // Save to local leaderboard
+  saveToLocalLeaderboard(score);
+  
   // Award coins based on score
   awardCoinsForScore(score);
   
@@ -8935,7 +8790,7 @@ window.debugTestUnequip = function(itemType) {
 
 // Show CrazyGames leaderboard
 async function showLeaderboard() {
-  console.log('🏆 Opening CrazyGames leaderboard...');
+  console.log('🏆 Opening leaderboard...');
   
   // Create leaderboard overlay
   const overlay = document.createElement('div');
@@ -8957,9 +8812,9 @@ async function showLeaderboard() {
   // Show loading state
   let leaderboardHTML = `
     <div style="background: rgba(0,0,0,0.95); color: #FFD700; padding: 30px; border-radius: 15px; max-width: 600px; margin: 20px auto; font-family: 'Press Start 2P', monospace; text-align: center;">
-      <h2 style="margin-bottom: 25px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 GLOBAL LEADERBOARD 🏆</h2>
+      <h2 style="margin-bottom: 25px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 LEADERBOARD 🏆</h2>
       <div style="color: #00FFFF; font-size: 12px; padding: 20px;">
-        🌐 Loading global scores...
+        📊 Loading scores...
       </div>
     </div>`;
   
@@ -8974,41 +8829,35 @@ async function showLeaderboard() {
   });
   
   try {
-    // Get leaderboard data from CrazyGames
-    const leaderboard = await window.getCrazyGamesLeaderboard();
-    const playerRank = await window.getPlayerRank();
+    // For now, use localStorage as leaderboard since CrazyGames v3 doesn't have built-in leaderboards
+    const localScores = JSON.parse(localStorage.getItem('pythonixLocalLeaderboard') || '[]');
     const playerName = localStorage.getItem('pythonixPlayerName') || 'Guest';
+    const currentHighScore = parseInt(localStorage.getItem('pythonixHighScore') || '0');
     
-    console.log('📊 Leaderboard data:', leaderboard);
-    console.log('🎯 Player rank:', playerRank);
+    console.log('📊 Local leaderboard data:', localScores);
     
     // Build leaderboard display
     leaderboardHTML = `
       <div style="background: rgba(0,0,0,0.95); color: #FFD700; padding: 30px; border-radius: 15px; max-width: 600px; margin: 20px auto; font-family: 'Press Start 2P', monospace;">
-        <h2 style="text-align: center; margin-bottom: 25px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 GLOBAL LEADERBOARD 🏆</h2>
+        <h2 style="text-align: center; margin-bottom: 25px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 LEADERBOARD 🏆</h2>
         
-        ${playerRank ? `
         <div style="background: rgba(255,215,0,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
-          <div style="color: #00FF00; font-size: 10px; margin-bottom: 10px;">YOUR RANK:</div>
+          <div style="color: #00FF00; font-size: 10px; margin-bottom: 10px;">YOUR BEST:</div>
           <div style="color: #FFD700; font-size: 12px;">👤 ${playerName}</div>
-          <div style="color: #FFD700; font-size: 10px;">Rank: #${playerRank.rank} | Score: ${playerRank.score.toLocaleString()}</div>
+          <div style="color: #FFD700; font-size: 10px;">High Score: ${currentHighScore.toLocaleString()}</div>
         </div>
-        ` : `
-        <div style="background: rgba(255,165,0,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
-          <div style="color: #FFA500; font-size: 10px;">Play a game to appear on the leaderboard!</div>
-        </div>
-        `}
         
         <div style="max-height: 400px; overflow-y: auto;">`;
     
-    if (leaderboard.length === 0) {
+    if (localScores.length === 0) {
       leaderboardHTML += `
         <div style="text-align: center; color: #00FFFF; font-size: 10px; padding: 20px;">
-          No scores yet! Be the first to play!
+          No scores yet! Play some games to fill the leaderboard.
         </div>`;
     } else {
-      leaderboard.forEach((entry, index) => {
-        const isCurrentPlayer = entry.username === playerName;
+      localScores.sort((a, b) => b.score - a.score);
+      localScores.slice(0, 10).forEach((entry, index) => {
+        const isCurrentPlayer = entry.name === playerName;
         const rankColor = index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : '#00FFFF';
         const bgColor = isCurrentPlayer ? 'rgba(255,215,0,0.2)' : 'rgba(255,0,255,0.05)';
         const borderColor = isCurrentPlayer ? '#FFD700' : 'rgba(255,0,255,0.2)';
@@ -9018,7 +8867,7 @@ async function showLeaderboard() {
             <div style="display: flex; align-items: center;">
               <span style="color: ${rankColor}; font-size: 10px; width: 40px; text-align: center;">#${index + 1}</span>
               <span style="color: #00FF00; font-size: 8px; margin-left: 10px; max-width: 150px; overflow: hidden; text-overflow: ellipsis;">
-                ${entry.username}${isCurrentPlayer ? ' (YOU)' : ''}
+                ${entry.name}${isCurrentPlayer ? ' (YOU)' : ''}
               </span>
             </div>
             <div style="color: #FFD700; font-size: 9px; text-align: right;">
@@ -9041,15 +8890,15 @@ async function showLeaderboard() {
     overlay.innerHTML = leaderboardHTML;
     
   } catch (error) {
-    console.error('Error loading CrazyGames leaderboard:', error);
+    console.error('Error loading leaderboard:', error);
     
     // Show error state
     leaderboardHTML = `
       <div style="background: rgba(0,0,0,0.95); color: #FFD700; padding: 30px; border-radius: 15px; max-width: 500px; margin: 20px auto; font-family: 'Press Start 2P', monospace; text-align: center;">
         <h2 style="margin-bottom: 25px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 LEADERBOARD 🏆</h2>
         <div style="color: #FF6B6B; font-size: 10px; padding: 20px;">
-          ❌ Failed to load global leaderboard<br>
-          Make sure you're connected to the internet
+          ❌ Failed to load leaderboard<br>
+          Please try again later
         </div>
         <div style="margin-top: 20px;">
           <button onclick="closeLeaderboard()" style="background: linear-gradient(45deg, #FF00FF, #00FFFF); color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-family: 'Press Start 2P', monospace; font-size: 8px; cursor: pointer; text-shadow: none;">CLOSE</button>
@@ -9074,6 +8923,35 @@ async function refreshLeaderboard() {
 }
 
 // ============= END LEADERBOARD SYSTEM =============
+
+// Save score to local leaderboard
+function saveToLocalLeaderboard(score) {
+  try {
+    const playerName = localStorage.getItem('pythonixPlayerName') || 'Anonymous Snake';
+    let localScores = JSON.parse(localStorage.getItem('pythonixLocalLeaderboard') || '[]');
+    
+    const newEntry = {
+      name: playerName,
+      score: score,
+      date: new Date().toISOString(),
+      id: Date.now() + Math.random()
+    };
+    
+    localScores.push(newEntry);
+    localScores.sort((a, b) => b.score - a.score);
+    localScores = localScores.slice(0, 50); // Keep top 50 scores
+    
+    localStorage.setItem('pythonixLocalLeaderboard', JSON.stringify(localScores));
+    
+    const playerRank = localScores.findIndex(entry => entry.id === newEntry.id) + 1;
+    console.log('✅ Score saved to local leaderboard! Rank:', playerRank, 'out of', localScores.length);
+    
+    return { rank: playerRank, total: localScores.length };
+  } catch (error) {
+    console.error('❌ Failed to save score to local leaderboard:', error);
+    return { rank: 0, total: 0 };
+  }
+}
 
 // ...existing code...
 
@@ -9144,4 +9022,142 @@ console.log('• debugTestAudio() - Test the background music system');
 
 </script>
 </body>
+<script>
+// CrazyGames SDK integration after main game loads
+let crazygames;
+let currentPlayer = null;
+
+async function initializeCrazyGames() {
+  try {
+    if (window.CrazyGames) {
+      crazygames = window.CrazyGames.CrazySDK;
+      await crazygames.init();
+      console.log("CrazyGames SDK initialized successfully");
+      
+      // Get user information
+      await getUserInfo();
+      
+      // Set up pause/resume event listeners
+      crazygames.game.on('pause', () => {
+        console.log("Game paused by CrazyGames");
+        if (typeof pauseGame === 'function' && typeof isGameOver !== 'undefined' && typeof isPaused !== 'undefined' && !isGameOver && !isPaused) {
+          pauseGame();
+        }
+      });
+      
+      crazygames.game.on('resume', () => {
+        console.log("Game resumed by CrazyGames");
+        // Don't auto-resume, let player decide
+      });
+      
+      // Initialize leaderboard display
+      await updateLeaderboardDisplay();
+      
+    } else {
+      console.log("CrazyGames SDK not available - running in standalone mode");
+    }
+  } catch (error) {
+    console.error("Failed to initialize CrazyGames SDK:", error);
+  }
+}
+
+async function getUserInfo() {
+  try {
+    if (crazygames && crazygames.user) {
+      currentPlayer = await crazygames.user.getUser();
+      if (currentPlayer) {
+        console.log("User info:", currentPlayer);
+        // Use CrazyGames username if available
+        if (currentPlayer.username) {
+          localStorage.setItem('pythonixPlayerName', currentPlayer.username);
+          console.log("Set player name to:", currentPlayer.username);
+        }
+      } else {
+        console.log("Guest session - no user logged in");
+      }
+    }
+  } catch (error) {
+    console.error("Failed to get user info:", error);
+  }
+}
+
+// Submit score to CrazyGames leaderboard
+async function submitScoreToCrazyGames(score) {
+  try {
+    if (crazygames && crazygames.game) {
+      // CrazyGames v3 doesn't have built-in leaderboards, so we'll just log the score
+      console.log("✅ Score would be submitted to CrazyGames:", score);
+      return true;
+    }
+  } catch (error) {
+    console.error("❌ Error submitting score to CrazyGames:", error);
+    return false;
+  }
+  return false;
+}
+
+// Get global leaderboard from CrazyGames
+async function getCrazyGamesLeaderboard() {
+  // CrazyGames v3 doesn't have built-in leaderboards
+  // Return empty array for now
+  return [];
+}
+
+// Get player's rank from CrazyGames
+async function getPlayerRank() {
+  // CrazyGames v3 doesn't have built-in leaderboards
+  return null;
+}
+
+// Update leaderboard display in game
+async function updateLeaderboardDisplay() {
+  try {
+    const leaderboard = await getCrazyGamesLeaderboard();
+    console.log("📊 Global leaderboard:", leaderboard);
+    // Store for potential UI display
+    window.globalLeaderboard = leaderboard;
+  } catch (error) {
+    console.error("Error updating leaderboard display:", error);
+  }
+}
+
+function startLoading() {
+  try {
+    if (crazygames && crazygames.game) {
+      crazygames.game.loadingStart();
+      console.log("CrazyGames: Loading started");
+    }
+  } catch (error) {
+    console.error("CrazyGames loading start failed:", error);
+  }
+}
+
+function stopLoading() {
+  try {
+    if (crazygames && crazygames.game) {
+      crazygames.game.loadingStop();
+      console.log("CrazyGames: Loading stopped");
+    }
+  } catch (error) {
+    console.error("CrazyGames loading stop failed:", error);
+  }
+}
+
+// Make functions available globally
+window.crazygames = crazygames;
+window.submitScoreToCrazyGames = submitScoreToCrazyGames;
+window.getCrazyGamesLeaderboard = getCrazyGamesLeaderboard;
+window.getPlayerRank = getPlayerRank;
+window.updateLeaderboardDisplay = updateLeaderboardDisplay;
+window.startLoading = startLoading;
+window.stopLoading = stopLoading;
+window.getUserInfo = getUserInfo;
+window.currentPlayer = currentPlayer;
+
+// Initialize after a short delay to ensure main game is loaded
+setTimeout(() => {
+  initializeCrazyGames();
+}, 500);
+</script>
+
 </html>
