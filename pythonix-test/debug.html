@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pythonix Debug - Check Storage</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #222; color: #fff; }
+        .section { margin: 20px 0; padding: 15px; background: #333; border-radius: 5px; }
+        .key { color: #4CAF50; }
+        .value { color: #FFA500; }
+        button { padding: 10px; margin: 5px; background: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #45a049; }
+        .error { color: #ff4444; }
+        .success { color: #44ff44; }
+    </style>
+</head>
+<body>
+    <h1>🐍 Pythonix Debug Tool</h1>
+    
+    <div class="section">
+        <h2>💰 Coins & Purchases</h2>
+        <div id="coinsInfo"></div>
+        <button onclick="addCoins(1000)">Add 1000 Coins</button>
+        <button onclick="addCoins(5000)">Add 5000 Coins</button>
+    </div>
+
+    <div class="section">
+        <h2>👕 Equipment Status</h2>
+        <div id="equipmentInfo"></div>
+        <button onclick="resetEquipment()">Reset Equipment</button>
+    </div>
+
+    <div class="section">
+        <h2>🎒 Powerup Inventory</h2>
+        <div id="powerupInfo"></div>
+        <button onclick="addPowerups()">Add Sample Powerups</button>
+    </div>
+
+    <div class="section">
+        <h2>🗄️ All LocalStorage Data</h2>
+        <div id="allStorage"></div>
+        <button onclick="clearAllData()" style="background: #ff4444;">Clear All Data</button>
+        <button onclick="refreshData()">Refresh</button>
+    </div>
+
+    <script>
+        function getCoins() {
+            return parseInt(localStorage.getItem('pythonixCoins') || '0');
+        }
+
+        function addCoins(amount) {
+            const current = getCoins();
+            const newTotal = current + amount;
+            localStorage.setItem('pythonixCoins', newTotal.toString());
+            document.getElementById('coinsInfo').innerHTML = `<span class="success">Added ${amount} coins! New total: ${newTotal}</span>`;
+            refreshData();
+        }
+
+        function getEquippedItems() {
+            const equipped = localStorage.getItem('pythonixEquippedItems');
+            return equipped ? JSON.parse(equipped) : null;
+        }
+
+        function getOwnedItems() {
+            const owned = localStorage.getItem('pythonixOwnedItems');
+            return owned ? JSON.parse(owned) : [];
+        }
+
+        function getPowerupInventory() {
+            const inventory = localStorage.getItem('pythonixPowerupInventory');
+            return inventory ? JSON.parse(inventory) : {};
+        }
+
+        function resetEquipment() {
+            localStorage.setItem('pythonixEquippedItems', JSON.stringify({
+                skin: 'skin_classic',
+                trail: 'none',
+                badge: 'none',
+                sound: 'default'
+            }));
+            localStorage.setItem('pythonixSnakeSkin', 'classic');
+            localStorage.setItem('pythonixTrailEffect', 'none');
+            localStorage.setItem('pythonixPlayerBadge', 'none');
+            document.getElementById('equipmentInfo').innerHTML = '<span class="success">Equipment reset to defaults!</span>';
+            refreshData();
+        }
+
+        function addPowerups() {
+            const inventory = getPowerupInventory();
+            inventory['powerup_speed_boost'] = (inventory['powerup_speed_boost'] || 0) + 3;
+            inventory['powerup_shield'] = (inventory['powerup_shield'] || 0) + 2;
+            inventory['powerup_double_points'] = (inventory['powerup_double_points'] || 0) + 2;
+            localStorage.setItem('pythonixPowerupInventory', JSON.stringify(inventory));
+            document.getElementById('powerupInfo').innerHTML = '<span class="success">Added sample powerups!</span>';
+            refreshData();
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear ALL Pythonix data?')) {
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('pythonix')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+                alert('All Pythonix data cleared!');
+                refreshData();
+            }
+        }
+
+        function refreshData() {
+            // Coins info
+            const coins = getCoins();
+            const owned = getOwnedItems();
+            document.getElementById('coinsInfo').innerHTML = `
+                <div><span class="key">Coins:</span> <span class="value">${coins}</span></div>
+                <div><span class="key">Owned Items:</span> <span class="value">${owned.length} items</span></div>
+                <div style="font-size: 12px; color: #ccc;">Items: ${owned.join(', ') || 'None'}</div>
+            `;
+
+            // Equipment info
+            const equipped = getEquippedItems();
+            const oldSkin = localStorage.getItem('pythonixSnakeSkin');
+            document.getElementById('equipmentInfo').innerHTML = `
+                <div><span class="key">New System:</span> <span class="value">${equipped ? JSON.stringify(equipped) : 'Not set'}</span></div>
+                <div><span class="key">Old Skin Variable:</span> <span class="value">${oldSkin || 'Not set'}</span></div>
+            `;
+
+            // Powerup info
+            const powerups = getPowerupInventory();
+            const totalPowerups = Object.values(powerups).reduce((sum, count) => sum + count, 0);
+            document.getElementById('powerupInfo').innerHTML = `
+                <div><span class="key">Total Powerups:</span> <span class="value">${totalPowerups}</span></div>
+                <div style="font-size: 12px; color: #ccc;">${JSON.stringify(powerups)}</div>
+            `;
+
+            // All storage
+            const allData = {};
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('pythonix')) {
+                    allData[key] = localStorage.getItem(key);
+                }
+            });
+            
+            let storageHtml = '';
+            Object.entries(allData).forEach(([key, value]) => {
+                storageHtml += `<div><span class="key">${key}:</span> <span class="value">${value}</span></div>`;
+            });
+            document.getElementById('allStorage').innerHTML = storageHtml || '<span class="error">No Pythonix data found</span>';
+        }
+
+        // Initialize
+        refreshData();
+    </script>
+</body>
+</html>
