@@ -8790,7 +8790,7 @@ window.debugTestUnequip = function(itemType) {
 
 // Show CrazyGames leaderboard
 async function showLeaderboard() {
-  console.log('🏆 Opening leaderboard...');
+  console.log('🏆 Opening global leaderboard...');
   
   // Create leaderboard overlay
   const overlay = document.createElement('div');
@@ -8812,9 +8812,9 @@ async function showLeaderboard() {
   // Show loading state
   let leaderboardHTML = `
     <div style="background: rgba(0,0,0,0.95); color: #FFD700; padding: 30px; border-radius: 15px; max-width: 600px; margin: 20px auto; font-family: 'Press Start 2P', monospace; text-align: center;">
-      <h2 style="margin-bottom: 25px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 LEADERBOARD 🏆</h2>
+      <h2 style="margin-bottom: 25px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 GLOBAL LEADERBOARD 🏆</h2>
       <div style="color: #00FFFF; font-size: 12px; padding: 20px;">
-        📊 Loading scores...
+        🌐 Loading global scores...
       </div>
     </div>`;
   
@@ -8829,34 +8829,71 @@ async function showLeaderboard() {
   });
   
   try {
-    // For now, use localStorage as leaderboard since CrazyGames v3 doesn't have built-in leaderboards
-    const localScores = JSON.parse(localStorage.getItem('pythonixLocalLeaderboard') || '[]');
+    // Get leaderboard data from CrazyGames or fallback to local
+    let leaderboard = [];
+    let playerRank = null;
+    let isGlobal = false;
+    
+    if (window.crazygames) {
+      // Try to get global leaderboard from CrazyGames
+      leaderboard = await window.getCrazyGamesLeaderboard();
+      playerRank = await window.getPlayerRank();
+      isGlobal = true;
+      console.log('📊 Using CrazyGames global leaderboard');
+    }
+    
+    // Fallback to local if CrazyGames not available or empty
+    if (!leaderboard || leaderboard.length === 0) {
+      const localScores = JSON.parse(localStorage.getItem('pythonixLocalLeaderboard') || '[]');
+      leaderboard = localScores.sort((a, b) => b.score - a.score).slice(0, 10);
+      isGlobal = false;
+      console.log('📊 Using local leaderboard as fallback');
+    }
+    
     const playerName = localStorage.getItem('pythonixPlayerName') || 'Guest';
     const currentHighScore = parseInt(localStorage.getItem('pythonixHighScore') || '0');
     
-    console.log('📊 Local leaderboard data:', localScores);
+    console.log('📊 Leaderboard data:', leaderboard);
+    console.log('🎯 Player rank:', playerRank);
     
     // Build leaderboard display
     leaderboardHTML = `
       <div style="background: rgba(0,0,0,0.95); color: #FFD700; padding: 30px; border-radius: 15px; max-width: 600px; margin: 20px auto; font-family: 'Press Start 2P', monospace;">
-        <h2 style="text-align: center; margin-bottom: 25px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 LEADERBOARD 🏆</h2>
+        <h2 style="text-align: center; margin-bottom: 15px; color: #FFD700; text-shadow: 0 0 10px #FFD700;">🏆 ${isGlobal ? 'GLOBAL' : 'LOCAL'} LEADERBOARD 🏆</h2>
         
+        ${isGlobal ? `
+        <div style="text-align: center; margin-bottom: 15px; color: #00FF00; font-size: 8px;">
+          🌐 Synced across all devices via CrazyGames
+        </div>
+        ` : `
+        <div style="text-align: center; margin-bottom: 15px; color: #FFA500; font-size: 8px;">
+          📱 Local scores only - connect to CrazyGames for global leaderboard
+        </div>
+        `}
+        
+        ${playerRank ? `
+        <div style="background: rgba(255,215,0,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+          <div style="color: #00FF00; font-size: 10px; margin-bottom: 10px;">YOUR GLOBAL RANK:</div>
+          <div style="color: #FFD700; font-size: 12px;">👤 ${playerRank.name}</div>
+          <div style="color: #FFD700; font-size: 10px;">Rank: #${playerRank.rank} | Score: ${playerRank.score.toLocaleString()}</div>
+        </div>
+        ` : `
         <div style="background: rgba(255,215,0,0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
           <div style="color: #00FF00; font-size: 10px; margin-bottom: 10px;">YOUR BEST:</div>
           <div style="color: #FFD700; font-size: 12px;">👤 ${playerName}</div>
           <div style="color: #FFD700; font-size: 10px;">High Score: ${currentHighScore.toLocaleString()}</div>
         </div>
+        `}
         
         <div style="max-height: 400px; overflow-y: auto;">`;
     
-    if (localScores.length === 0) {
+    if (leaderboard.length === 0) {
       leaderboardHTML += `
         <div style="text-align: center; color: #00FFFF; font-size: 10px; padding: 20px;">
-          No scores yet! Play some games to fill the leaderboard.
+          No scores yet! ${isGlobal ? 'Be the first to play globally!' : 'Play some games to fill the leaderboard.'}
         </div>`;
     } else {
-      localScores.sort((a, b) => b.score - a.score);
-      localScores.slice(0, 10).forEach((entry, index) => {
+      leaderboard.forEach((entry, index) => {
         const isCurrentPlayer = entry.name === playerName;
         const rankColor = index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : '#00FFFF';
         const bgColor = isCurrentPlayer ? 'rgba(255,215,0,0.2)' : 'rgba(255,0,255,0.05)';
@@ -9084,9 +9121,47 @@ async function getUserInfo() {
 // Submit score to CrazyGames leaderboard
 async function submitScoreToCrazyGames(score) {
   try {
-    if (crazygames && crazygames.game) {
-      // CrazyGames v3 doesn't have built-in leaderboards, so we'll just log the score
-      console.log("✅ Score would be submitted to CrazyGames:", score);
+    if (crazygames && crazygames.user && crazygames.data) {
+      // Get user info first
+      let playerName = 'Anonymous';
+      try {
+        const user = await crazygames.user.getUser();
+        if (user && user.username) {
+          playerName = user.username;
+        } else {
+          playerName = localStorage.getItem('pythonixPlayerName') || 'Anonymous';
+        }
+      } catch (e) {
+        playerName = localStorage.getItem('pythonixPlayerName') || 'Anonymous';
+      }
+      
+      // Get current leaderboard data
+      let leaderboardData = [];
+      try {
+        const existingData = await crazygames.data.getItem('global_leaderboard');
+        if (existingData) {
+          leaderboardData = JSON.parse(existingData);
+        }
+      } catch (e) {
+        console.log('No existing leaderboard data found, creating new one');
+      }
+      
+      // Add new score
+      const newEntry = {
+        name: playerName,
+        score: score,
+        date: new Date().toISOString(),
+        id: Date.now() + Math.random()
+      };
+      
+      leaderboardData.push(newEntry);
+      leaderboardData.sort((a, b) => b.score - a.score);
+      leaderboardData = leaderboardData.slice(0, 100); // Keep top 100 scores
+      
+      // Save updated leaderboard
+      await crazygames.data.setItem('global_leaderboard', JSON.stringify(leaderboardData));
+      
+      console.log("✅ Score submitted to CrazyGames global leaderboard:", score);
       return true;
     }
   } catch (error) {
@@ -9098,14 +9173,59 @@ async function submitScoreToCrazyGames(score) {
 
 // Get global leaderboard from CrazyGames
 async function getCrazyGamesLeaderboard() {
-  // CrazyGames v3 doesn't have built-in leaderboards
-  // Return empty array for now
+  try {
+    if (crazygames && crazygames.data) {
+      const leaderboardData = await crazygames.data.getItem('global_leaderboard');
+      if (leaderboardData) {
+        const scores = JSON.parse(leaderboardData);
+        scores.sort((a, b) => b.score - a.score);
+        return scores.slice(0, 10); // Return top 10
+      }
+    }
+  } catch (error) {
+    console.error("❌ Error getting CrazyGames leaderboard:", error);
+  }
   return [];
 }
 
 // Get player's rank from CrazyGames
 async function getPlayerRank() {
-  // CrazyGames v3 doesn't have built-in leaderboards
+  try {
+    if (crazygames && crazygames.data) {
+      const leaderboardData = await crazygames.data.getItem('global_leaderboard');
+      if (leaderboardData) {
+        const scores = JSON.parse(leaderboardData);
+        scores.sort((a, b) => b.score - a.score);
+        
+        // Get current player name
+        let playerName = 'Anonymous';
+        try {
+          const user = await crazygames.user.getUser();
+          if (user && user.username) {
+            playerName = user.username;
+          } else {
+            playerName = localStorage.getItem('pythonixPlayerName') || 'Anonymous';
+          }
+        } catch (e) {
+          playerName = localStorage.getItem('pythonixPlayerName') || 'Anonymous';
+        }
+        
+        // Find player's best score
+        const playerScores = scores.filter(entry => entry.name === playerName);
+        if (playerScores.length > 0) {
+          const bestScore = playerScores[0]; // Already sorted by score
+          const rank = scores.findIndex(entry => entry.id === bestScore.id) + 1;
+          return {
+            rank: rank,
+            score: bestScore.score,
+            name: playerName
+          };
+        }
+      }
+    }
+  } catch (error) {
+    console.error("❌ Error getting player rank:", error);
+  }
   return null;
 }
 
